@@ -8,6 +8,21 @@ require("./bootstrap");
 require("admin-lte");
 
 window.Vue = require("vue");
+import VueRouter from "vue-router";
+Vue.use(VueRouter);
+
+let routes = [
+    {
+        path: "/dashboard",
+        component: require("./components/Dashboard.vue").default
+    },
+    { path: "/users", component: require("./components/Users.vue").default }
+];
+
+const router = new VueRouter({
+    mode: "history",
+    routes // short for `routes: routes`
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -32,5 +47,6 @@ Vue.component(
  */
 
 const app = new Vue({
-    el: "#app"
+    el: "#app",
+    router
 });
