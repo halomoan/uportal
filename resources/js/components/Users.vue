@@ -26,7 +26,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <a href data-toggle="modal" data-target="#addNew">
+                <a href="#" @click.prevent="addNewUser">
                   <i class="fa fa-user-plus"></i>
                 </a>
 
@@ -130,6 +130,11 @@ export default {
     return {
       form: new Form({ name: "", email: "", password: "", type: "" })
     };
+  },
+  methods: {
+    addNewUser() {
+      this.$router.push({ path: "newuser" });
+    }
   }
 };
 </script>
