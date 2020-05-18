@@ -24,7 +24,7 @@ let routes = [
     },
     { path: "/users", component: require("./components/Users.vue").default },
     {
-        path: "/newuser",
+        path: "/userd",
         component: require("./components/UserDetail.vue").default
     }
 ];
@@ -51,18 +51,18 @@ Vue.filter("humanDate", function(date) {
     return moment(date).format("MMMM Do YYYY");
 });
 
-import swal from "sweetalert2";
-window.swal = swal;
+import Swal from "sweetalert2";
+window.Swal = Swal;
 
-const Toast = swal.mixin({
+const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
     onOpen: toast => {
-        toast.addEventListener("mouseenter", swal.stopTimer);
-        toast.addEventListener("mouseleave", swal.resumeTimer);
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
     }
 });
 

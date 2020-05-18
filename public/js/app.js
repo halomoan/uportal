@@ -2185,114 +2185,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2304,10 +2196,14 @@ __webpack_require__.r(__webpack_exports__);
         type: "",
         billaddr: "Halomoan"
       }),
-      inprogress: false
+      inprogress: false,
+      editMode: false
     };
   },
   methods: {
+    editUser: function editUser() {
+      alert("Edit");
+    },
     createUser: function createUser() {
       var _this = this;
 
@@ -2315,15 +2211,21 @@ __webpack_require__.r(__webpack_exports__);
       this.inprogress = true;
       this.form.post("api/user").then(function (_ref) {
         var data = _ref.data;
+
+        _this.$Progress.finish();
+
+        _this.inprogress = false;
         Toast.fire({
           icon: "success",
           title: "User created successfully"
         });
 
         _this.goBack();
+      })["catch"](function () {
+        _this.$Progress.finish();
+
+        _this.inprogress = false;
       });
-      this.$Progress.finish();
-      this.inprogress = false;
     },
     goBack: function goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/users");
@@ -2331,6 +2233,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.inprogress = false;
+    /*if (this.$route.query.user) {
+      this.form.fill(this.$route.query.user);
+    } else {
+      this.form.reset();
+    }*/
   }
 });
 
@@ -2345,6 +2252,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -2475,7 +2386,42 @@ __webpack_require__.r(__webpack_exports__);
     },
     addNewUser: function addNewUser() {
       this.$router.push({
-        path: "newuser"
+        path: "/userd",
+        query: {
+          user: false
+        }
+      });
+    },
+    editUser: function editUser(user) {
+      this.$router.push({
+        path: "/userd",
+        query: {
+          user: user
+        }
+      });
+    },
+    deleteUser: function deleteUser(id) {
+      var _this2 = this;
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(function (result) {
+        //Send request to the server
+        axios["delete"]("api/user/" + id).then(function () {
+          if (result.value) {
+            Swal.fire("Deleted!", "Your user has been deleted.", "success");
+
+            _this2.loadUsers();
+          }
+        })["catch"](function () {
+          Swal.fire("Failed!", "There is something wrong.", "warning");
+        });
       });
     }
   },
@@ -63288,6 +63234,7 @@ var render = function() {
                                     },
                                     attrs: {
                                       type: "text",
+                                      autocomplete: "off",
                                       id: "name",
                                       name: "name",
                                       placeholder: "Name",
@@ -63345,6 +63292,7 @@ var render = function() {
                                     },
                                     attrs: {
                                       type: "email",
+                                      autocomplete: "off",
                                       id: "email",
                                       name: "email",
                                       placeholder: "Email address",
@@ -63393,8 +63341,7 @@ var render = function() {
                                         name: "model",
                                         rawName: "v-model",
                                         value: _vm.form.password,
-                                        expression:
-                                          "\n                                                            form.password\n                                                        "
+                                        expression: "form.password"
                                       }
                                     ],
                                     staticClass: "form-control",
@@ -63453,8 +63400,7 @@ var render = function() {
                                         name: "model",
                                         rawName: "v-model",
                                         value: _vm.form.repassword,
-                                        expression:
-                                          "\n                                                            form.repassword\n                                                        "
+                                        expression: "form.repassword"
                                       }
                                     ],
                                     staticClass: "form-control",
@@ -63557,7 +63503,7 @@ var render = function() {
                                     [
                                       _c("option", { attrs: { value: "" } }, [
                                         _vm._v(
-                                          "Select User\n                                                            Role"
+                                          "\n                              Select User\n                              Role\n                            "
                                         )
                                       ]),
                                       _vm._v(" "),
@@ -63572,7 +63518,7 @@ var render = function() {
                                         { attrs: { value: "user" } },
                                         [
                                           _vm._v(
-                                            "Standard\n                                                            User"
+                                            "\n                              Standard\n                              User\n                            "
                                           )
                                         ]
                                       )
@@ -63621,14 +63567,13 @@ var render = function() {
                                 "div",
                                 { staticClass: "col-sm-10" },
                                 [
-                                  _c("input", {
+                                  _c("textarea", {
                                     directives: [
                                       {
                                         name: "model",
                                         rawName: "v-model",
                                         value: _vm.form.billaddr,
-                                        expression:
-                                          "\n                                                            form.billaddr\n                                                        "
+                                        expression: "form.billaddr"
                                       }
                                     ],
                                     staticClass: "form-control",
@@ -63638,7 +63583,7 @@ var render = function() {
                                       )
                                     },
                                     attrs: {
-                                      type: "textarea",
+                                      rows: "5",
                                       id: "billaddr",
                                       name: "billaddr",
                                       placeholder: "billaddr"
@@ -63683,9 +63628,7 @@ var render = function() {
                         }),
                         _vm._v(" "),
                         _c("div", { staticClass: "text-bold pl-2" }, [
-                          _vm._v(
-                            "\n                                        Loading...\n                                    "
-                          )
+                          _vm._v("Loading...")
                         ])
                       ])
                     : _vm._e()
@@ -63701,15 +63644,11 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        return _vm.createUser($event)
+                        _vm.editMode ? _vm.editUser : _vm.createUser
                       }
                     }
                   },
-                  [
-                    _vm._v(
-                      "\n                                Submit\n                            "
-                    )
-                  ]
+                  [_vm._v("Submit")]
                 ),
                 _vm._v(" "),
                 _c(
@@ -63724,11 +63663,7 @@ var render = function() {
                       }
                     }
                   },
-                  [
-                    _vm._v(
-                      "\n                                Cancel\n                            "
-                    )
-                  ]
+                  [_vm._v("Cancel")]
                 )
               ])
             ])
@@ -63753,7 +63688,7 @@ var staticRenderFns = [
           _c("div", { staticClass: "col-sm-6" }, [
             _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
               _c("li", { staticClass: "breadcrumb-item" }, [
-                _c("a", { attrs: { href: "#" } }, [_vm._v("Users")])
+                _c("a", { attrs: { href: "/users" } }, [_vm._v("Users")])
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "breadcrumb-item active" }, [
@@ -63874,7 +63809,31 @@ var render = function() {
                           _vm._v(_vm._s(_vm._f("humanDate")(user.created_at)))
                         ]),
                         _vm._v(" "),
-                        _vm._m(3, true)
+                        _c("td", [
+                          _c("a", {
+                            staticClass: "fa fa-edit",
+                            attrs: { href: "" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.editUser(user)
+                              }
+                            }
+                          }),
+                          _vm._v(
+                            "\n                      /\n                      "
+                          ),
+                          _c("a", {
+                            staticClass: "fa fa-trash text-red",
+                            attrs: { href: "" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.deleteUser(user.id)
+                              }
+                            }
+                          })
+                        ])
                       ])
                     }),
                     0
@@ -63887,7 +63846,7 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _vm._m(4)
+    _vm._m(3)
   ])
 }
 var staticRenderFns = [
@@ -63961,16 +63920,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Modify")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { staticClass: "fa fa-edit", attrs: { href: "" } }),
-      _vm._v("\n                      /\n                      "),
-      _c("a", { staticClass: "fa fa-trash text-red", attrs: { href: "" } })
     ])
   },
   function() {
@@ -79193,7 +79142,7 @@ var routes = [{
   path: "/users",
   component: __webpack_require__(/*! ./components/Users.vue */ "./resources/js/components/Users.vue")["default"]
 }, {
-  path: "/newuser",
+  path: "/userd",
   component: __webpack_require__(/*! ./components/UserDetail.vue */ "./resources/js/components/UserDetail.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
@@ -79215,7 +79164,7 @@ Vue.filter("humanDate", function (date) {
   return moment__WEBPACK_IMPORTED_MODULE_3___default()(date).format("MMMM Do YYYY");
 });
 
-window.swal = sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a;
+window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a;
 var Toast = sweetalert2__WEBPACK_IMPORTED_MODULE_4___default.a.mixin({
   toast: true,
   position: "top-end",
@@ -79591,8 +79540,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

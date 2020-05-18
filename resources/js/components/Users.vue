@@ -68,9 +68,13 @@
                       <td>{{user.type | upText}}</td>
                       <td>{{user.created_at | humanDate}}</td>
                       <td>
-                        <a href class="fa fa-edit"></a>
+                        <a href class="fa fa-edit" @click.prevent="editUser(user)"></a>
                         /
-                        <a href class="fa fa-trash text-red"></a>
+                        <a
+                          href
+                          class="fa fa-trash text-red"
+                          @click.prevent="deleteUser(user.id)"
+                        ></a>
                       </td>
                     </tr>
                   </tbody>
@@ -123,7 +127,35 @@ export default {
       axios.get("api/user").then(({ data }) => (this.users = data.data));
     },
     addNewUser() {
-      this.$router.push({ path: "newuser" });
+      this.$router.push({ path: "/userd", query: { user: false } });
+    },
+    editUser(user) {
+      this.$router.push({ path: "/userd", query: { user: user } });
+    },
+    deleteUser(id) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        //Send request to the server
+
+        axios
+          .delete("api/user/" + id)
+          .then(() => {
+            if (result.value) {
+              Swal.fire("Deleted!", "Your user has been deleted.", "success");
+              this.loadUsers();
+            }
+          })
+          .catch(() => {
+            Swal.fire("Failed!", "There is something wrong.", "warning");
+          });
+      });
     }
   },
   created() {
