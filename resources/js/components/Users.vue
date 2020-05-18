@@ -56,17 +56,17 @@
                       <th>Name</th>
                       <th>Email</th>
                       <th>Type</th>
+                      <th>Registered At</th>
                       <th>Modify</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>183</td>
-                      <td>John Doe</td>
-                      <td>11-7-2014</td>
-                      <td>
-                        <span class="tag tag-success">Approved</span>
-                      </td>
+                    <tr v-for="user in users" :key="user.id">
+                      <td>{{user.id}}</td>
+                      <td>{{user.name}}</td>
+                      <td>{{user.email}}</td>
+                      <td>{{user.type | upText}}</td>
+                      <td>{{user.created_at | humanDate}}</td>
                       <td>
                         <a href class="fa fa-edit"></a>
                         /
@@ -101,20 +101,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <label>Username</label>
-              <input
-                v-model="form.name"
-                type="text"
-                name="name"
-                placeholder="Enter Name"
-                class="form-control"
-                :class="{ 'is-invalid': form.errors.has('name') }"
-              />
-              <has-error :form="form" field="name"></has-error>
-            </div>
-          </div>
+          <div class="modal-body"></div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary">Create</button>
@@ -128,13 +115,19 @@
 export default {
   data() {
     return {
-      form: new Form({ name: "", email: "", password: "", type: "" })
+      users: {}
     };
   },
   methods: {
+    loadUsers() {
+      axios.get("api/user").then(({ data }) => (this.users = data.data));
+    },
     addNewUser() {
       this.$router.push({ path: "newuser" });
     }
+  },
+  created() {
+    this.loadUsers();
   }
 };
 </script>
