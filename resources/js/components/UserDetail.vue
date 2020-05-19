@@ -50,97 +50,97 @@
                   <div class="tab-content">
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="general">
-                      <form class="form-horizontal" @submit.prevent="createUser">
-                        <div class="form-group row">
-                          <label for="name" class="col-sm-2 col-form-label">Name</label>
-                          <div class="col-sm-10">
-                            <input
-                              type="text"
-                              class="form-control"
-                              autocomplete="off"
-                              :class="{'is-invalid': form.errors.has('name')}"
-                              id="name"
-                              v-model="form.name"
-                              name="name"
-                              placeholder="Name"
-                              required
-                            />
-                            <has-error :form="form" field="name"></has-error>
-                          </div>
+                      <!-- <form class="form-horizontal" @submit.prevent="createUser"> -->
+                      <div class="form-group row">
+                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                          <input
+                            type="text"
+                            class="form-control"
+                            autocomplete="off"
+                            :class="{'is-invalid': form.errors.has('name')}"
+                            id="name"
+                            v-model="form.name"
+                            name="name"
+                            placeholder="Name"
+                            required
+                          />
+                          <has-error :form="form" field="name"></has-error>
                         </div>
-                        <div class="form-group row">
-                          <label for="email" class="col-sm-2 col-form-label">Email</label>
-                          <div class="col-sm-10">
-                            <input
-                              type="email"
-                              class="form-control"
-                              autocomplete="off"
-                              :class="{'is-invalid': form.errors.has('email')}"
-                              id="email"
-                              v-model="form.email"
-                              name="email"
-                              placeholder="Email address"
-                              required
-                            />
-                            <has-error :form="form" field="email"></has-error>
-                          </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                          <input
+                            type="email"
+                            class="form-control"
+                            autocomplete="off"
+                            :class="{'is-invalid': form.errors.has('email')}"
+                            id="email"
+                            v-model="form.email"
+                            name="email"
+                            placeholder="Email address"
+                            required
+                          />
+                          <has-error :form="form" field="email"></has-error>
                         </div>
-                        <div class="form-group row">
-                          <label for="password" class="col-sm-2 col-form-label">Password</label>
-                          <div class="col-sm-10">
-                            <input
-                              type="password"
-                              class="form-control"
-                              id="password"
-                              :class="{'is-invalid': form.errors.has('password')}"
-                              name="password"
-                              v-model="form.password"
-                              placeholder="Password"
-                              required
-                            />
-                            <has-error :form="form" field="password"></has-error>
-                          </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="password" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            :class="{'is-invalid': form.errors.has('password')}"
+                            name="password"
+                            v-model="form.password"
+                            placeholder="Password"
+                            required
+                          />
+                          <has-error :form="form" field="password"></has-error>
                         </div>
-                        <div class="form-group row">
-                          <label for="repassword" class="col-sm-2 col-form-label">Re-Type Password</label>
-                          <div class="col-sm-10">
-                            <input
-                              type="password"
-                              class="form-control"
-                              id="repassword"
-                              :class="{'is-invalid': form.errors.has('repassword')}"
-                              name="repassword"
-                              v-model="form.repassword"
-                              placeholder="Re-type Password"
-                              required
-                            />
-                            <has-error :form="form" field="repassword"></has-error>
-                          </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="repassword" class="col-sm-2 col-form-label">Re-Type Password</label>
+                        <div class="col-sm-10">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="repassword"
+                            :class="{'is-invalid': form.errors.has('repassword')}"
+                            name="repassword"
+                            v-model="form.repassword"
+                            placeholder="Re-type Password"
+                            required
+                          />
+                          <has-error :form="form" field="repassword"></has-error>
                         </div>
-                        <div class="form-group row">
-                          <label for="type" class="col-sm-2 col-form-label">Type</label>
-                          <div class="col-sm-10">
-                            <select
-                              name="type"
-                              v-model="form.type"
-                              id="type"
-                              class="form-control"
-                              :class="{'is-invalid': form.errors.has('type')}"
-                            >
-                              <option value>
-                                Select User
-                                Role
-                              </option>
-                              <option value="admin">Admin</option>
-                              <option value="user">
-                                Standard
-                                User
-                              </option>
-                            </select>
-                            <has-error :form="form" field="type"></has-error>
-                          </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="type" class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-10">
+                          <select
+                            name="type"
+                            v-model="form.type"
+                            id="type"
+                            class="form-control"
+                            :class="{'is-invalid': form.errors.has('type')}"
+                          >
+                            <option value>
+                              Select User
+                              Role
+                            </option>
+                            <option value="admin">Admin</option>
+                            <option value="user">
+                              Standard
+                              User
+                            </option>
+                          </select>
+                          <has-error :form="form" field="type"></has-error>
                         </div>
-                      </form>
+                      </div>
+                      <!-- </form> -->
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="billing">
@@ -206,6 +206,7 @@ export default {
   data() {
     return {
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -219,7 +220,20 @@ export default {
   },
   methods: {
     editUser() {
-      alert("Edit");
+      this.$Progress.start();
+      this.form
+        .put("api/user/" + this.form.id)
+        .then(() => {
+          this.$Progress.finish();
+          Toast.fire({
+            icon: "success",
+            title: "User modified successfully"
+          });
+          this.goBack();
+        })
+        .catch(() => {
+          this.$Progress.fail();
+        });
     },
     createUser() {
       this.$Progress.start();
@@ -238,7 +252,7 @@ export default {
           this.goBack();
         })
         .catch(() => {
-          this.$Progress.finish();
+          this.$Progress.fail();
           this.inprogress = false;
         });
     },
@@ -256,15 +270,18 @@ export default {
     if (typeof userId === "undefined") {
       this.$router.push("/users");
     } else if (userId) {
+      this.$Progress.start();
       axios
         .get("api/user/" + userId)
         .then(({ data }) => {
           this.form.fill(data);
           this.editMode = true;
+          this.$Progress.finish();
         })
         .catch(() => {
           this.editMode = false;
           this.form.reset();
+          this.$Progress.fail();
           Swal.fire({
             icon: "error",
             title: "Oops...",

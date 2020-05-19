@@ -2198,6 +2198,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -2211,29 +2212,43 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     editUser: function editUser() {
-      alert("Edit");
+      var _this = this;
+
+      this.$Progress.start();
+      this.form.put("api/user/" + this.form.id).then(function () {
+        _this.$Progress.finish();
+
+        Toast.fire({
+          icon: "success",
+          title: "User modified successfully"
+        });
+
+        _this.goBack();
+      })["catch"](function () {
+        _this.$Progress.fail();
+      });
     },
     createUser: function createUser() {
-      var _this = this;
+      var _this2 = this;
 
       this.$Progress.start();
       this.inprogress = true;
       this.form.post("api/user").then(function (_ref) {
         var data = _ref.data;
 
-        _this.$Progress.finish();
+        _this2.$Progress.finish();
 
-        _this.inprogress = false;
+        _this2.inprogress = false;
         Toast.fire({
           icon: "success",
           title: "User created successfully"
         });
 
-        _this.goBack();
+        _this2.goBack();
       })["catch"](function () {
-        _this.$Progress.finish();
+        _this2.$Progress.fail();
 
-        _this.inprogress = false;
+        _this2.inprogress = false;
       });
     },
     goBack: function goBack() {
@@ -2241,7 +2256,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
 
     this.inprogress = false;
     var userId = this.$route.query.userId;
@@ -2249,16 +2264,21 @@ __webpack_require__.r(__webpack_exports__);
     if (typeof userId === "undefined") {
       this.$router.push("/users");
     } else if (userId) {
+      this.$Progress.start();
       axios.get("api/user/" + userId).then(function (_ref2) {
         var data = _ref2.data;
 
-        _this2.form.fill(data);
+        _this3.form.fill(data);
 
-        _this2.editMode = true;
+        _this3.editMode = true;
+
+        _this3.$Progress.finish();
       })["catch"](function () {
-        _this2.editMode = false;
+        _this3.editMode = false;
 
-        _this2.form.reset();
+        _this3.form.reset();
+
+        _this3.$Progress.fail();
 
         Swal.fire({
           icon: "error",
@@ -63302,347 +63322,317 @@ var render = function() {
                         attrs: { id: "general" }
                       },
                       [
-                        _c(
-                          "form",
-                          {
-                            staticClass: "form-horizontal",
-                            on: {
-                              submit: function($event) {
-                                $event.preventDefault()
-                                return _vm.createUser($event)
-                              }
-                            }
-                          },
-                          [
-                            _c("div", { staticClass: "form-group row" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label",
-                                  attrs: { for: "name" }
-                                },
-                                [_vm._v("Name")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-sm-10" },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.name,
-                                        expression: "form.name"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has("name")
-                                    },
-                                    attrs: {
-                                      type: "text",
-                                      autocomplete: "off",
-                                      id: "name",
-                                      name: "name",
-                                      placeholder: "Name",
-                                      required: ""
-                                    },
-                                    domProps: { value: _vm.form.name },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "name",
-                                          $event.target.value
-                                        )
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "name" }
-                                  })
+                        _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "name" }
+                            },
+                            [_vm._v("Name")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-10" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.name,
+                                    expression: "form.name"
+                                  }
                                 ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group row" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label",
-                                  attrs: { for: "email" }
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has("name")
                                 },
-                                [_vm._v("Email")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-sm-10" },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.email,
-                                        expression: "form.email"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has("email")
-                                    },
-                                    attrs: {
-                                      type: "email",
-                                      autocomplete: "off",
-                                      id: "email",
-                                      name: "email",
-                                      placeholder: "Email address",
-                                      required: ""
-                                    },
-                                    domProps: { value: _vm.form.email },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "email",
-                                          $event.target.value
-                                        )
-                                      }
+                                attrs: {
+                                  type: "text",
+                                  autocomplete: "off",
+                                  id: "name",
+                                  name: "name",
+                                  placeholder: "Name",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.name },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
                                     }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "email" }
-                                  })
+                                    _vm.$set(
+                                      _vm.form,
+                                      "name",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "name" }
+                              })
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "email" }
+                            },
+                            [_vm._v("Email")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-10" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.email,
+                                    expression: "form.email"
+                                  }
                                 ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group row" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label",
-                                  attrs: { for: "password" }
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has("email")
                                 },
-                                [_vm._v("Password")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-sm-10" },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.password,
-                                        expression: "form.password"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has(
-                                        "password"
-                                      )
-                                    },
-                                    attrs: {
-                                      type: "password",
-                                      id: "password",
-                                      name: "password",
-                                      placeholder: "Password",
-                                      required: ""
-                                    },
-                                    domProps: { value: _vm.form.password },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "password",
-                                          $event.target.value
-                                        )
-                                      }
+                                attrs: {
+                                  type: "email",
+                                  autocomplete: "off",
+                                  id: "email",
+                                  name: "email",
+                                  placeholder: "Email address",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.email },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
                                     }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "password" }
-                                  })
+                                    _vm.$set(
+                                      _vm.form,
+                                      "email",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "email" }
+                              })
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "password" }
+                            },
+                            [_vm._v("Password")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-10" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.password,
+                                    expression: "form.password"
+                                  }
                                 ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group row" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label",
-                                  attrs: { for: "repassword" }
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has("password")
                                 },
-                                [_vm._v("Re-Type Password")]
-                              ),
+                                attrs: {
+                                  type: "password",
+                                  id: "password",
+                                  name: "password",
+                                  placeholder: "Password",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.password },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "password",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
                               _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-sm-10" },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.form.repassword,
-                                        expression: "form.repassword"
-                                      }
-                                    ],
-                                    staticClass: "form-control",
-                                    class: {
-                                      "is-invalid": _vm.form.errors.has(
-                                        "repassword"
-                                      )
-                                    },
-                                    attrs: {
-                                      type: "password",
-                                      id: "repassword",
-                                      name: "repassword",
-                                      placeholder: "Re-type Password",
-                                      required: ""
-                                    },
-                                    domProps: { value: _vm.form.repassword },
-                                    on: {
-                                      input: function($event) {
-                                        if ($event.target.composing) {
-                                          return
-                                        }
-                                        _vm.$set(
-                                          _vm.form,
-                                          "repassword",
-                                          $event.target.value
-                                        )
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: {
-                                      form: _vm.form,
-                                      field: "repassword"
-                                    }
-                                  })
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "password" }
+                              })
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "repassword" }
+                            },
+                            [_vm._v("Re-Type Password")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-10" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.repassword,
+                                    expression: "form.repassword"
+                                  }
                                 ],
-                                1
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "form-group row" }, [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label",
-                                  attrs: { for: "type" }
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "repassword"
+                                  )
                                 },
-                                [_vm._v("Type")]
-                              ),
+                                attrs: {
+                                  type: "password",
+                                  id: "repassword",
+                                  name: "repassword",
+                                  placeholder: "Re-type Password",
+                                  required: ""
+                                },
+                                domProps: { value: _vm.form.repassword },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "repassword",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
                               _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "repassword" }
+                              })
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "type" }
+                            },
+                            [_vm._v("Type")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-10" },
+                            [
                               _c(
-                                "div",
-                                { staticClass: "col-sm-10" },
-                                [
-                                  _c(
-                                    "select",
+                                "select",
+                                {
+                                  directives: [
                                     {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.form.type,
-                                          expression: "form.type"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      class: {
-                                        "is-invalid": _vm.form.errors.has(
-                                          "type"
-                                        )
-                                      },
-                                      attrs: { name: "type", id: "type" },
-                                      on: {
-                                        change: function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.$set(
-                                            _vm.form,
-                                            "type",
-                                            $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("option", { attrs: { value: "" } }, [
-                                        _vm._v(
-                                          "\n                              Select User\n                              Role\n                            "
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "admin" } },
-                                        [_vm._v("Admin")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "user" } },
-                                        [
-                                          _vm._v(
-                                            "\n                              Standard\n                              User\n                            "
-                                          )
-                                        ]
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.type,
+                                      expression: "form.type"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has("type")
+                                  },
+                                  attrs: { name: "type", id: "type" },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.form,
+                                        "type",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
                                       )
-                                    ]
-                                  ),
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "" } }, [
+                                    _vm._v(
+                                      "\n                            Select User\n                            Role\n                          "
+                                    )
+                                  ]),
                                   _vm._v(" "),
-                                  _c("has-error", {
-                                    attrs: { form: _vm.form, field: "type" }
-                                  })
-                                ],
-                                1
-                              )
-                            ])
-                          ]
-                        )
+                                  _c("option", { attrs: { value: "admin" } }, [
+                                    _vm._v("Admin")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("option", { attrs: { value: "user" } }, [
+                                    _vm._v(
+                                      "\n                            Standard\n                            User\n                          "
+                                    )
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "type" }
+                              })
+                            ],
+                            1
+                          )
+                        ])
                       ]
                     ),
                     _vm._v(" "),
