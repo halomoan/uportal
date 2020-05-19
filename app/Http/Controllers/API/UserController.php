@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
 
-     /**
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('api');
+        $this->middleware('auth:api');
     }
 
 
@@ -77,7 +77,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $user = User::findOrFail($id);
 
         $this->validate($request, [
@@ -88,12 +88,11 @@ class UserController extends Controller
 
         ]);
 
-        
+
 
         $user->update($request->all());
 
         return ['message' => 'success'];
-        
     }
 
     /**
@@ -104,6 +103,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+
         $user = User::findOrFail($id);
 
         $user->delete();

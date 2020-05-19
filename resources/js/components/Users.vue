@@ -143,18 +143,19 @@ export default {
         confirmButtonText: "Yes, delete it!"
       }).then(result => {
         //Send request to the server
-
-        axios
-          .delete("api/user/" + id)
-          .then(() => {
-            if (result.value) {
-              Swal.fire("Deleted!", "Your user has been deleted.", "success");
-              this.loadUsers();
-            }
-          })
-          .catch(() => {
-            Swal.fire("Failed!", "There is something wrong.", "warning");
-          });
+        if (result.value) {
+          axios
+            .delete("api/user/" + id)
+            .then(() => {
+              if (result.value) {
+                Swal.fire("Deleted!", "Your user has been deleted.", "success");
+                this.loadUsers();
+              }
+            })
+            .catch(() => {
+              Swal.fire("Failed!", "There is something wrong.", "warning");
+            });
+        }
       });
     }
   },

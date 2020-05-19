@@ -97,7 +97,7 @@
 
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-cog"></i>
+                <i class="nav-icon fas fa-cog text-green"></i>
                 <p>
                   Management
                   <i class="right fas fa-angle-left"></i>
@@ -108,6 +108,12 @@
                   <router-link to="/users" class="nav-link">
                     <i class="far fa-user nav-icon"></i>
                     <p>Users</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link to="/gentoken" class="nav-link">
+                    <i class="fas fa-key nav-icon"></i>
+                    <p>Generate Token</p>
                   </router-link>
                 </li>
               </ul>
