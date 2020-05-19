@@ -2185,6 +2185,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2194,7 +2203,7 @@ __webpack_require__.r(__webpack_exports__);
         password: "",
         repassword: "",
         type: "",
-        billaddr: "Halomoan"
+        billaddr: ""
       }),
       inprogress: false,
       editMode: false
@@ -2232,12 +2241,36 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    var _this2 = this;
+
     this.inprogress = false;
-    /*if (this.$route.query.user) {
-      this.form.fill(this.$route.query.user);
+    var userId = this.$route.query.userId;
+
+    if (typeof userId === "undefined") {
+      this.$router.push("/users");
+    } else if (userId) {
+      axios.get("api/user/" + userId).then(function (_ref2) {
+        var data = _ref2.data;
+
+        _this2.form.fill(data);
+
+        _this2.editMode = true;
+      })["catch"](function () {
+        _this2.editMode = false;
+
+        _this2.form.reset();
+
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: "<a href='/users'>Let me redo again</a>"
+        });
+      });
     } else {
+      this.editMode = false;
       this.form.reset();
-    }*/
+    }
   }
 });
 
@@ -2388,15 +2421,15 @@ __webpack_require__.r(__webpack_exports__);
       this.$router.push({
         path: "/userd",
         query: {
-          user: false
+          userId: false
         }
       });
     },
-    editUser: function editUser(user) {
+    editUser: function editUser(id) {
       this.$router.push({
         path: "/userd",
         query: {
-          user: user
+          userId: id
         }
       });
     },
@@ -63174,7 +63207,83 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm._m(0),
+    _c("section", { staticClass: "content-header" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row mb-2" }, [
+          _c("div", { staticClass: "col-sm-6" }, [
+            _c("h1", [
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.editMode,
+                      expression: "editMode"
+                    }
+                  ]
+                },
+                [_vm._v("Edit User")]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.editMode,
+                      expression: "!editMode"
+                    }
+                  ]
+                },
+                [_vm._v("Create User")]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-sm-6" }, [
+            _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("li", { staticClass: "breadcrumb-item active" }, [
+                _c(
+                  "span",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.editMode,
+                        expression: "editMode"
+                      }
+                    ]
+                  },
+                  [_vm._v("Edit User")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: !_vm.editMode,
+                        expression: "!editMode"
+                      }
+                    ]
+                  },
+                  [_vm._v("Create User")]
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _c("section", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
@@ -63644,11 +63753,41 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        _vm.editMode ? _vm.editUser : _vm.createUser
+                        _vm.editMode ? _vm.editUser() : _vm.createUser()
                       }
                     }
                   },
-                  [_vm._v("Submit")]
+                  [
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.editMode,
+                            expression: "editMode"
+                          }
+                        ]
+                      },
+                      [_vm._v("Modify")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.editMode,
+                            expression: "!editMode"
+                          }
+                        ]
+                      },
+                      [_vm._v("Create")]
+                    )
+                  ]
                 ),
                 _vm._v(" "),
                 _c(
@@ -63678,26 +63817,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("section", { staticClass: "content-header" }, [
-      _c("div", { staticClass: "container-fluid" }, [
-        _c("div", { staticClass: "row mb-2" }, [
-          _c("div", { staticClass: "col-sm-6" }, [
-            _c("h1", [_vm._v("New User")])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-sm-6" }, [
-            _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
-              _c("li", { staticClass: "breadcrumb-item" }, [
-                _c("a", { attrs: { href: "/users" } }, [_vm._v("Users")])
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "breadcrumb-item active" }, [
-                _vm._v("New User")
-              ])
-            ])
-          ])
-        ])
-      ])
+    return _c("li", { staticClass: "breadcrumb-item" }, [
+      _c("a", { attrs: { href: "/users" } }, [_vm._v("Users")])
     ])
   },
   function() {
@@ -63816,7 +63937,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                return _vm.editUser(user)
+                                return _vm.editUser(user.id)
                               }
                             }
                           }),
@@ -79540,8 +79661,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

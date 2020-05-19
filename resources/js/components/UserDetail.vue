@@ -4,14 +4,20 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>New User</h1>
+            <h1>
+              <span v-show="editMode">Edit User</span>
+              <span v-show="!editMode">Create User</span>
+            </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
                 <a href="/users">Users</a>
               </li>
-              <li class="breadcrumb-item active">New User</li>
+              <li class="breadcrumb-item active">
+                <span v-show="editMode">Edit User</span>
+                <span v-show="!editMode">Create User</span>
+              </li>
             </ol>
           </div>
         </div>
@@ -174,8 +180,11 @@
                 <button
                   type="button"
                   class="btn btn-info"
-                  @click.prevent="editMode ? editUser: createUser"
-                >Submit</button>
+                  @click.prevent="editMode ? editUser(): createUser()"
+                >
+                  <span v-show="editMode">Modify</span>
+                  <span v-show="!editMode">Create</span>
+                </button>
                 <button
                   type="button"
                   class="btn btn-default float-right"
@@ -202,7 +211,7 @@ export default {
         password: "",
         repassword: "",
         type: "",
-        billaddr: "Halomoan"
+        billaddr: ""
       }),
       inprogress: false,
       editMode: false
@@ -242,11 +251,31 @@ export default {
   created() {
     this.inprogress = false;
 
-    /*if (this.$route.query.user) {
-      this.form.fill(this.$route.query.user);
+    const userId = this.$route.query.userId;
+
+    if (typeof userId === "undefined") {
+      this.$router.push("/users");
+    } else if (userId) {
+      axios
+        .get("api/user/" + userId)
+        .then(({ data }) => {
+          this.form.fill(data);
+          this.editMode = true;
+        })
+        .catch(() => {
+          this.editMode = false;
+          this.form.reset();
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            footer: "<a href='/users'>Let me redo again</a>"
+          });
+        });
     } else {
+      this.editMode = false;
       this.form.reset();
-    }*/
+    }
   }
 };
 </script>

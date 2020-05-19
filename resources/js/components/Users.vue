@@ -68,7 +68,7 @@
                       <td>{{user.type | upText}}</td>
                       <td>{{user.created_at | humanDate}}</td>
                       <td>
-                        <a href class="fa fa-edit" @click.prevent="editUser(user)"></a>
+                        <a href class="fa fa-edit" @click.prevent="editUser(user.id)"></a>
                         /
                         <a
                           href
@@ -127,10 +127,10 @@ export default {
       axios.get("api/user").then(({ data }) => (this.users = data.data));
     },
     addNewUser() {
-      this.$router.push({ path: "/userd", query: { user: false } });
+      this.$router.push({ path: "/userd", query: { userId: false } });
     },
-    editUser(user) {
-      this.$router.push({ path: "/userd", query: { user: user } });
+    editUser(id) {
+      this.$router.push({ path: "/userd", query: { userId: id } });
     },
     deleteUser(id) {
       Swal.fire({
