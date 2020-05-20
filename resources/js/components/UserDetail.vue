@@ -212,6 +212,7 @@ export default {
         password: "",
         repassword: "",
         type: "",
+        photo: "",
         billaddr: ""
       }),
       inprogress: false,

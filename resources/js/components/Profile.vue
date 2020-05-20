@@ -5,7 +5,7 @@
         <div class="card card-widget widget-user">
           <!-- Add the bg color to the header using any of the bg-* classes -->
           <div class="widget-user-header bg-info">
-            <h3 class="widget-user-username">Alexander Pierce</h3>
+            <h3 class="widget-user-username">Smiggle Corp</h3>
             <h5 class="widget-user-desc">Founder &amp; CEO</h5>
           </div>
           <div class="widget-user-image">
@@ -55,7 +55,7 @@
                 <a class="nav-link" href="#billing" data-toggle="tab">Billing</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#profile" data-toggle="tab">Profile</a>
+                <a class="nav-link" href="#password" data-toggle="tab">Password</a>
               </li>
             </ul>
           </div>
@@ -66,23 +66,6 @@
                 <!-- /.tab-pane -->
                 <div class="tab-pane active" id="general">
                   <!-- <form class="form-horizontal" @submit.prevent="createUser"> -->
-                  <div class="form-group row">
-                    <label for="name" class="col-sm-2 col-form-label">Name</label>
-                    <div class="col-sm-10">
-                      <input
-                        type="text"
-                        class="form-control"
-                        autocomplete="off"
-                        :class="{'is-invalid': form.errors.has('name')}"
-                        id="name"
-                        v-model="form.name"
-                        name="name"
-                        placeholder="Name"
-                        required
-                      />
-                      <has-error :form="form" field="name"></has-error>
-                    </div>
-                  </div>
                   <div class="form-group row">
                     <label for="email" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">
@@ -101,67 +84,12 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="password" class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-10">
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="password"
-                        :class="{'is-invalid': form.errors.has('password')}"
-                        name="password"
-                        v-model="form.password"
-                        placeholder="Password"
-                        required
-                      />
-                      <has-error :form="form" field="password"></has-error>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="repassword" class="col-sm-2 col-form-label">Re-Type Password</label>
-                    <div class="col-sm-10">
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="repassword"
-                        :class="{'is-invalid': form.errors.has('repassword')}"
-                        name="repassword"
-                        v-model="form.repassword"
-                        placeholder="Re-type Password"
-                        required
-                      />
-                      <has-error :form="form" field="repassword"></has-error>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="type" class="col-sm-2 col-form-label">Type</label>
-                    <div class="col-sm-10">
-                      <select
-                        name="type"
-                        v-model="form.type"
-                        id="type"
-                        class="form-control"
-                        :class="{'is-invalid': form.errors.has('type')}"
-                      >
-                        <option value>
-                          Select User
-                          Role
-                        </option>
-                        <option value="admin">Admin</option>
-                        <option value="user">
-                          Standard
-                          User
-                        </option>
-                      </select>
-                      <has-error :form="form" field="type"></has-error>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="type" class="col-sm-2 col-form-label">Photo</label>
+                    <label for="photo" class="col-sm-2 col-form-label">Photo</label>
                     <div class="col-sm-10">
                       <div class="input-group">
                         <div class="custom-file">
-                          <input type="file" class="custom-file-input" id="exampleInputFile" />
-                          <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                          <input type="file" @change="setFile" class="custom-file-input" id="photo" />
+                          <label class="custom-file-label" for="photo" id="lblPhoto">Choose file</label>
                         </div>
                       </div>
                     </div>
@@ -189,7 +117,56 @@
                   </form>
                 </div>
                 <!-- /.tab-pane -->
-                <div class="tab-pane" id="profile"></div>
+                <div class="tab-pane" id="password">
+                  <div class="form-group row">
+                    <label for="password" class="col-sm-2 col-form-label">Current Password</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="curpassword"
+                        :class="{'is-invalid': form.errors.has('curpassword')}"
+                        name="curpassword"
+                        v-model="form.curpassword"
+                        placeholder="Current Password"
+                        required
+                      />
+                      <has-error :form="form" field="curpassword"></has-error>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="password" class="col-sm-2 col-form-label">New Password</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        :class="{'is-invalid': form.errors.has('password')}"
+                        name="password"
+                        v-model="form.password"
+                        placeholder="New Password"
+                        required
+                      />
+                      <has-error :form="form" field="password"></has-error>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="repassword" class="col-sm-2 col-form-label">Re-Type Password</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="repassword"
+                        :class="{'is-invalid': form.errors.has('repassword')}"
+                        name="repassword"
+                        v-model="form.repassword"
+                        placeholder="Re-type New Password"
+                        required
+                      />
+                      <has-error :form="form" field="repassword"></has-error>
+                    </div>
+                  </div>
+                </div>
                 <!-- /.tab-pane -->
                 <!-- /.form -->
               </div>
@@ -203,11 +180,7 @@
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              @click.prevent="editMode ? editUser(): createUser()"
-            >
+            <button type="button" class="btn btn-success" @click.prevent="updateProfile">
               <span v-show="editMode">Modify</span>
             </button>
             <button type="button" class="btn btn-default float-right" @click.prevent="goBack">Cancel</button>
@@ -224,17 +197,49 @@ export default {
     return {
       form: new Form({
         id: "",
-        name: "",
         email: "",
+        currpassword: "",
         password: "",
         repassword: "",
-        type: "",
+        photo: "",
         billaddr: ""
       }),
       inprogress: false,
       editMode: true
     };
   },
-  create() {}
+  methods: {
+    setFile(e) {
+      let file = e.target.files[0];
+
+      //console.log(file.name);
+      let reader = new FileReader();
+
+      reader.onloadend = file => {
+        this.form.photo = reader.result;
+      };
+
+      reader.readAsDataURL(file);
+    },
+    updateProfile() {
+      this.$Progress.start();
+      this.form
+        .put("api/profile")
+        .then(() => {
+          this.$Progress.finish();
+          Toast.fire({
+            icon: "success",
+            title: "Profile modified successfully"
+          });
+          this.goBack();
+        })
+        .catch(() => {
+          this.$Progress.fail();
+        });
+    }
+  },
+  created() {
+    axios.get("api/profile").then(({ data }) => this.form.fill(data));
+  }
 };
 </script>
