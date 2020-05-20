@@ -28,6 +28,10 @@ let routes = [
     },
     { path: "/users", component: require("./components/Users.vue").default },
     {
+        path: "/profile",
+        component: require("./components/Profile.vue").default
+    },
+    {
         path: "/userd",
         component: require("./components/UserDetail.vue").default
     }
