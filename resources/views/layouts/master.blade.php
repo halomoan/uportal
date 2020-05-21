@@ -149,7 +149,6 @@
   </div>
   <!-- ./wrapper -->
 
-
   <script src="/js/app.js"></script>
   <!-- overlayScrollbars -->
   <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>

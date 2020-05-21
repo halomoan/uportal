@@ -2211,6 +2211,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2224,6 +2225,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var file = e.target.files[0];
+
+      if (file) {
+        $("#lblPhoto").html(file["name"]);
+      } else {
+        $("#lblPhoto").html("Choose File");
+        return;
+      }
+
       var reader = new FileReader();
       var limit = 1024 * 1024 * 2;
 
@@ -83763,8 +83772,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -83,6 +83,7 @@
                       <has-error :form="form" field="email"></has-error>
                     </div>
                   </div>
+
                   <div class="form-group row">
                     <label for="photo" class="col-sm-2 col-form-label">Photo</label>
                     <div class="col-sm-10">
@@ -204,6 +205,12 @@ export default {
   methods: {
     setFile(e) {
       let file = e.target.files[0];
+      if (file) {
+        $("#lblPhoto").html(file["name"]);
+      } else {
+        $("#lblPhoto").html("Choose File");
+        return;
+      }
       let reader = new FileReader();
 
       let limit = 1024 * 1024 * 2;
