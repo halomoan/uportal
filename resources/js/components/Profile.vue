@@ -9,7 +9,7 @@
             <h5 class="widget-user-desc">Founder &amp; CEO</h5>
           </div>
           <div class="widget-user-image">
-            <img class="img-circle elevation-2" src alt="User Avatar" />
+            <img class="img-circle elevation-2" src="storage/" alt="User Avatar" />
           </div>
           <div class="card-footer">
             <div class="row">
@@ -195,51 +195,78 @@
 export default {
   data() {
     return {
-      form: new Form({
-        id: "",
-        email: "",
-        currpassword: "",
-        password: "",
-        repassword: "",
-        photo: "",
-        billaddr: ""
-      }),
+      form: new Form({}),
       inprogress: false,
+
       editMode: true
     };
   },
   methods: {
     setFile(e) {
       let file = e.target.files[0];
-
-      //console.log(file.name);
       let reader = new FileReader();
 
+      let limit = 1024 * 1024 * 2;
+      if (file["size"] > limit) {
+        Swal.fire({
+          type: "error",
+          title: "Oops...",
+          text:
+            "You are uploading a large file. Max photo size allowed is 2 MB."
+        });
+        return false;
+      }
       reader.onloadend = file => {
         this.form.photo = reader.result;
       };
-
       reader.readAsDataURL(file);
     },
+
+    formChanged(objOne, objTwo) {
+      return !!!_([objOne])
+        .filter(objTwo)
+        .size();
+    },
+
     updateProfile() {
-      this.$Progress.start();
-      this.form
-        .put("api/profile")
-        .then(() => {
-          this.$Progress.finish();
-          Toast.fire({
-            icon: "success",
-            title: "Profile modified successfully"
+      let originalData = this.form.originalData;
+      originalData.password = "*";
+      originalData.repassword = "*";
+      originalData.curpassword = "*";
+      let newData = this.form;
+
+      if (this.formChanged(newData, originalData)) {
+        this.$Progress.start();
+        this.inprogress = true;
+        this.form
+          .post("api/profile")
+          .then(() => {
+            this.$Progress.finish();
+            this.inprogress = false;
+            Toast.fire({
+              icon: "success",
+              title: "Profile modified successfully"
+            });
+            this.goBack();
+          })
+          .catch(() => {
+            this.$Progress.fail();
+            this.inprogress = false;
           });
-          this.goBack();
-        })
-        .catch(() => {
-          this.$Progress.fail();
+      } else {
+        //Swal.fire("Nothing was changed. No updates is required");
+        Swal.fire({
+          type: "info",
+          title: "Oops...",
+          text: "Nothing has changed. No updates is required"
         });
+      }
     }
   },
   created() {
-    axios.get("api/profile").then(({ data }) => this.form.fill(data));
+    axios.get("api/profile").then(({ data }) => {
+      this.form = new Form(data);
+    });
   }
 };
 </script>

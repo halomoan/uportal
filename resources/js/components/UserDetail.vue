@@ -222,10 +222,12 @@ export default {
   methods: {
     editUser() {
       this.$Progress.start();
+      this.inprogress = true;
       this.form
         .put("api/user/" + this.form.id)
         .then(() => {
           this.$Progress.finish();
+          this.inprogress = false;
           Toast.fire({
             icon: "success",
             title: "User modified successfully"
@@ -234,6 +236,7 @@ export default {
         })
         .catch(() => {
           this.$Progress.fail();
+          this.inprogress = false;
         });
     },
     createUser() {
@@ -275,7 +278,8 @@ export default {
       axios
         .get("api/user/" + userId)
         .then(({ data }) => {
-          this.form.fill(data);
+          this.form = new Form(data);
+
           this.editMode = true;
           this.$Progress.finish();
         })

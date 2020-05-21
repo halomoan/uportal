@@ -2214,15 +2214,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      form: new Form({
-        id: "",
-        email: "",
-        currpassword: "",
-        password: "",
-        repassword: "",
-        photo: "",
-        billaddr: ""
-      }),
+      form: new Form({}),
       inprogress: false,
       editMode: true
     };
@@ -2231,9 +2223,18 @@ __webpack_require__.r(__webpack_exports__);
     setFile: function setFile(e) {
       var _this = this;
 
-      var file = e.target.files[0]; //console.log(file.name);
-
+      var file = e.target.files[0];
       var reader = new FileReader();
+      var limit = 1024 * 1024 * 2;
+
+      if (file["size"] > limit) {
+        Swal.fire({
+          type: "error",
+          title: "Oops...",
+          text: "You are uploading a large file. Max photo size allowed is 2 MB."
+        });
+        return false;
+      }
 
       reader.onloadend = function (file) {
         _this.form.photo = reader.result;
@@ -2241,22 +2242,44 @@ __webpack_require__.r(__webpack_exports__);
 
       reader.readAsDataURL(file);
     },
+    formChanged: function formChanged(objOne, objTwo) {
+      return !!!_([objOne]).filter(objTwo).size();
+    },
     updateProfile: function updateProfile() {
       var _this2 = this;
 
-      this.$Progress.start();
-      this.form.put("api/profile").then(function () {
-        _this2.$Progress.finish();
+      var originalData = this.form.originalData;
+      originalData.password = "*";
+      originalData.repassword = "*";
+      originalData.curpassword = "*";
+      var newData = this.form;
 
-        Toast.fire({
-          icon: "success",
-          title: "Profile modified successfully"
+      if (this.formChanged(newData, originalData)) {
+        this.$Progress.start();
+        this.inprogress = true;
+        this.form.post("api/profile").then(function () {
+          _this2.$Progress.finish();
+
+          _this2.inprogress = false;
+          Toast.fire({
+            icon: "success",
+            title: "Profile modified successfully"
+          });
+
+          _this2.goBack();
+        })["catch"](function () {
+          _this2.$Progress.fail();
+
+          _this2.inprogress = false;
         });
-
-        _this2.goBack();
-      })["catch"](function () {
-        _this2.$Progress.fail();
-      });
+      } else {
+        //Swal.fire("Nothing was changed. No updates is required");
+        Swal.fire({
+          type: "info",
+          title: "Oops...",
+          text: "Nothing has changed. No updates is required"
+        });
+      }
     }
   },
   created: function created() {
@@ -2264,7 +2287,7 @@ __webpack_require__.r(__webpack_exports__);
 
     axios.get("api/profile").then(function (_ref) {
       var data = _ref.data;
-      return _this3.form.fill(data);
+      _this3.form = new Form(data);
     });
   }
 });
@@ -2505,9 +2528,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$Progress.start();
+      this.inprogress = true;
       this.form.put("api/user/" + this.form.id).then(function () {
         _this.$Progress.finish();
 
+        _this.inprogress = false;
         Toast.fire({
           icon: "success",
           title: "User modified successfully"
@@ -2516,6 +2541,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.goBack();
       })["catch"](function () {
         _this.$Progress.fail();
+
+        _this.inprogress = false;
       });
     },
     createUser: function createUser() {
@@ -2557,9 +2584,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$Progress.start();
       axios.get("api/user/" + userId).then(function (_ref2) {
         var data = _ref2.data;
-
-        _this3.form.fill(data);
-
+        _this3.form = new Form(data);
         _this3.editMode = true;
 
         _this3.$Progress.finish();
@@ -65576,7 +65601,7 @@ var staticRenderFns = [
           _c("div", { staticClass: "widget-user-image" }, [
             _c("img", {
               staticClass: "img-circle elevation-2",
-              attrs: { src: "", alt: "User Avatar" }
+              attrs: { src: "storage/", alt: "User Avatar" }
             })
           ]),
           _vm._v(" "),
@@ -83738,8 +83763,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

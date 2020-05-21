@@ -2,8 +2,8 @@
 | Domain | Method    | URI                                     | Name                              | Action                                                                    | Middleware   |
 +--------+-----------+-----------------------------------------+-----------------------------------+---------------------------------------------------------------------------+--------------+
 |        | GET|HEAD  | /                                       |                                   | Closure                                                                   | web          |
-|        | PUT       | api/profile                             |                                   | App\Http\Controllers\API\UserController@updateProfile                     | api,auth:api |
-|        | GET|HEAD  | api/profile                             |                                   | App\Http\Controllers\API\UserController@profile                           | api,auth:api |
+|        | POST      | api/profile                             | profile.store                     | App\Http\Controllers\API\ProfileController@store                          | api,auth:api |
+|        | GET|HEAD  | api/profile                             | profile.index                     | App\Http\Controllers\API\ProfileController@index                          | api,auth:api |
 |        | GET|HEAD  | api/user                                | user.index                        | App\Http\Controllers\API\UserController@index                             | api,auth:api |
 |        | POST      | api/user                                | user.store                        | App\Http\Controllers\API\UserController@store                             | api,auth:api |
 |        | PUT|PATCH | api/user/{user}                         | user.update                       | App\Http\Controllers\API\UserController@update                            | api,auth:api |
