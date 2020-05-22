@@ -10,6 +10,9 @@ require("admin-lte");
 window.Vue = require("vue");
 import { Form, HasError, AlertError } from "vform";
 
+import Role from "./Role";
+Vue.prototype.$Role = new Role(window.user);
+
 window.Form = Form;
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
@@ -34,6 +37,10 @@ let routes = [
     {
         path: "/userd",
         component: require("./components/UserDetail.vue").default
+    },
+    {
+        path: "*",
+        component: require("./components/NotFound.vue").default
     }
 ];
 
@@ -101,10 +108,7 @@ Vue.component(
     require("./components/passport/PersonalAccessTokens.vue").default
 );
 
-Vue.component(
-    "example-component",
-    require("./components/ExampleComponent.vue").default
-);
+Vue.component("not-found", require("./components/NotFound.vue").default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -18,7 +18,7 @@
     </div>
     <div class="row justify-content-center">
       <div class="col-md-12">
-        <div class="card card-secondary">
+        <div class="card elevation-2">
           <div class="card-header">
             <ul class="nav nav-pills">
               <li class="nav-item">

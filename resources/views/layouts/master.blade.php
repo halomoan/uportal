@@ -76,7 +76,7 @@
                 </p>
               </router-link>
             </li>
-
+            @can('isAdmin')
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-cog text-green"></i>
@@ -100,6 +100,8 @@
                 </li>
               </ul>
             </li>
+            @endcan
+
             <li class="nav-item">
               <router-link to="/profile" class="nav-link" exact-active-class="active">
                 <i class="nav-icon far fa-id-card text-yellow"></i>
@@ -137,10 +139,10 @@
     </div>
     <!-- /.content-wrapper -->
     <footer class="main-footer">
-      <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong>
+      <strong>Copyright &copy; 2014-2019 <a href="http://uportal.test">u-Portal</a>.</strong>
       All rights reserved.
       <div class="float-right d-none d-sm-inline-block">
-        <b>Version</b> 3.0.4
+        <b>Version</b> 1.0.0
       </div>
     </footer>
 
@@ -148,6 +150,11 @@
     <!-- /.control-sidebar -->
   </div>
   <!-- ./wrapper -->
+  @auth
+  <script>
+    window.user = @json(auth()->user()) 
+  </script>
+  @endauth
 
   <script src="/js/app.js"></script>
   <!-- overlayScrollbars -->
