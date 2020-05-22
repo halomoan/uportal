@@ -2,51 +2,24 @@
   <div class="container-fluid">
     <div class="row justify-content-center mt-2">
       <div class="col-md-12">
-        <div class="card card-widget widget-user">
-          <!-- Add the bg color to the header using any of the bg-* classes -->
-          <div class="widget-user-header bg-info">
-            <h3 class="widget-user-username">Smiggle Corp</h3>
-            <h5 class="widget-user-desc">Founder &amp; CEO</h5>
-          </div>
-          <div class="widget-user-image">
-            <img class="img-circle elevation-2" src="storage/" alt="User Avatar" />
-          </div>
-          <div class="card-footer">
-            <div class="row">
-              <div class="col-sm-4 border-right">
-                <div class="description-block">
-                  <h5 class="description-header">3,200</h5>
-                  <span class="description-text">SALES</span>
-                </div>
-                <!-- /.description-block -->
-              </div>
-              <!-- /.col -->
-              <div class="col-sm-4 border-right">
-                <div class="description-block">
-                  <h5 class="description-header">13,000</h5>
-                  <span class="description-text">FOLLOWERS</span>
-                </div>
-                <!-- /.description-block -->
-              </div>
-              <!-- /.col -->
-              <div class="col-sm-4">
-                <div class="description-block">
-                  <h5 class="description-header">35</h5>
-                  <span class="description-text">PRODUCTS</span>
-                </div>
-                <!-- /.description-block -->
-              </div>
-              <!-- /.col -->
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="bg-white pb-3">
+          <div class="row">
+            <div class="col-md-6">
+              <img :src="getPhoto()" alt />
             </div>
-            <!-- /.row -->
+            <div class="col-md-6 d-flex flex-column align-items-end">
+              <h3 class="widget-user-username text-right text-blue" v-html="form.company"></h3>
+              <h5 class="widget-user-desc text-right" v-html="form.name">Web Designer</h5>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="row justify-content-center">
       <div class="col-md-12">
-        <div class="card">
-          <div class="card-header p-2">
+        <div class="card card-secondary">
+          <div class="card-header">
             <ul class="nav nav-pills">
               <li class="nav-item">
                 <a class="nav-link active" href="#general" data-toggle="tab">General</a>
@@ -198,17 +171,28 @@ export default {
     return {
       form: new Form({}),
       inprogress: false,
-
-      editMode: true
+      photo: "",
+      editMode: true,
+      company: "ABC"
     };
   },
   methods: {
+    getPhoto() {
+      //return this.photo;
+      const isBase64 = /^data:image\/[a-z]+;base64/gi;
+      if (isBase64.test(this.photo)) {
+        return this.photo;
+      } else {
+        return "/storage/" + this.photo;
+      }
+    },
     setFile(e) {
       let file = e.target.files[0];
       if (file) {
         $("#lblPhoto").html(file["name"]);
       } else {
         $("#lblPhoto").html("Choose File");
+        this.form.photo = null;
         return;
       }
       let reader = new FileReader();
@@ -250,6 +234,7 @@ export default {
           .then(() => {
             this.$Progress.finish();
             this.inprogress = false;
+            this.photo = this.form.photo;
             Toast.fire({
               icon: "success",
               title: "Profile modified successfully"
@@ -273,6 +258,7 @@ export default {
   created() {
     axios.get("api/profile").then(({ data }) => {
       this.form = new Form(data);
+      this.photo = this.form.photo;
     });
   }
 };

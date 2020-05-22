@@ -37155,3 +37155,12 @@ readers do not read off random characters that represent icons */
   width: auto;
 }
 
+.navbar-nav > .active > a {
+  color: aqua;
+  background-color: chartreuse;
+}
+
+.nav-item > a:hover {
+  color: aqua;
+}
+

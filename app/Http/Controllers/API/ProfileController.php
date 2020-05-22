@@ -49,16 +49,24 @@ class ProfileController extends Controller
             'photo' => 'sometimes|string|nullable'
 
         ]);
-
+        
         if (self::is_base64($request->photo)) {
-
             
-            $name = time().'.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
 
-            \Image::make($request->photo)->save(public_path('storage/').$name)->fit(1200,1200);
+            $currentPhoto = public_path('/storage/') . $user->photo;
+            if (file_exists($currentPhoto)){
+                @unlink($currentPhoto);
+            }
+
+
+            $name = time().'.' . explode('/', explode(':', substr($request->photo, 0, strpos($request->photo, ';')))[1])[1];
+            
+
+            \Image::make($request->photo)->save(public_path('storage/').$name)->fit(800,800);
             $request->merge(['photo' => $name]);
             
-        };
+        
+        }
 
         if (!empty($request->password) && !empty($request->curpassword) && !empty($request->repassword)){
             $request->merge(['password' => Hash::make($request->password)]);
@@ -113,7 +121,7 @@ class ProfileController extends Controller
     }
 
     private static function is_base64($s)
-    {
-          return (bool) preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $s);
+    {         
+          return (bool) preg_match("/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).base64,.*/", $s);
     }
 }

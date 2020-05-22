@@ -2185,42 +2185,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({}),
       inprogress: false,
-      editMode: true
+      photo: "",
+      editMode: true,
+      company: "ABC"
     };
   },
   methods: {
+    getPhoto: function getPhoto() {
+      //return this.photo;
+      var isBase64 = /^data:image\/[a-z]+;base64/gi;
+
+      if (isBase64.test(this.photo)) {
+        return this.photo;
+      } else {
+        return "/storage/" + this.photo;
+      }
+    },
     setFile: function setFile(e) {
       var _this = this;
 
@@ -2230,6 +2215,7 @@ __webpack_require__.r(__webpack_exports__);
         $("#lblPhoto").html(file["name"]);
       } else {
         $("#lblPhoto").html("Choose File");
+        this.form.photo = null;
         return;
       }
 
@@ -2270,6 +2256,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.$Progress.finish();
 
           _this2.inprogress = false;
+          _this2.photo = _this2.form.photo;
           Toast.fire({
             icon: "success",
             title: "Profile modified successfully"
@@ -2297,6 +2284,7 @@ __webpack_require__.r(__webpack_exports__);
     axios.get("api/profile").then(function (_ref) {
       var data = _ref.data;
       _this3.form = new Form(data);
+      _this3.photo = _this3.form.photo;
     });
   }
 });
@@ -65170,12 +65158,42 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container-fluid" }, [
-    _vm._m(0),
+    _c("div", { staticClass: "row justify-content-center mt-2" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "bg-white pb-3" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("img", { attrs: { src: _vm.getPhoto(), alt: "" } })
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col-md-6 d-flex flex-column align-items-end" },
+              [
+                _c("h3", {
+                  staticClass: "widget-user-username text-right text-blue",
+                  domProps: { innerHTML: _vm._s(_vm.form.company) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "h5",
+                  {
+                    staticClass: "widget-user-desc text-right",
+                    domProps: { innerHTML: _vm._s(_vm.form.name) }
+                  },
+                  [_vm._v("Web Designer")]
+                )
+              ]
+            )
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card" }, [
-          _vm._m(1),
+        _c("div", { staticClass: "card card-secondary" }, [
+          _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c("div", { staticClass: "overlay-wrapper" }, [
@@ -65594,74 +65612,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row justify-content-center mt-2" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "card card-widget widget-user" }, [
-          _c("div", { staticClass: "widget-user-header bg-info" }, [
-            _c("h3", { staticClass: "widget-user-username" }, [
-              _vm._v("Smiggle Corp")
-            ]),
-            _vm._v(" "),
-            _c("h5", { staticClass: "widget-user-desc" }, [
-              _vm._v("Founder & CEO")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "widget-user-image" }, [
-            _c("img", {
-              staticClass: "img-circle elevation-2",
-              attrs: { src: "storage/", alt: "User Avatar" }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-footer" }, [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-sm-4 border-right" }, [
-                _c("div", { staticClass: "description-block" }, [
-                  _c("h5", { staticClass: "description-header" }, [
-                    _vm._v("3,200")
-                  ]),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "description-text" }, [
-                    _vm._v("SALES")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-4 border-right" }, [
-                _c("div", { staticClass: "description-block" }, [
-                  _c("h5", { staticClass: "description-header" }, [
-                    _vm._v("13,000")
-                  ]),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "description-text" }, [
-                    _vm._v("FOLLOWERS")
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-sm-4" }, [
-                _c("div", { staticClass: "description-block" }, [
-                  _c("h5", { staticClass: "description-header" }, [
-                    _vm._v("35")
-                  ]),
-                  _vm._v(" "),
-                  _c("span", { staticClass: "description-text" }, [
-                    _vm._v("PRODUCTS")
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-header p-2" }, [
+    return _c("div", { staticClass: "card-header" }, [
       _c("ul", { staticClass: "nav nav-pills" }, [
         _c("li", { staticClass: "nav-item" }, [
           _c(
@@ -83772,8 +83723,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

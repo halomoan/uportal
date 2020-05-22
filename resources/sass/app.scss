@@ -16,3 +16,11 @@ $fa-font-path: "../webfonts";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
+
+.navbar-nav > .active > a {
+    color: aqua;
+    background-color: chartreuse;
+}
+.nav-item > a:hover {
+    color: aqua;
+}
