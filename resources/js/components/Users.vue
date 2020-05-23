@@ -55,6 +55,7 @@
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Company</th>
                         <th>Email</th>
                         <th>Type</th>
                         <th>Registered At</th>
@@ -63,18 +64,32 @@
                     </thead>
                     <tbody>
                       <tr v-for="user in users" :key="user.id">
-                        <td>{{user.id}}</td>
-                        <td>{{user.name}}</td>
-                        <td>{{user.email}}</td>
-                        <td>{{user.type | upText}}</td>
-                        <td>{{user.created_at | humanDate}}</td>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.company }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.type | upText }}</td>
                         <td>
-                          <a href class="fa fa-edit" @click.prevent="editUser(user.id)"></a>
+                          {{
+                          user.created_at
+                          | humanDate
+                          }}
+                        </td>
+                        <td>
+                          <a
+                            href
+                            class="fa fa-edit"
+                            @click.prevent="
+                                                            editUser(user.id)
+                                                        "
+                          ></a>
                           /
                           <a
                             href
                             class="fa fa-trash text-red"
-                            @click.prevent="deleteUser(user.id)"
+                            @click.prevent="
+                                                            deleteUser(user.id)
+                                                        "
                           ></a>
                         </td>
                       </tr>
@@ -82,6 +97,17 @@
                   </table>
                 </div>
                 <!-- /.card-body -->
+                <div class="card-footer pb-0">
+                  <div class="d-flex justify-content-end text-right">
+                    <pagination
+                      :records="pgUsers.records"
+                      @paginate="getTableData"
+                      v-model="pgUsers.page"
+                      :per-page="pgUsers.perpage"
+                    ></pagination>
+                  </div>
+                </div>
+                <!-- /.card-footer -->
               </div>
               <!-- /.card -->
             </div>
@@ -124,15 +150,27 @@
 export default {
   data() {
     return {
-      users: {}
+      users: {},
+      pgUsers: {
+        uri: "api/user?page=",
+        page: 1,
+        perpage: 10,
+        records: 0
+      }
     };
   },
   methods: {
-    loadUsers() {
+    getTableData(page) {
       if (this.$Role.isAdmin()) {
-        axios.get("api/user").then(({ data }) => (this.users = data.data));
+        axios.get(this.pgUsers.uri + page).then(({ data }) => {
+          this.users = data.data;
+          this.pgUsers.records = data.total;
+          this.pgUsers.page = data.current_page;
+          this.pgUsers.perpage = data.per_page;
+        });
       }
     },
+
     addNewUser() {
       this.$router.push({ path: "/userd", query: { userId: false } });
     },
@@ -172,7 +210,32 @@ export default {
     }
   },
   created() {
-    this.loadUsers();
+    Fire.$on("GLOBAL_SEARCH", () => {
+      let query = this.$parent.searchText;
+      if (query) {
+        this.pgUsers.uri = "api/findUser?q=" + query + "&page=";
+      } else {
+        this.pgUsers.uri = "api/user?page=";
+      }
+      this.$Progress.start();
+      axios
+        .get(this.pgUsers.uri)
+        .then(({ data }) => {
+          this.users = data.data;
+          this.pgUsers.records = data.total;
+          this.pgUsers.page = data.current_page;
+          this.pgUsers.perpage = data.per_page;
+          this.$Progress.finish();
+        })
+        .catch(() => {
+          Toast.fire({
+            icon: "error",
+            title: "Something is wrong. Failed to search."
+          });
+          this.$Progress.fail();
+        });
+    });
+    this.getTableData(1);
   }
 };
 </script>

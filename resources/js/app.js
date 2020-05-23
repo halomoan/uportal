@@ -5,7 +5,6 @@
  */
 
 require("./bootstrap");
-require("admin-lte");
 
 window.Vue = require("vue");
 import { Form, HasError, AlertError } from "vform";
@@ -16,6 +15,8 @@ Vue.prototype.$Role = new Role(window.user);
 window.Form = Form;
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
+
+Vue.component("pagination", require("vue-pagination-2"));
 
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
@@ -110,6 +111,7 @@ Vue.component(
 
 Vue.component("not-found", require("./components/NotFound.vue").default);
 
+window.Fire = new Vue();
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -118,5 +120,16 @@ Vue.component("not-found", require("./components/NotFound.vue").default);
 
 const app = new Vue({
     el: "#app",
-    router
+    router,
+    data: {
+        searchText: ""
+    },
+    methods: {
+        searchhit() {
+            Fire.$emit("GLOBAL_SEARCH");
+        }
+        // searchhit: _.debounce(() => {
+        //     Fire.$emit("GLOBAL_SEARCH");
+        // }, 1000)
+    }
 });

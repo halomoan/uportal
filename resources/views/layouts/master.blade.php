@@ -32,6 +32,15 @@
       </ul>
 
       <!-- Right navbar links -->
+      <div class="input-group input-group-sm">
+        <input class="form-control form-control-navbar" type="search" @keyup.enter="searchhit" v-model="searchText"
+          placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-navbar" @click="searchhit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
 
     </nav>
     <!-- /.navbar -->

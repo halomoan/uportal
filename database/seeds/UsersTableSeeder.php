@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
             'type' => 'admin'
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->email,

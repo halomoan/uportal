@@ -8,9 +8,9 @@
             <div class="col-md-6">
               <img :src="getPhoto()" alt />
             </div>
-            <div class="col-md-6 d-flex flex-column align-items-end">
+            <div class="col-md-6 d-flex flex-column align-items-end pr-3">
               <h3 class="widget-user-username text-right text-blue" v-html="form.company"></h3>
-              <h5 class="widget-user-desc text-right" v-html="form.name">Web Designer</h5>
+              <h5 class="widget-user-desc text-right" v-html="form.name"></h5>
             </div>
           </div>
         </div>
