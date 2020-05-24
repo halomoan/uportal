@@ -213,7 +213,7 @@ export default {
     Fire.$on("GLOBAL_SEARCH", () => {
       let query = this.$parent.searchText;
       if (query) {
-        this.pgUsers.uri = "api/findUser?q=" + query + "&page=";
+        this.pgUsers.uri = "api/user?q=" + query + "&page=";
       } else {
         this.pgUsers.uri = "api/user?page=";
       }

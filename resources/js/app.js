@@ -27,6 +27,18 @@ let routes = [
         component: require("./components/Dashboard.vue").default
     },
     {
+        path: "/invoices",
+        component: require("./components/Invoices.vue").default
+    },
+    {
+        path: "/invoiced",
+        component: require("./components/InvoiceDetail.vue").default
+    },
+    {
+        path: "/printInvoice",
+        component: require("./components/InvoiceDetail.vue").default
+    },
+    {
         path: "/gentoken",
         component: require("./components/GenToken.vue").default
     },
@@ -58,6 +70,8 @@ Vue.use(VueProgressBar, {
 });
 
 import moment from "moment";
+import { currency } from "./currency";
+Vue.filter("currency", currency);
 
 Vue.filter("upText", function(text) {
     return text.toUpperCase();
@@ -65,6 +79,9 @@ Vue.filter("upText", function(text) {
 
 Vue.filter("humanDate", function(date) {
     return moment(date).format("MMMM Do YYYY");
+});
+Vue.filter("formatNumber", function(value) {
+    return numeral(value).format("0,0");
 });
 
 import Swal from "sweetalert2";

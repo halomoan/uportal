@@ -81,14 +81,25 @@
                 <i class="nav-icon fas fa-tachometer-alt text-cyan"></i>
                 <p>
                   Dashboard
+
+                </p>
+              </router-link>
+            </li>
+
+            <li class="nav-item">
+              <router-link to="/invoices" class="nav-link" exact-active-class="active">
+                <i class="nav-icon fas fa-file-invoice-dollar text-green"></i>
+                <p>
+                  Invoices
                   <span class="right badge badge-danger">New</span>
                 </p>
               </router-link>
             </li>
+
             @can('isAdmin')
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-cog text-green"></i>
+                <i class="nav-icon fas fa-cog text-grey"></i>
                 <p>
                   Management
                   <i class="right fas fa-angle-left"></i>

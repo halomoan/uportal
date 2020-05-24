@@ -30,9 +30,16 @@ class UserController extends Controller
     {
         $this->authorize('isAdmin');
 
+        if ($search = \Request::get('q')) {
 
+            return User::where(function ($query) use ($search) {
+                //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
+                $query->whereLike(['name', 'email'], $search);
+            })->paginate(10);
+        } else {
 
-        return User::latest()->paginate(10);
+            return User::latest()->paginate(10);
+        }
     }
 
     /**
@@ -127,17 +134,5 @@ class UserController extends Controller
         $user->delete();
 
         return ['message' => 'User Deleted'];
-    }
-
-    public function search()
-    {
-        if ($search = \Request::get('q')) {
-
-            $user = User::where(function ($query) use ($search) {
-                //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
-                $query->whereLike(['name', 'email'], $search);
-            })->paginate(10);
-        }
-        return $user;
     }
 }
