@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>u-Portal | Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,12 +15,14 @@
 
   <link rel="stylesheet" href="/css/app.css">
 
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700" rel="stylesheet">
+
 
 
 </head>
 
-<body class="sidebar-mini control-sidebar-slide-open text-sm">
-  <div class="wrapper" id="app">
+<body class="sidebar-mini control-sidebar-slide-open">
+  <div class=" wrapper" id="app">
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-dark navbar-lightblue">
@@ -33,25 +35,18 @@
 
       <!-- Right navbar links -->
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" @keyup.enter="searchhit" v-model="searchText"
-          placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" @click="searchhit">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
+
       </div>
 
     </nav>
     <!-- /.navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar sidebar-light-indigo elevation-4">
       <!-- Brand Logo -->
       <a href="index3.html" class="brand-link">
-        <img src="{{ asset('dist/img/AdminLTELogo.png')}}" alt="AdminLTE Logo"
-          class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <img src="{{ asset('/img/uol.png')}}" alt="u-Portal Logo" class="brand-image  elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-bolder ">U-Portal</span>
       </a>
 
       <!-- Sidebar -->
@@ -59,7 +54,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="{{ asset('dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
             @guest
@@ -85,7 +80,15 @@
                 </p>
               </router-link>
             </li>
-
+            <li class="nav-item">
+              <router-link to="/announces" class="nav-link" exact-active-class="active">
+                <i class="nav-icon fas fa-bullhorn text-maroon"></i>
+                <p>
+                  Announcements
+                  <span v-if="hasNew.announce" class="right badge badge-danger">New</span>
+                </p>
+              </router-link>
+            </li>
             <li class="nav-item">
               <router-link to="/invoices" class="nav-link" exact-active-class="active">
                 <i class="nav-icon fas fa-file-invoice-dollar text-green"></i>
@@ -132,17 +135,12 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
+              <a class="nav-link" href="#" @click.prevent="logout">
                 <i class="nav-icon fas fa-power-off text-red"></i>
                 <p>
                   {{ __('Logout') }}
                 </p>
               </a>
-
-              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-              </form>
             </li>
 
           </ul>

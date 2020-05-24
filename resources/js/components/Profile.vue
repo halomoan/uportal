@@ -39,6 +39,25 @@
                 <!-- /.tab-pane -->
                 <div class="tab-pane active" id="general">
                   <!-- <form class="form-horizontal" @submit.prevent="createUser"> -->
+
+                  <div class="form-group row">
+                    <label for="company" class="col-sm-2 col-form-label">Company</label>
+                    <div class="col-sm-10">
+                      <input
+                        type="email"
+                        class="form-control"
+                        autocomplete="off"
+                        :class="{'is-invalid': form.errors.has('company')}"
+                        id="company"
+                        v-model="form.company"
+                        name="company"
+                        placeholder="Company Name"
+                        required
+                      />
+                      <has-error :form="form" field="company"></has-error>
+                    </div>
+                  </div>
+
                   <div class="form-group row">
                     <label for="email" class="col-sm-2 col-form-label">Email</label>
                     <div class="col-sm-10">

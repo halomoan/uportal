@@ -30,18 +30,19 @@
                   <a href="#" @click.prevent="addNewUser">
                     <i class="fa fa-user-plus"></i>
                   </a>
-
                   <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 250px;">
                       <input
+                        v-model="searchText"
                         type="text"
                         name="table_search"
                         class="form-control float-right"
                         placeholder="Search"
+                        @keyup.enter="searchTable"
                       />
 
                       <div class="input-group-append">
-                        <button type="submit" class="btn btn-default">
+                        <button type="button" class="btn btn-default" @click="searchTable">
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
@@ -156,7 +157,8 @@ export default {
         page: 1,
         perpage: 10,
         records: 0
-      }
+      },
+      searchText: ""
     };
   },
   methods: {
@@ -178,62 +180,73 @@ export default {
       this.$router.push({ path: "/userd", query: { userId: id } });
     },
     deleteUser(id) {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then(result => {
-        //Send request to the server
-        if (result.value) {
-          axios
-            .delete("api/user/" + id)
-            .then(() => {
-              if (result.value) {
-                Swal.fire("Deleted!", "Your user has been deleted.", "success");
-                this.loadUsers();
-              }
-            })
-            .catch(error => {
-              let message = error.response.data.message;
-              if (message) {
-                Swal.fire("Failed!", message, "warning");
-              } else {
-                Swal.fire("Failed!", "There is something wrong.", "warning");
-              }
-            });
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then(result => {
+          //Send request to the server
+          if (result.value) {
+            axios
+              .delete("api/user/" + id)
+              .then(() => {
+                if (result.value) {
+                  Swal.fire(
+                    "Deleted!",
+                    "Your user has been deleted.",
+                    "success"
+                  );
+                  this.loadUsers();
+                }
+              })
+              .catch(error => {
+                let message = error.response.data.message;
+                if (message) {
+                  Swal.fire("Failed!", message, "warning");
+                } else {
+                  Swal.fire("Failed!", "There is something wrong.", "warning");
+                }
+              });
+          }
+        });
+      }
+    },
+
+    searchTable() {
+      if (this.$Role.isAdmin()) {
+        if (this.searchText) {
+          this.pgUsers.uri = "api/user?q=" + this.searchText + "&page=";
+        } else {
+          this.pgUsers.uri = "api/user?page=";
         }
-      });
+        this.$Progress.start();
+        axios
+          .get(this.pgUsers.uri)
+          .then(({ data }) => {
+            this.users = data.data;
+            this.pgUsers.records = data.total;
+            this.pgUsers.page = data.current_page;
+            this.pgUsers.perpage = data.per_page;
+            this.$Progress.finish();
+          })
+          .catch(() => {
+            Toast.fire({
+              icon: "error",
+              title: "Something is wrong. Failed to search."
+            });
+            this.$Progress.fail();
+          });
+      }
     }
   },
   mounted() {
     Fire.$on("GLOBAL_SEARCH", () => {
-      let query = this.$parent.searchText;
-      if (query) {
-        this.pgUsers.uri = "api/user?q=" + query + "&page=";
-      } else {
-        this.pgUsers.uri = "api/user?page=";
-      }
-      this.$Progress.start();
-      axios
-        .get(this.pgUsers.uri)
-        .then(({ data }) => {
-          this.users = data.data;
-          this.pgUsers.records = data.total;
-          this.pgUsers.page = data.current_page;
-          this.pgUsers.perpage = data.per_page;
-          this.$Progress.finish();
-        })
-        .catch(() => {
-          Toast.fire({
-            icon: "error",
-            title: "Something is wrong. Failed to search."
-          });
-          this.$Progress.fail();
-        });
+      this.searchText = this.$parent.searchText;
     });
     this.getTableData(1);
   }

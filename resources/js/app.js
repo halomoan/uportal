@@ -27,6 +27,10 @@ let routes = [
         component: require("./components/Dashboard.vue").default
     },
     {
+        path: "/announces",
+        component: require("./components/Announces.vue").default
+    },
+    {
         path: "/invoices",
         component: require("./components/Invoices.vue").default
     },
@@ -157,6 +161,38 @@ const app = new Vue({
                     break;
                 default:
             }
+        },
+        logout() {
+            Swal.fire({
+                title: "Logout",
+                text: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Logout"
+            }).then(result => {
+                if (result.value === true) {
+                    axios
+                        .post("/logout")
+                        .then(response => {
+                            localStorage.removeItem("auth_token");
+                            localStorage.removeItem("expiration");
+                            delete axios.defaults.headers.common[
+                                "Authorization"
+                            ];
+                            this.$router.go("/login");
+                        })
+                        .catch(error => {
+                            localStorage.removeItem("auth_token");
+                            localStorage.removeItem("expiration");
+                            delete axios.defaults.headers.common[
+                                "Authorization"
+                            ];
+                            this.$router.go("/login");
+                        });
+                }
+            });
         }
         // searchhit: _.debounce(() => {
         //     Fire.$emit("GLOBAL_SEARCH");

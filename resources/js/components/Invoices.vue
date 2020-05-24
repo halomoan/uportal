@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div>
     <div v-if="$Role.isAdminOrUser()">
       <section class="content-header">
         <div class="container-fluid">
@@ -34,14 +34,16 @@
                   <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 250px;">
                       <input
+                        v-model="searchText"
                         type="text"
                         name="table_search"
                         class="form-control float-right"
                         placeholder="Search"
+                        @keyup.enter="searchTable"
                       />
 
                       <div class="input-group-append">
-                        <button type="submit" class="btn btn-default">
+                        <button type="button" class="btn btn-default" @click="searchTable">
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
@@ -122,7 +124,8 @@ export default {
         page: 1,
         perpage: 10,
         records: 0
-      }
+      },
+      searchText: ""
     };
   },
   methods: {
@@ -145,13 +148,10 @@ export default {
         }
       });
       this.$parent.newFlag("INVOICES", result);
-    }
-  },
-  mounted() {
-    Fire.$on("GLOBAL_SEARCH", () => {
-      let query = this.$parent.searchText;
-      if (query) {
-        this.pgUsers.uri = "api/invoices?q=" + query + "&page=";
+    },
+    searchTable() {
+      if (this.searchText) {
+        this.pgUsers.uri = "api/invoices?q=" + this.searchText + "&page=";
       } else {
         this.pgUsers.uri = "api/invoices?page=";
       }
@@ -172,6 +172,11 @@ export default {
           });
           this.$Progress.fail();
         });
+    }
+  },
+  mounted() {
+    Fire.$on("GLOBAL_SEARCH", () => {
+      this.searchText = this.$parent.searchText;
     });
     this.getTableData(1);
   }
