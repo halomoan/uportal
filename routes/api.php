@@ -25,3 +25,5 @@ Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 
 Route::get('invoices', 'API\InvoiceController@index')->name('invoices.index');
+
+Route::get('flag', 'API\FlagController@index')->name('flag.index');

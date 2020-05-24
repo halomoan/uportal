@@ -91,7 +91,7 @@
                 <i class="nav-icon fas fa-file-invoice-dollar text-green"></i>
                 <p>
                   Invoices
-                  <span class="right badge badge-danger">New</span>
+                  <span v-if="hasNew.Invoice" class="right badge badge-danger">New</span>
                 </p>
               </router-link>
             </li>
@@ -112,12 +112,12 @@
                     <p>Users</p>
                   </router-link>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                   <router-link to="/gentoken" class="nav-link">
                     <i class="fas fa-key nav-icon"></i>
                     <p>Generate Token</p>
                   </router-link>
-                </li>
+                </li> --}}
               </ul>
             </li>
             @endcan

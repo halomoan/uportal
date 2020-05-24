@@ -209,7 +209,7 @@ export default {
       });
     }
   },
-  created() {
+  mounted() {
     Fire.$on("GLOBAL_SEARCH", () => {
       let query = this.$parent.searchText;
       if (query) {

@@ -6,7 +6,7 @@
         <div class="bg-white pb-3">
           <div class="row">
             <div class="col-md-6">
-              <img :src="getPhoto()" alt />
+              <img class="mt-2 ml-2" :src="getPhoto()" alt />
             </div>
             <div class="col-md-6 d-flex flex-column align-items-end pr-3">
               <h3 class="widget-user-username text-right text-blue" v-html="form.company"></h3>

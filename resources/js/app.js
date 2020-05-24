@@ -85,6 +85,7 @@ Vue.filter("formatNumber", function(value) {
 });
 
 import Swal from "sweetalert2";
+import Axios from "axios";
 window.Swal = Swal;
 
 const Toast = Swal.mixin({
@@ -111,20 +112,20 @@ window.Toast = Toast;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component(
-    "passport-clients",
-    require("./components/passport/Clients.vue").default
-);
+// Vue.component(
+//     "passport-clients",
+//     require("./components/passport/Clients.vue").default
+// );
 
-Vue.component(
-    "passport-authorized-clients",
-    require("./components/passport/AuthorizedClients.vue").default
-);
+// Vue.component(
+//     "passport-authorized-clients",
+//     require("./components/passport/AuthorizedClients.vue").default
+// );
 
-Vue.component(
-    "passport-personal-access-tokens",
-    require("./components/passport/PersonalAccessTokens.vue").default
-);
+// Vue.component(
+//     "passport-personal-access-tokens",
+//     require("./components/passport/PersonalAccessTokens.vue").default
+// );
 
 Vue.component("not-found", require("./components/NotFound.vue").default);
 
@@ -139,14 +140,38 @@ const app = new Vue({
     el: "#app",
     router,
     data: {
-        searchText: ""
+        searchText: "",
+        hasNew: {
+            Invoice: false
+        }
     },
     methods: {
         searchhit() {
             Fire.$emit("GLOBAL_SEARCH");
+        },
+
+        newFlag(group, bValue) {
+            switch (group) {
+                case "INVOICES":
+                    this.hasNew.Invoice = bValue;
+                    break;
+                default:
+            }
         }
         // searchhit: _.debounce(() => {
         //     Fire.$emit("GLOBAL_SEARCH");
         // }, 1000)
+    },
+
+    mounted() {
+        axios
+            .get("api/flag")
+            .then(({ data }) => {
+                let flags = data.flags;
+                flags.map(flag => {
+                    this.newFlag(flag.name, flag.value);
+                });
+            })
+            .catch(() => {});
     }
 });

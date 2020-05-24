@@ -133,11 +133,21 @@ export default {
           this.pgUsers.records = data.total;
           this.pgUsers.page = data.current_page;
           this.pgUsers.perpage = data.per_page;
+          this.hasNew();
         });
       }
+    },
+    hasNew() {
+      let result = false;
+      result = _.find(this.invoices, function(invoice) {
+        if (invoice.unread) {
+          return true;
+        }
+      });
+      this.$parent.newFlag("INVOICES", result);
     }
   },
-  created() {
+  mounted() {
     Fire.$on("GLOBAL_SEARCH", () => {
       let query = this.$parent.searchText;
       if (query) {
