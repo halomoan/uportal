@@ -35,7 +35,11 @@ class GroupController extends Controller
             })->paginate(10);
         } else {
 
-            return Group::latest()->paginate(10);
+            if (\Request::get('page')) {
+                return Group::latest()->paginate(10);
+            } else {
+                return Group::orderBy('name')->get();
+            }
         }
     }
 

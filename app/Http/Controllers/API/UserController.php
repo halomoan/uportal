@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
+use App\Group;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -56,15 +57,23 @@ class UserController extends Controller
             'email' => 'required|string|email|max:191|unique:users',
             'password' => 'required|string|min:8|max:191',
             'repassword' => 'required|string|min:8|max:191',
-
+            'groups' => 'required|array',
         ]);
 
-        return User::create([
+        $user =  User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'type' => $request['type'],
             'password' => Hash::make($request['password'])
         ]);
+
+        if ($request['groups']) {
+            $groups = Group::find($request['groups']);
+            $user->groups()->detach($groups);
+            $user->groups()->attach($groups);
+        }
+
+        return $user;
     }
 
     /**
@@ -77,7 +86,7 @@ class UserController extends Controller
     {
         $this->authorize('isAdmin');
         $user = User::findOrFail($id);
-
+        $user['groups'] = $user->groups()->get();
         return $user;
     }
 
@@ -99,6 +108,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
             'password' => 'sometimes|string|min:8|max:191',
             'repassword' => 'sometimes|string|min:8|max:191',
+            'groups' => 'required|array',
 
         ]);
 
@@ -114,6 +124,12 @@ class UserController extends Controller
         }
 
         $user->update($request->all());
+
+        if ($request['groups']) {
+            $groups = Group::find($request['groups']);
+            $user->groups()->detach($groups);
+            $user->groups()->attach($groups);
+        }
 
         return ['message' => 'Success'];
     }

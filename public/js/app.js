@@ -3239,6 +3239,71 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3473,10 +3538,17 @@ __webpack_require__.r(__webpack_exports__);
         email: "",
         password: "",
         repassword: "",
+        groups: [],
         type: "",
         photo: "",
         billaddr: ""
       }),
+      groups: {
+        availGroup: [],
+        userGroup: [],
+        checkAvailGroup: [],
+        checkUserGroup: []
+      },
       inprogress: false,
       editMode: false
     };
@@ -3485,6 +3557,7 @@ __webpack_require__.r(__webpack_exports__);
     editUser: function editUser() {
       var _this = this;
 
+      this.form.groups = _.map(this.groups.userGroup, "id");
       this.$Progress.start();
       this.inprogress = true;
       this.form.put("api/user/" + this.form.id).then(function () {
@@ -3513,6 +3586,7 @@ __webpack_require__.r(__webpack_exports__);
     createUser: function createUser() {
       var _this2 = this;
 
+      this.form.groups = _.map(this.groups.userGroup, "id");
       this.$Progress.start();
       this.inprogress = true;
       this.form.post("api/user").then(function (_ref) {
@@ -3535,30 +3609,101 @@ __webpack_require__.r(__webpack_exports__);
     },
     goBack: function goBack() {
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/users");
+    },
+    addUserGroup: function addUserGroup() {
+      if (!this.groups.availGroup.length) {
+        return;
+      }
+
+      var selected = [];
+
+      for (var i in this.groups.checkAvailGroup) {
+        var idx = this.groups.checkAvailGroup[i];
+        selected.push(this.groups.availGroup[idx]);
+      }
+
+      this.groups.userGroup = _toConsumableArray(new Set([].concat(_toConsumableArray(this.groups.userGroup), selected)));
+      this.groups.availGroup = _.differenceBy(this.groups.availGroup, this.groups.userGroup, "id");
+    },
+    removeUserGroup: function removeUserGroup() {
+      if (!this.groups.userGroup.length) {
+        return;
+      }
+
+      var selected = [];
+
+      for (var i in this.groups.checkUserGroup) {
+        var idx = this.groups.checkUserGroup[i];
+        selected.push(this.groups.userGroup[idx]);
+      }
+
+      this.groups.availGroup = _toConsumableArray(new Set([].concat(_toConsumableArray(this.groups.availGroup), selected)));
+      this.groups.userGroup = _.differenceBy(this.groups.userGroup, this.groups.availGroup, "id");
+    },
+    getGroups: function getGroups() {
+      var _this3 = this;
+
+      axios.get("api/group").then(function (_ref2) {
+        var data = _ref2.data;
+        _this3.groups.availGroup = data.filter(function (item) {
+          return item.is_enabled && !item.is_default;
+        });
+        _this3.groups.userGroup = data.filter(function (item) {
+          return item.is_default;
+        });
+      })["catch"](function () {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to retrieve Group Info!",
+          footer: "<a href='/users'>Let me redo again</a>"
+        });
+      });
+    }
+  },
+  // computed: {
+  //   availGroup: function() {
+  //     return this.groups.filter(function(item) {
+  //       return item.is_enabled;
+  //     });
+  //   },
+  //   userGroup: function() {
+  //     return this.groups.filter(function(item) {
+  //       return item.is_default;
+  //     });
+  //   }
+  // },
+  computed: {
+    arrUserGroup: function arrUserGroup() {
+      return this.groups.userGroup;
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.inprogress = false;
     var userId = this.$route.query.userId;
 
     if (typeof userId === "undefined") {
-      this.$router.push("/users");
+      this.editMode = false;
+      this.form.reset();
     } else if (userId) {
       this.$Progress.start();
-      axios.get("api/user/" + userId).then(function (_ref2) {
-        var data = _ref2.data;
-        _this3.form = new Form(data);
-        _this3.editMode = true;
+      axios.get("api/user/" + userId).then(function (_ref3) {
+        var data = _ref3.data;
+        _this4.form = new Form(data);
+        console.log(data.groups);
+        _this4.groups.userGroup = data.groups;
+        _this4.groups.availGroup = _.differenceBy(_this4.groups.availGroup, _this4.groups.userGroup, "id");
+        _this4.editMode = true;
 
-        _this3.$Progress.finish();
+        _this4.$Progress.finish();
       })["catch"](function () {
-        _this3.editMode = false;
+        _this4.editMode = false;
 
-        _this3.form.reset();
+        _this4.form.reset();
 
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
 
         Swal.fire({
           icon: "error",
@@ -3571,6 +3716,8 @@ __webpack_require__.r(__webpack_exports__);
       this.editMode = false;
       this.form.reset();
     }
+
+    this.getGroups();
   }
 });
 
@@ -3585,6 +3732,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -4139,9 +4287,7 @@ __webpack_require__.r(__webpack_exports__);
     addNewUser: function addNewUser() {
       this.$router.push({
         path: "/userd",
-        query: {
-          userId: false
-        }
+        query: {}
       });
     },
     editUser: function editUser(id) {
@@ -67842,10 +67988,190 @@ var render = function() {
                             ]
                           ),
                           _vm._v(" "),
-                          _c("div", {
-                            staticClass: "tab-pane",
-                            attrs: { id: "profile" }
-                          })
+                          _c(
+                            "div",
+                            { staticClass: "tab-pane", attrs: { id: "group" } },
+                            [
+                              _c("div", { staticClass: "row" }, [
+                                _c("div", { staticClass: "col-5" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "unassigned" } },
+                                      [_vm._v("Available Group:")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.groups.checkAvailGroup,
+                                            expression: "groups.checkAvailGroup"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        attrs: {
+                                          multiple: "",
+                                          id: "unassigned",
+                                          size: "10"
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.groups,
+                                              "checkAvailGroup",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.groups.availGroup, function(
+                                        group,
+                                        index
+                                      ) {
+                                        return _c(
+                                          "option",
+                                          {
+                                            key: group.id,
+                                            domProps: { value: index }
+                                          },
+                                          [_vm._v(_vm._s(group.name))]
+                                        )
+                                      }),
+                                      0
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "col-2 d-flex flex-column justify-content-center align-items-center"
+                                  },
+                                  [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-info mb-2",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.addUserGroup($event)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v(">")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-default",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.removeUserGroup($event)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("<")]
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-5" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "usergroup" } },
+                                      [_vm._v("User Group:")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.groups.checkUserGroup,
+                                            expression: "groups.checkUserGroup"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        attrs: {
+                                          multiple: "",
+                                          id: "usergroup",
+                                          size: "10"
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.groups,
+                                              "checkUserGroup",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.arrUserGroup, function(
+                                        group,
+                                        index
+                                      ) {
+                                        return _c(
+                                          "option",
+                                          {
+                                            key: group.id,
+                                            domProps: { value: index }
+                                          },
+                                          [_vm._v(_vm._s(group.name))]
+                                        )
+                                      }),
+                                      0
+                                    )
+                                  ])
+                                ])
+                              ])
+                            ]
+                          )
                         ]),
                         _vm._v(" "),
                         _vm.inprogress
@@ -67976,9 +68302,9 @@ var staticRenderFns = [
             "a",
             {
               staticClass: "nav-link",
-              attrs: { href: "#profile", "data-toggle": "tab" }
+              attrs: { href: "#group", "data-toggle": "tab" }
             },
-            [_vm._v("Profile")]
+            [_vm._v("Group")]
           )
         ])
       ])

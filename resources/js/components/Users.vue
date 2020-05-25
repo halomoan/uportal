@@ -174,7 +174,7 @@ export default {
     },
 
     addNewUser() {
-      this.$router.push({ path: "/userd", query: { userId: false } });
+      this.$router.push({ path: "/userd", query: {} });
     },
     editUser(id) {
       this.$router.push({ path: "/userd", query: { userId: id } });

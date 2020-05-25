@@ -41,7 +41,7 @@
                       <a class="nav-link" href="#billing" data-toggle="tab">Billing</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#profile" data-toggle="tab">Profile</a>
+                      <a class="nav-link" href="#group" data-toggle="tab">Group</a>
                     </li>
                   </ul>
                 </div>
@@ -181,7 +181,60 @@
                         </form>
                       </div>
                       <!-- /.tab-pane -->
-                      <div class="tab-pane" id="profile"></div>
+                      <div class="tab-pane" id="group">
+                        <div class="row">
+                          <div class="col-5">
+                            <div class="form-group">
+                              <label for="unassigned">Available Group:</label>
+                              <select
+                                v-model="groups.checkAvailGroup"
+                                multiple
+                                class="form-control"
+                                id="unassigned"
+                                size="10"
+                              >
+                                <option
+                                  v-for="(group,index) in groups.availGroup"
+                                  :key="group.id"
+                                  :value="index"
+                                >{{ group.name}}</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div
+                            class="col-2 d-flex flex-column justify-content-center align-items-center"
+                          >
+                            <button
+                              type="button"
+                              class="btn btn-info mb-2"
+                              @click.prevent="addUserGroup"
+                            >&gt;</button>
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              @click.prevent="removeUserGroup"
+                            >&lt;</button>
+                          </div>
+                          <div class="col-5">
+                            <div class="form-group">
+                              <label for="usergroup">User Group:</label>
+                              <select
+                                v-model="groups.checkUserGroup"
+                                multiple
+                                class="form-control"
+                                id="usergroup"
+                                size="10"
+                              >
+                                <option
+                                  v-for="(group,index) in arrUserGroup"
+                                  :key="group.id"
+                                  :value="index"
+                                >{{ group.name}}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       <!-- /.tab-pane -->
                       <!-- /.form -->
                     </div>
@@ -233,16 +286,25 @@ export default {
         email: "",
         password: "",
         repassword: "",
+        groups: [],
         type: "",
         photo: "",
         billaddr: ""
       }),
+      groups: {
+        availGroup: [],
+        userGroup: [],
+        checkAvailGroup: [],
+        checkUserGroup: []
+      },
       inprogress: false,
       editMode: false
     };
   },
   methods: {
     editUser() {
+      this.form.groups = _.map(this.groups.userGroup, "id");
+
       this.$Progress.start();
       this.inprogress = true;
       this.form
@@ -268,6 +330,8 @@ export default {
         });
     },
     createUser() {
+      this.form.groups = _.map(this.groups.userGroup, "id");
+
       this.$Progress.start();
       this.inprogress = true;
 
@@ -292,21 +356,110 @@ export default {
       window.history.length > 1
         ? this.$router.go(-1)
         : this.$router.push("/users");
+    },
+    addUserGroup() {
+      if (!this.groups.availGroup.length) {
+        return;
+      }
+      let selected = [];
+      for (var i in this.groups.checkAvailGroup) {
+        let idx = this.groups.checkAvailGroup[i];
+
+        selected.push(this.groups.availGroup[idx]);
+      }
+
+      this.groups.userGroup = [
+        ...new Set([...this.groups.userGroup, ...selected])
+      ];
+
+      this.groups.availGroup = _.differenceBy(
+        this.groups.availGroup,
+        this.groups.userGroup,
+        "id"
+      );
+    },
+    removeUserGroup() {
+      if (!this.groups.userGroup.length) {
+        return;
+      }
+      let selected = [];
+      for (var i in this.groups.checkUserGroup) {
+        let idx = this.groups.checkUserGroup[i];
+
+        selected.push(this.groups.userGroup[idx]);
+      }
+      this.groups.availGroup = [
+        ...new Set([...this.groups.availGroup, ...selected])
+      ];
+
+      this.groups.userGroup = _.differenceBy(
+        this.groups.userGroup,
+        this.groups.availGroup,
+        "id"
+      );
+    },
+    getGroups() {
+      axios
+        .get("api/group")
+        .then(({ data }) => {
+          this.groups.availGroup = data.filter(function(item) {
+            return item.is_enabled && !item.is_default;
+          });
+          this.groups.userGroup = data.filter(function(item) {
+            return item.is_default;
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Failed to retrieve Group Info!",
+            footer: "<a href='/users'>Let me redo again</a>"
+          });
+        });
     }
   },
+  // computed: {
+  //   availGroup: function() {
+  //     return this.groups.filter(function(item) {
+  //       return item.is_enabled;
+  //     });
+  //   },
+  //   userGroup: function() {
+  //     return this.groups.filter(function(item) {
+  //       return item.is_default;
+  //     });
+  //   }
+  // },
+  computed: {
+    arrUserGroup: function() {
+      return this.groups.userGroup;
+    }
+  },
+
   created() {
     this.inprogress = false;
 
     const userId = this.$route.query.userId;
 
     if (typeof userId === "undefined") {
-      this.$router.push("/users");
+      this.editMode = false;
+      this.form.reset();
     } else if (userId) {
       this.$Progress.start();
       axios
         .get("api/user/" + userId)
         .then(({ data }) => {
           this.form = new Form(data);
+
+          console.log(data.groups);
+
+          this.groups.userGroup = data.groups;
+          this.groups.availGroup = _.differenceBy(
+            this.groups.availGroup,
+            this.groups.userGroup,
+            "id"
+          );
 
           this.editMode = true;
           this.$Progress.finish();
@@ -326,6 +479,8 @@ export default {
       this.editMode = false;
       this.form.reset();
     }
+
+    this.getGroups();
   }
 };
 </script>

@@ -154,6 +154,7 @@
               </div>
               <!-- ./card-footer -->
             </div>
+            <!-- ./card -->
           </div>
         </div>
       </div>
