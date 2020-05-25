@@ -226,8 +226,8 @@
                                 size="10"
                               >
                                 <option
-                                  v-for="(group,index) in arrUserGroup"
-                                  :key="group.id"
+                                  v-for="(group,index) in groups.userGroup"
+                                  :key="index"
                                   :value="index"
                                 >{{ group.name}}</option>
                               </select>
@@ -431,12 +431,6 @@ export default {
   //     });
   //   }
   // },
-  computed: {
-    arrUserGroup: function() {
-      return this.groups.userGroup;
-    }
-  },
-
   created() {
     this.inprogress = false;
 
@@ -451,8 +445,6 @@ export default {
         .get("api/user/" + userId)
         .then(({ data }) => {
           this.form = new Form(data);
-
-          console.log(data.groups);
 
           this.groups.userGroup = data.groups;
           this.groups.availGroup = _.differenceBy(

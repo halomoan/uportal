@@ -3673,11 +3673,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   //     });
   //   }
   // },
-  computed: {
-    arrUserGroup: function arrUserGroup() {
-      return this.groups.userGroup;
-    }
-  },
   created: function created() {
     var _this4 = this;
 
@@ -3692,7 +3687,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios.get("api/user/" + userId).then(function (_ref3) {
         var data = _ref3.data;
         _this4.form = new Form(data);
-        console.log(data.groups);
         _this4.groups.userGroup = data.groups;
         _this4.groups.availGroup = _.differenceBy(_this4.groups.availGroup, _this4.groups.userGroup, "id");
         _this4.editMode = true;
@@ -68152,14 +68146,14 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(_vm.arrUserGroup, function(
+                                      _vm._l(_vm.groups.userGroup, function(
                                         group,
                                         index
                                       ) {
                                         return _c(
                                           "option",
                                           {
-                                            key: group.id,
+                                            key: index,
                                             domProps: { value: index }
                                           },
                                           [_vm._v(_vm._s(group.name))]
