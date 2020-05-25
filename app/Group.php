@@ -13,7 +13,7 @@ class Group extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'is_enabled'
+        'name', 'is_enabled', 'is_default'
 
     ];
 

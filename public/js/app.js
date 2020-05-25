@@ -3729,12 +3729,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       groups: {},
       form: new Form({
-        name: ""
+        name: "",
+        is_default: false,
+        is_enabled: true
       }),
       pgGroups: {
         uri: "api/group?page=",
@@ -68053,7 +68075,121 @@ var render = function() {
                     })
                   ],
                   1
-                )
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-check" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.is_default,
+                        expression: "form.is_default"
+                      }
+                    ],
+                    staticClass: "form-check-input",
+                    attrs: { type: "checkbox", id: "isDefault" },
+                    domProps: {
+                      checked: Array.isArray(_vm.form.is_default)
+                        ? _vm._i(_vm.form.is_default, null) > -1
+                        : _vm.form.is_default
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.form.is_default,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = null,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 &&
+                              _vm.$set(
+                                _vm.form,
+                                "is_default",
+                                $$a.concat([$$v])
+                              )
+                          } else {
+                            $$i > -1 &&
+                              _vm.$set(
+                                _vm.form,
+                                "is_default",
+                                $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                              )
+                          }
+                        } else {
+                          _vm.$set(_vm.form, "is_default", $$c)
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "isDefault" }
+                    },
+                    [_vm._v("Default Group")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-check" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.is_enabled,
+                        expression: "form.is_enabled"
+                      }
+                    ],
+                    staticClass: "form-check-input",
+                    attrs: { type: "checkbox", id: "isEnabled" },
+                    domProps: {
+                      checked: Array.isArray(_vm.form.is_enabled)
+                        ? _vm._i(_vm.form.is_enabled, null) > -1
+                        : _vm.form.is_enabled
+                    },
+                    on: {
+                      change: function($event) {
+                        var $$a = _vm.form.is_enabled,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = null,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 &&
+                              _vm.$set(
+                                _vm.form,
+                                "is_enabled",
+                                $$a.concat([$$v])
+                              )
+                          } else {
+                            $$i > -1 &&
+                              _vm.$set(
+                                _vm.form,
+                                "is_enabled",
+                                $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                              )
+                          }
+                        } else {
+                          _vm.$set(_vm.form, "is_enabled", $$c)
+                        }
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "isEnabled" }
+                    },
+                    [_vm._v("Active")]
+                  )
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "card-footer" }, [
@@ -68192,6 +68328,10 @@ var render = function() {
                         _c("td", [_vm._v(_vm._s(group.name))]),
                         _vm._v(" "),
                         _c("td", [
+                          _vm._v(_vm._s(group.is_default ? "Yes" : "No"))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
                           _vm._v(
                             _vm._s(group.is_enabled ? "Active" : "Deactivated")
                           )
@@ -68303,6 +68443,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Default Group")]),
         _vm._v(" "),
         _c("th", [_vm._v("Status")]),
         _vm._v(" "),

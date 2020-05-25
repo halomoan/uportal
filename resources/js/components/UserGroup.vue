@@ -45,6 +45,24 @@
                   />
                   <has-error :form="form" field="name"></has-error>
                 </div>
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="isDefault"
+                    v-model="form.is_default"
+                  />
+                  <label class="form-check-label" for="isDefault">Default Group</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="isEnabled"
+                    v-model="form.is_enabled"
+                  />
+                  <label class="form-check-label" for="isEnabled">Active</label>
+                </div>
               </div>
               <!-- /.card-body -->
 
@@ -99,6 +117,7 @@
                     <tr>
                       <th>ID</th>
                       <th>Name</th>
+                      <th>Default Group</th>
                       <th>Status</th>
                       <th>Action</th>
                     </tr>
@@ -107,6 +126,7 @@
                     <tr v-for="group in groups" :key="group.id">
                       <td>{{ group.id }}</td>
                       <td>{{ group.name }}</td>
+                      <td>{{ group.is_default ? 'Yes': 'No'}}</td>
                       <td>{{ group.is_enabled ? 'Active': 'Deactivated'}}</td>
                       <td>
                         <a href class="fa fa-edit" @click.prevent="editGroup(group.id)"></a>
@@ -148,7 +168,9 @@ export default {
     return {
       groups: {},
       form: new Form({
-        name: ""
+        name: "",
+        is_default: false,
+        is_enabled: true
       }),
       pgGroups: {
         uri: "api/group?page=",

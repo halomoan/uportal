@@ -52,8 +52,11 @@ class GroupController extends Controller
             'name' => 'required|string|max:50|unique:groups',
         ]);
 
+
         return Group::create([
             'name' => $request['name'],
+            'is_default' => $request['is_default'] ? $request['is_default'] : false,
+            'is_enabled' => $request['is_enabled'] ? $request['is_enabled'] : false,
         ]);
     }
 
@@ -84,7 +87,7 @@ class GroupController extends Controller
         $group = Group::findOrFail($id);
 
         $this->validate($request, [
-            'name' => 'required|string|max:50|unique:groups',
+            'name' => 'required|string|max:50',
         ]);
 
         $group->update($request->all());

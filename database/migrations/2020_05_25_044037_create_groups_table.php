@@ -16,6 +16,7 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
+            $table->boolean('is_default')->default(false);
             $table->boolean('is_enabled')->default(true);
             $table->timestamps();
         });
