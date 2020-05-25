@@ -60,7 +60,7 @@
                         <th>Email</th>
                         <th>Type</th>
                         <th>Registered At</th>
-                        <th>Modify</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -201,7 +201,7 @@ export default {
                     "Your user has been deleted.",
                     "success"
                   );
-                  this.loadUsers();
+                  this.getTableData(this.pgGroups.page);
                 }
               })
               .catch(error => {

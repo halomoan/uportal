@@ -111,8 +111,14 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <router-link to="/users" class="nav-link">
-                    <i class="far fa-user nav-icon"></i>
+                    <i class="fas fa-user nav-icon"></i>
                     <p>Users</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link to="/usergroup" class="nav-link">
+                    <i class="fas fa-users nav-icon"></i>
+                    <p>User Group</p>
                   </router-link>
                 </li>
                 {{-- <li class="nav-item">
@@ -170,7 +176,8 @@
   <!-- ./wrapper -->
   @auth
   <script>
-    window.user = @json(auth()->user()) 
+    window.user = { 'type' :  @json(auth()->user()->type) };    
+    //@json(auth()->user()->type) 
   </script>
   @endauth
 

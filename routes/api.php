@@ -21,6 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResources(['user' => 'API\UserController']);
 
+
+Route::apiResources(['group' => 'API\GroupController']);
+
 Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 

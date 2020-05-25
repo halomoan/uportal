@@ -48,6 +48,10 @@ let routes = [
     },
     { path: "/users", component: require("./components/Users.vue").default },
     {
+        path: "/usergroup",
+        component: require("./components/UserGroup.vue").default
+    },
+    {
         path: "/profile",
         component: require("./components/Profile.vue").default
     },
