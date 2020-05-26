@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.css')}}">
 
   <link rel="stylesheet" href="/css/app.css">
 
@@ -121,6 +122,12 @@
                     <p>User Group</p>
                   </router-link>
                 </li>
+                <li class="nav-item">
+                  <router-link to="/news" class="nav-link">
+                    <i class="fas fa-newspaper nav-icon"></i>
+                    <p>News</p>
+                  </router-link>
+                </li>
                 {{-- <li class="nav-item">
                   <router-link to="/gentoken" class="nav-link">
                     <i class="fas fa-key nav-icon"></i>
@@ -181,10 +188,11 @@
   </script>
   @endauth
 
+  
   <script src="/js/app.js"></script>
   <!-- overlayScrollbars -->
   <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
-
+  <script src="{{ asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
 </body>
 
 </html>

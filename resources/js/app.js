@@ -52,6 +52,10 @@ let routes = [
         component: require("./components/UserGroup.vue").default
     },
     {
+        path: "/news",
+        component: require("./components/News.vue").default
+    },
+    {
         path: "/profile",
         component: require("./components/Profile.vue").default
     },

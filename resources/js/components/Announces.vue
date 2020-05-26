@@ -35,28 +35,25 @@
               <div class="card-body">
                 <div class="callout callout-danger">
                   <button type="button" class="close" data-dismiss="callout" aria-hidden="true">×</button>
-                  <h5>I am a danger callout!</h5>
+                  <h5>!!! O$P$ !!!</h5>
 
-                  <p>
-                    There is a problem that we need to fix. A wonderful serenity has taken possession of my entire
-                    soul,
-                    like these sweet mornings of spring which I enjoy with my whole heart.
-                  </p>
+                  <p>Dear valued customer, last warning.</p>
                 </div>
                 <div class="callout callout-info">
-                  <h5>I am an info callout!</h5>
+                  <span class="text-sm text-gray-light">12-May-2020</span>
+                  <h5>Your payment is overdue !</h5>
 
-                  <p>Follow the steps to continue to payment.</p>
+                  <p>Please go to Invoices section to find out.</p>
                 </div>
                 <div class="callout callout-warning">
-                  <h5>I am a warning callout!</h5>
+                  <h5>Dear valued customer, you have pending payment for this month.</h5>
 
-                  <p>This is a yellow callout.</p>
+                  <p>Please go to Invoices section to find out.</p>
                 </div>
                 <div class="callout callout-success">
-                  <h5>I am a success callout!</h5>
+                  <h5>You have 1 new invoice unread</h5>
 
-                  <p>This is a green callout.</p>
+                  <p>Please go to Invoices section to find out.</p>
                 </div>
               </div>
               <!-- /.card-body -->

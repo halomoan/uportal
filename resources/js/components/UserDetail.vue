@@ -292,6 +292,7 @@ export default {
         billaddr: ""
       }),
       groups: {
+        allGroups: [],
         availGroup: [],
         userGroup: [],
         checkAvailGroup: [],
@@ -402,10 +403,11 @@ export default {
       axios
         .get("api/group")
         .then(({ data }) => {
-          this.groups.availGroup = data.filter(function(item) {
+          this.groups.allGroups = data;
+          this.groups.availGroup = this.groups.allGroups.filter(function(item) {
             return item.is_enabled && !item.is_default;
           });
-          this.groups.userGroup = data.filter(function(item) {
+          this.groups.userGroup = this.groups.allGroups.filter(function(item) {
             return item.is_default;
           });
         })
@@ -440,24 +442,34 @@ export default {
       this.editMode = false;
       this.form.reset();
     } else if (userId) {
+      this.inprogress = true;
       this.$Progress.start();
       axios
         .get("api/user/" + userId)
         .then(({ data }) => {
           this.form = new Form(data);
 
-          this.groups.userGroup = data.groups;
-          this.groups.availGroup = _.differenceBy(
-            this.groups.availGroup,
-            this.groups.userGroup,
-            "id"
-          );
+          if (data.groups && data.groups.length > 0) {
+            this.groups.userGroup = data.groups;
+            this.groups.availGroup = _.differenceBy(
+              this.groups.allGroups,
+              this.groups.userGroup,
+              "id"
+            );
+          } else {
+            this.groups.availGroup = [...this.groups.allGroups];
+            this.groups.userGroup = [];
+          }
+
+          this.$forceUpdate();
 
           this.editMode = true;
+          this.inprogress = false;
           this.$Progress.finish();
         })
         .catch(() => {
           this.editMode = false;
+          this.inprogress = false;
           this.form.reset();
           this.$Progress.fail();
           Swal.fire({
