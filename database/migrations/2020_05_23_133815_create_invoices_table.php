@@ -18,6 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('inv_no');
             $table->string('inv_date');
+            $table->string('year');
             $table->string('title')->nullable();
             $table->unsignedBigInteger('amount')->default(0);
             $table->string('filename');

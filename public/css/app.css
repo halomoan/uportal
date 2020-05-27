@@ -37284,3 +37284,11 @@ readers do not read off random characters that represent icons */
   margin: 0;
 }
 
+.VuePagination__count {
+  font-size: 0.875rem !important;
+}
+
+.VuePagination__pagination {
+  margin-bottom: 1px !important;
+}
+

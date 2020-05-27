@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="content-header">
+    <section class="content-header pb-1">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
