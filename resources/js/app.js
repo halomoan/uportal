@@ -96,6 +96,10 @@ Vue.filter("formatNumber", function(value) {
     return numeral(value).format("0,0");
 });
 
+Vue.filter("truncate", function(text, stop, clamp) {
+    return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
+});
+
 import Swal from "sweetalert2";
 import Axios from "axios";
 window.Swal = Swal;

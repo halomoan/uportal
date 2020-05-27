@@ -63,11 +63,13 @@
                 <div class="card-body">
                   <div class="tab-content" id="yearly-tabContent">
                     <div
+                      v-for="(year,index) in years"
+                      v-bind:key="year"
                       class="tab-pane fade"
-                      id="year-0"
+                      :id="'year-' + index"
                       role="tabpanel"
-                      aria-labelledby="year0"
-                      v-bind:class="{ 'active' : tabIndex === 0, 'show' : tabIndex === 0}"
+                      :aria-labelledby="'year' + index"
+                      v-bind:class="{ 'active' : tabIndex === index, 'show' : tabIndex === index}"
                     >
                       <div class="row">
                         <div class="col-12">
@@ -83,7 +85,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="invoice in invoices[0]" :key="invoice.id">
+                              <tr v-for="invoice in pgTable[index].invoices" :key="invoice.id">
                                 <td
                                   v-bind:class="{ 'text-bold' : invoice.unread, 'text-black-50': ! invoice.unread }"
                                 >{{ invoice.inv_date | humanDate }}</td>
@@ -94,7 +96,7 @@
                                 </td>
                                 <td
                                   v-bind:class="{ 'text-bold' : invoice.unread, 'text-black-50': ! invoice.unread }"
-                                >{{ invoice.title }}</td>
+                                >{{ invoice.title | truncate( 50 ) }}</td>
                                 <td
                                   class="text-green text-right"
                                   v-bind:class="{ 'text-bold' : invoice.unread, 'text-black-50': ! invoice.unread }"
@@ -116,36 +118,15 @@
                         <div class="col-12">
                           <div class="d-flex justify-content-end text-right">
                             <pagination
-                              :records="pgTable[0].records"
+                              :records="pgTable[tabIndex].records"
                               @paginate="getTableData"
-                              v-model="pgTable[0].page"
-                              :per-page="pgTable[0].perpage"
+                              v-model="pgTable[tabIndex].page"
+                              :per-page="pgTable[tabIndex].perpage"
                             ></pagination>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div
-                      class="tab-pane fade"
-                      id="year-1"
-                      role="tabpanel"
-                      aria-labelledby="year1"
-                      v-bind:class="{ 'active' : tabIndex === 1, 'show' : tabIndex === 1}"
-                    >Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam.</div>
-                    <div
-                      class="tab-pane fade"
-                      id="year-2"
-                      role="tabpanel"
-                      aria-labelledby="year2"
-                      v-bind:class="{ 'active' : tabIndex === 2, 'show' : tabIndex === 2}"
-                    >Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.</div>
-                    <div
-                      class="tab-pane fade"
-                      id="year-3"
-                      role="tabpanel"
-                      aria-labelledby="year3"
-                      v-bind:class="{ 'active' : tabIndex === 3, 'show' : tabIndex === 3}"
-                    >Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.</div>
                   </div>
                 </div>
                 <!-- /.card -->
@@ -168,9 +149,31 @@ export default {
   data() {
     return {
       tabIndex: 0,
-      invoices: [],
+      _invoices: [],
       pgTable: [
         {
+          invoices: {},
+          uri: "api/invoices?page=",
+          page: 1,
+          perpage: 10,
+          records: 0
+        },
+        {
+          invoices: {},
+          uri: "api/invoices?page=",
+          page: 1,
+          perpage: 10,
+          records: 0
+        },
+        {
+          invoices: {},
+          uri: "api/invoices?page=",
+          page: 1,
+          perpage: 10,
+          records: 0
+        },
+        {
+          invoices: {},
           uri: "api/invoices?page=",
           page: 1,
           perpage: 10,
@@ -184,6 +187,7 @@ export default {
   methods: {
     setActive(tab) {
       this.tabIndex = tab;
+      this.getTableData(1);
     },
     getTableData(page) {
       if (this.$Role.isAdminOrUser()) {
@@ -194,7 +198,7 @@ export default {
           this.years[this.tabIndex];
 
         axios.get(uri).then(({ data }) => {
-          this.invoices[this.tabIndex] = data.data;
+          this.pgTable[this.tabIndex].invoices = data.data;
           this.pgTable[this.tabIndex].records = data.total;
           this.pgTable[this.tabIndex].page = data.current_page;
           this.pgTable[this.tabIndex].perpage = data.per_page;
@@ -229,7 +233,8 @@ export default {
       axios
         .get(this.pgTable[this.tabIndex].uri)
         .then(({ data }) => {
-          this.invoices[this.tabIndex] = data.data;
+          //this.invoices[this.tabIndex] = data.data;
+          this.pgTable[this.tabIndex].invoices = data.data;
           this.pgTable[this.tabIndex].records = data.total;
           this.pgTable[this.tabIndex].page = data.current_page;
           this.pgTable[this.tabIndex].perpage = data.per_page;

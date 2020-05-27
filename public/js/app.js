@@ -2678,31 +2678,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       tabIndex: 0,
-      invoices: [],
+      _invoices: [],
       pgTable: [{
+        invoices: {},
+        uri: "api/invoices?page=",
+        page: 1,
+        perpage: 10,
+        records: 0
+      }, {
+        invoices: {},
+        uri: "api/invoices?page=",
+        page: 1,
+        perpage: 10,
+        records: 0
+      }, {
+        invoices: {},
+        uri: "api/invoices?page=",
+        page: 1,
+        perpage: 10,
+        records: 0
+      }, {
+        invoices: {},
         uri: "api/invoices?page=",
         page: 1,
         perpage: 10,
@@ -2715,6 +2715,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     setActive: function setActive(tab) {
       this.tabIndex = tab;
+      this.getTableData(1);
     },
     getTableData: function getTableData(page) {
       var _this = this;
@@ -2723,7 +2724,7 @@ __webpack_require__.r(__webpack_exports__);
         var uri = this.pgTable[this.tabIndex].uri + page + "&y=" + this.years[this.tabIndex];
         axios.get(uri).then(function (_ref) {
           var data = _ref.data;
-          _this.invoices[_this.tabIndex] = data.data;
+          _this.pgTable[_this.tabIndex].invoices = data.data;
           _this.pgTable[_this.tabIndex].records = data.total;
           _this.pgTable[_this.tabIndex].page = data.current_page;
           _this.pgTable[_this.tabIndex].perpage = data.per_page;
@@ -2754,7 +2755,8 @@ __webpack_require__.r(__webpack_exports__);
       this.$Progress.start();
       axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref2) {
         var data = _ref2.data;
-        _this2.invoices[_this2.tabIndex] = data.data;
+        //this.invoices[this.tabIndex] = data.data;
+        _this2.pgTable[_this2.tabIndex].invoices = data.data;
         _this2.pgTable[_this2.tabIndex].records = data.total;
         _this2.pgTable[_this2.tabIndex].page = data.current_page;
         _this2.pgTable[_this2.tabIndex].perpage = data.per_page;
@@ -68563,19 +68565,20 @@ var render = function() {
                             staticClass: "tab-content",
                             attrs: { id: "yearly-tabContent" }
                           },
-                          [
-                            _c(
+                          _vm._l(_vm.years, function(year, index) {
+                            return _c(
                               "div",
                               {
+                                key: year,
                                 staticClass: "tab-pane fade",
                                 class: {
-                                  active: _vm.tabIndex === 0,
-                                  show: _vm.tabIndex === 0
+                                  active: _vm.tabIndex === index,
+                                  show: _vm.tabIndex === index
                                 },
                                 attrs: {
-                                  id: "year-0",
+                                  id: "year-" + index,
                                   role: "tabpanel",
-                                  "aria-labelledby": "year0"
+                                  "aria-labelledby": "year" + index
                                 }
                               },
                               [
@@ -68588,129 +68591,137 @@ var render = function() {
                                           "table table-hover text-nowrap"
                                       },
                                       [
-                                        _vm._m(1),
+                                        _vm._m(1, true),
                                         _vm._v(" "),
                                         _c(
                                           "tbody",
-                                          _vm._l(_vm.invoices[0], function(
-                                            invoice
-                                          ) {
-                                            return _c(
-                                              "tr",
-                                              { key: invoice.id },
-                                              [
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    class: {
-                                                      "text-bold":
-                                                        invoice.unread,
-                                                      "text-black-50": !invoice.unread
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        _vm._f("humanDate")(
-                                                          invoice.inv_date
+                                          _vm._l(
+                                            _vm.pgTable[index].invoices,
+                                            function(invoice) {
+                                              return _c(
+                                                "tr",
+                                                { key: invoice.id },
+                                                [
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      class: {
+                                                        "text-bold":
+                                                          invoice.unread,
+                                                        "text-black-50": !invoice.unread
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          _vm._f("humanDate")(
+                                                            invoice.inv_date
+                                                          )
                                                         )
                                                       )
-                                                    )
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    class: {
-                                                      "text-bold":
-                                                        invoice.unread,
-                                                      "text-black-50": !invoice.unread
-                                                    }
-                                                  },
-                                                  [
-                                                    _c(
-                                                      "router-link",
-                                                      {
-                                                        attrs: {
-                                                          to: "/invoiced"
-                                                        }
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(invoice.inv_no)
-                                                        )
-                                                      ]
-                                                    )
-                                                  ],
-                                                  1
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    class: {
-                                                      "text-bold":
-                                                        invoice.unread,
-                                                      "text-black-50": !invoice.unread
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(invoice.title)
-                                                    )
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    staticClass:
-                                                      "text-green text-right",
-                                                    class: {
-                                                      "text-bold":
-                                                        invoice.unread,
-                                                      "text-black-50": !invoice.unread
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        _vm._f("currency")(
-                                                          invoice.amount,
-                                                          "SGD",
-                                                          2
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      class: {
+                                                        "text-bold":
+                                                          invoice.unread,
+                                                        "text-black-50": !invoice.unread
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "router-link",
+                                                        {
+                                                          attrs: {
+                                                            to: "/invoiced"
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              invoice.inv_no
+                                                            )
+                                                          )
+                                                        ]
+                                                      )
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      class: {
+                                                        "text-bold":
+                                                          invoice.unread,
+                                                        "text-black-50": !invoice.unread
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          _vm._f("truncate")(
+                                                            invoice.title,
+                                                            50
+                                                          )
                                                         )
                                                       )
-                                                    )
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "td",
-                                                  {
-                                                    staticClass: "text-right",
-                                                    class: {
-                                                      "text-bold":
-                                                        invoice.unread,
-                                                      "text-black-50": !invoice.unread
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        _vm._f("upText")(
-                                                          invoice.filename
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      staticClass:
+                                                        "text-green text-right",
+                                                      class: {
+                                                        "text-bold":
+                                                          invoice.unread,
+                                                        "text-black-50": !invoice.unread
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          _vm._f("currency")(
+                                                            invoice.amount,
+                                                            "SGD",
+                                                            2
+                                                          )
                                                         )
                                                       )
-                                                    )
-                                                  ]
-                                                ),
-                                                _vm._v(" "),
-                                                _vm._m(2, true)
-                                              ]
-                                            )
-                                          }),
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      staticClass: "text-right",
+                                                      class: {
+                                                        "text-bold":
+                                                          invoice.unread,
+                                                        "text-black-50": !invoice.unread
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          _vm._f("upText")(
+                                                            invoice.filename
+                                                          )
+                                                        )
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _vm._m(2, true)
+                                                ]
+                                              )
+                                            }
+                                          ),
                                           0
                                         )
                                       ]
@@ -68729,20 +68740,23 @@ var render = function() {
                                       [
                                         _c("pagination", {
                                           attrs: {
-                                            records: _vm.pgTable[0].records,
-                                            "per-page": _vm.pgTable[0].perpage
+                                            records:
+                                              _vm.pgTable[_vm.tabIndex].records,
+                                            "per-page":
+                                              _vm.pgTable[_vm.tabIndex].perpage
                                           },
                                           on: { paginate: _vm.getTableData },
                                           model: {
-                                            value: _vm.pgTable[0].page,
+                                            value:
+                                              _vm.pgTable[_vm.tabIndex].page,
                                             callback: function($$v) {
                                               _vm.$set(
-                                                _vm.pgTable[0],
+                                                _vm.pgTable[_vm.tabIndex],
                                                 "page",
                                                 $$v
                                               )
                                             },
-                                            expression: "pgTable[0].page"
+                                            expression: "pgTable[tabIndex].page"
                                           }
                                         })
                                       ],
@@ -68751,71 +68765,9 @@ var render = function() {
                                   ])
                                 ])
                               ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "tab-pane fade",
-                                class: {
-                                  active: _vm.tabIndex === 1,
-                                  show: _vm.tabIndex === 1
-                                },
-                                attrs: {
-                                  id: "year-1",
-                                  role: "tabpanel",
-                                  "aria-labelledby": "year1"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam."
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "tab-pane fade",
-                                class: {
-                                  active: _vm.tabIndex === 2,
-                                  show: _vm.tabIndex === 2
-                                },
-                                attrs: {
-                                  id: "year-2",
-                                  role: "tabpanel",
-                                  "aria-labelledby": "year2"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna."
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "tab-pane fade",
-                                class: {
-                                  active: _vm.tabIndex === 3,
-                                  show: _vm.tabIndex === 3
-                                },
-                                attrs: {
-                                  id: "year-3",
-                                  role: "tabpanel",
-                                  "aria-labelledby": "year3"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis."
-                                )
-                              ]
                             )
-                          ]
+                          }),
+                          0
                         )
                       ])
                     ]
@@ -87563,6 +87515,9 @@ Vue.filter("humanDate", function (date) {
 });
 Vue.filter("formatNumber", function (value) {
   return numeral(value).format("0,0");
+});
+Vue.filter("truncate", function (text, stop, clamp) {
+  return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
 });
 
 
