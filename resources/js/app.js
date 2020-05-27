@@ -90,15 +90,15 @@ Vue.filter("upText", function(text) {
 });
 
 Vue.filter("humanDate", function(date) {
-    return moment(date).format("MMMM Do YYYY");
+    return moment(date).format("MMM Do YYYY");
 });
 Vue.filter("formatNumber", function(value) {
     return numeral(value).format("0,0");
 });
 
-Vue.filter("truncate", function(text, stop, clamp) {
-    return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
-});
+// Vue.filter("truncate", function(text, stop, clamp) {
+//     return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
+// });
 
 import Swal from "sweetalert2";
 import Axios from "axios";

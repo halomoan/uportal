@@ -24,6 +24,9 @@ Route::apiResources(['user' => 'API\UserController']);
 
 Route::apiResources(['group' => 'API\GroupController']);
 
+Route::apiResources(['news' => 'API\NewsController']);
+
+
 Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 

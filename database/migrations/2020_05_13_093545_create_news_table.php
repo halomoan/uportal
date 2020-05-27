@@ -18,9 +18,13 @@ class CreateNewsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('author');
+            $table->boolean('showauthor');
             $table->dateTime('validFrom')->useCurrent();
             $table->dateTime('validTo');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->index('user_id');
         });
     }
 

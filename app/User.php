@@ -43,6 +43,11 @@ class User extends Authenticatable
         return $this->hasMany(Invoice::class);
     }
 
+    public function news()
+    {
+        return $this->hasMany(News::class);
+    }
+
     public function groups()
     {
         return $this->belongsToMany(Group::class);

@@ -2678,6 +2678,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2944,6 +2949,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2952,11 +2972,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      newsText: "abc",
-      form: new Form({}),
-      today: moment__WEBPACK_IMPORTED_MODULE_1___default()(),
-      time: new Date(),
-      dateRange: [moment__WEBPACK_IMPORTED_MODULE_1___default()().format(), moment__WEBPACK_IMPORTED_MODULE_1___default()().add("30", "days").format()],
+      newsText: "",
+      form: new Form({
+        title: "",
+        author: "",
+        showAuthor: false
+      }),
+      today: new Date(),
+      yesterday: moment__WEBPACK_IMPORTED_MODULE_1___default()(this.today).subtract("1", "days"),
+      dateRange: [moment__WEBPACK_IMPORTED_MODULE_1___default()(this.today).format(), moment__WEBPACK_IMPORTED_MODULE_1___default()(this.today).add("30", "days").format()],
       local: {
         dow: 0,
         // Sunday is the first day of the week
@@ -2976,15 +3000,51 @@ __webpack_require__.r(__webpack_exports__);
         // weeks,
         cancelTip: "cancel",
         submitTip: "confirm"
+      },
+      preview: {
+        date: this.today,
+        title: "",
+        description: "",
+        author: "",
+        showAuthor: false
       }
     };
   },
   methods: {
     disabledDate: function disabledDate(time) {
-      return time < this.today;
+      return time < this.yesterday;
+    },
+    showAuthor: function showAuthor(e) {
+      this.form.showAuthor = e.target.checked;
+    },
+    showPreview: function showPreview() {
+      this.preview.date = this.dateRange[0];
+      this.preview.title = this.form.title;
+      this.preview.author = this.form.author;
+      this.preview.description = $(".news").summernote("code");
+      this.preview.showAuthor = this.form.showAuthor;
     },
     submit: function submit() {
-      this.newsText = $(".news").summernote("code");
+      if (this.$Role.isAdmin()) {
+        this.form.description = $(".news").summernote("code");
+        this.form.validFrom = this.dateRange[0];
+        this.form.validTo = this.dateRange[0];
+        this.form.post("api/news").then(function (data) {
+          console.log(data);
+        })["catch"](function () {});
+      }
+    },
+    reset: function reset() {
+      this.preview.date = this.today;
+      this.preview.title = "";
+      this.preview.author = "";
+      this.preview.description = "";
+      this.preview.showAuthor = false;
+      $(".news").summernote("code", "");
+      this.form.title = "";
+      this.form.author = "";
+      this.form.description = "";
+      this.form.showAuthor = false;
     }
   },
   mounted: function mounted() {
@@ -3802,6 +3862,158 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3948,7 +4160,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   //     });
   //   }
   // },
-  created: function created() {
+  mounted: function mounted() {
     var _this4 = this;
 
     this.inprogress = false;
@@ -9135,7 +9347,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.datepicker-range .datepicker-popup {\r\n    width: 415px !important;\n}\r\n", ""]);
+exports.push([module.i, "\n.datepicker-range .datepicker-popup {\r\n  width: 415px !important;\n}\r\n", ""]);
 
 // exports
 
@@ -68661,13 +68873,22 @@ var render = function() {
                                                       }
                                                     },
                                                     [
-                                                      _vm._v(
-                                                        _vm._s(
-                                                          _vm._f("truncate")(
-                                                            invoice.title,
-                                                            50
+                                                      _c(
+                                                        "span",
+                                                        {
+                                                          staticClass:
+                                                            "d-inline-block text-truncate",
+                                                          staticStyle: {
+                                                            "max-width": "400px"
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              invoice.title
+                                                            )
                                                           )
-                                                        )
+                                                        ]
                                                       )
                                                     ]
                                                   ),
@@ -68867,7 +69088,7 @@ var render = function() {
             _c("div", { staticClass: "card" }, [
               _vm._m(1),
               _vm._v(" "),
-              _c("div", { staticClass: "card-body" }, [
+              _c("div", { staticClass: "card-body card-cyan" }, [
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col-6" }, [
                     _c("div", { staticClass: "form-group row" }, [
@@ -68885,6 +69106,14 @@ var render = function() {
                         { staticClass: "col-sm-10" },
                         [
                           _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.title,
+                                expression: "form.title"
+                              }
+                            ],
                             staticClass: "form-control",
                             class: {
                               "is-invalid": _vm.form.errors.has("title")
@@ -68896,6 +69125,15 @@ var render = function() {
                               name: "title",
                               placeholder: "Please give a title",
                               required: ""
+                            },
+                            domProps: { value: _vm.form.title },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(_vm.form, "title", $event.target.value)
+                              }
                             }
                           }),
                           _vm._v(" "),
@@ -68940,7 +69178,101 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _vm._m(2),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-2 col-form-label",
+                          attrs: { for: "author" }
+                        },
+                        [_vm._v("Author")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "col-sm-10" },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.author,
+                                expression: "form.author"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("author")
+                            },
+                            attrs: {
+                              type: "text",
+                              autocomplete: "off",
+                              disabled: !_vm.form.showAuthor,
+                              id: "author",
+                              name: "author",
+                              placeholder: "Enter author name (optional)"
+                            },
+                            domProps: { value: _vm.form.author },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "author",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("has-error", {
+                            attrs: { form: _vm.form, field: "author" }
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("div", { staticClass: "form-group pt-2" }, [
+                      _c("div", { staticClass: "icheck-primary d-inline" }, [
+                        _c("input", {
+                          attrs: { type: "checkbox", id: "showAuthor" },
+                          on: {
+                            change: function($event) {
+                              return _vm.showAuthor($event)
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("label", { attrs: { for: "showAuthor" } }, [
+                          _vm._v("Show Author")
+                        ])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-12" },
+                    [
+                      _c("span", { staticClass: "news is-invalid" }),
+                      _vm._v(" "),
+                      _c("has-error", {
+                        attrs: { form: _vm.form, field: "description" }
+                      })
+                    ],
+                    1
+                  )
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col-12" }, [
@@ -68948,33 +69280,49 @@ var render = function() {
                       _vm._v("Output Preview:")
                     ]),
                     _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-warning float-right btn-sm",
+                        on: { click: _vm.showPreview }
+                      },
+                      [_vm._v("Preview")]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-12" }, [
                     _c("div", { staticClass: "callout callout-danger" }, [
                       _c(
-                        "button",
-                        {
-                          staticClass: "close",
-                          attrs: {
-                            type: "button",
-                            "data-dismiss": "callout",
-                            "aria-hidden": "true"
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n                                            ×\n                                        "
-                          )
-                        ]
+                        "p",
+                        { staticClass: "text-sm font-italic text-gray" },
+                        [_vm._v(_vm._s(_vm._f("humanDate")(_vm.preview.date)))]
                       ),
                       _vm._v(" "),
-                      _c("span", {
-                        domProps: { innerHTML: _vm._s(_vm.newsText) }
+                      _c("p", {
+                        domProps: { innerHTML: _vm._s(_vm.preview.description) }
                       }),
                       _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "\n                                            Dear valued customer, last\n                                            warning.\n                                        "
-                        )
-                      ])
+                      _c("p", { staticClass: "text-sm text-gray" }, [
+                        _vm._v(_vm._s(_vm.preview.title))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "p",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.preview.showAuthor,
+                              expression: "preview.showAuthor"
+                            }
+                          ],
+                          staticClass: "text-sm font-italic text-gray"
+                        },
+                        [_vm._v("By: " + _vm._s(_vm.preview.author))]
+                      )
                     ])
                   ])
                 ])
@@ -68990,14 +69338,19 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-primary",
+                      staticClass: "btn btn-primary float-right btn-sm",
                       on: { click: _vm.submit }
                     },
-                    [
-                      _vm._v(
-                        "\n                                Submit\n                            "
-                      )
-                    ]
+                    [_vm._v("Submit")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-default float-right btn-sm mr-3",
+                      on: { click: _vm.reset }
+                    },
+                    [_vm._v("Reset")]
                   )
                 ]
               )
@@ -69018,11 +69371,7 @@ var render = function() {
                     "aria-hidden": "true"
                   }
                 },
-                [
-                  _vm._v(
-                    "\n                            ×\n                        "
-                  )
-                ]
+                [_vm._v("×")]
               ),
               _vm._v(" "),
               _c("span", { domProps: { innerHTML: _vm._s(_vm.newsText) } }),
@@ -69040,7 +69389,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "content-header" }, [
+    return _c("div", { staticClass: "content-header pb-1" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row mb-2" }, [
           _c("div", { staticClass: "col-sm-6" }, [_c("h1", [_vm._v("News")])]),
@@ -69081,16 +69430,6 @@ var staticRenderFns = [
           },
           [_c("i", { staticClass: "fas fa-minus" })]
         )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c("span", { staticClass: "news" })
       ])
     ])
   }
@@ -70226,7 +70565,8 @@ var render = function() {
                                           name: "model",
                                           rawName: "v-model",
                                           value: _vm.form.company,
-                                          expression: "form.company"
+                                          expression:
+                                            "\n                                                            form.company\n                                                        "
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -70349,7 +70689,8 @@ var render = function() {
                                           name: "model",
                                           rawName: "v-model",
                                           value: _vm.form.password,
-                                          expression: "form.password"
+                                          expression:
+                                            "\n                                                            form.password\n                                                        "
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -70411,7 +70752,8 @@ var render = function() {
                                           name: "model",
                                           rawName: "v-model",
                                           value: _vm.form.repassword,
-                                          expression: "form.repassword"
+                                          expression:
+                                            "\n                                                            form.repassword\n                                                        "
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -70514,7 +70856,7 @@ var render = function() {
                                       [
                                         _c("option", { attrs: { value: "" } }, [
                                           _vm._v(
-                                            "\n                              Select User\n                              Role\n                            "
+                                            "\n                                                            Select User Role\n                                                        "
                                           )
                                         ]),
                                         _vm._v(" "),
@@ -70529,7 +70871,7 @@ var render = function() {
                                           { attrs: { value: "user" } },
                                           [
                                             _vm._v(
-                                              "\n                              Standard\n                              User\n                            "
+                                              "\n                                                            Standard User\n                                                        "
                                             )
                                           ]
                                         )
@@ -70572,7 +70914,11 @@ var render = function() {
                                         staticClass: "col-sm-2 col-form-label",
                                         attrs: { for: "billaddr" }
                                       },
-                                      [_vm._v("Billing Address")]
+                                      [
+                                        _vm._v(
+                                          "Billing\n                                                        Address"
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(
@@ -70585,7 +70931,8 @@ var render = function() {
                                               name: "model",
                                               rawName: "v-model",
                                               value: _vm.form.billaddr,
-                                              expression: "form.billaddr"
+                                              expression:
+                                                "\n                                                                form.billaddr\n                                                            "
                                             }
                                           ],
                                           staticClass: "form-control",
@@ -70642,7 +70989,11 @@ var render = function() {
                                     _c(
                                       "label",
                                       { attrs: { for: "unassigned" } },
-                                      [_vm._v("Available Group:")]
+                                      [
+                                        _vm._v(
+                                          "Available\n                                                            Group:"
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(
@@ -70653,7 +71004,8 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.groups.checkAvailGroup,
-                                            expression: "groups.checkAvailGroup"
+                                            expression:
+                                              "\n                                                                groups.checkAvailGroup\n                                                            "
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -70725,7 +71077,11 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [_vm._v(">")]
+                                      [
+                                        _vm._v(
+                                          "\n                                                        >\n                                                    "
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(
@@ -70740,7 +71096,11 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [_vm._v("<")]
+                                      [
+                                        _vm._v(
+                                          "\n                                                        <\n                                                    "
+                                        )
+                                      ]
                                     )
                                   ]
                                 ),
@@ -70750,7 +71110,11 @@ var render = function() {
                                     _c(
                                       "label",
                                       { attrs: { for: "usergroup" } },
-                                      [_vm._v("User Group:")]
+                                      [
+                                        _vm._v(
+                                          "User\n                                                            Group:"
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(
@@ -70761,7 +71125,8 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.groups.checkUserGroup,
-                                            expression: "groups.checkUserGroup"
+                                            expression:
+                                              "\n                                                                groups.checkUserGroup\n                                                            "
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -70825,7 +71190,9 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("div", { staticClass: "text-bold pl-2" }, [
-                                _vm._v("Loading...")
+                                _vm._v(
+                                  "\n                                            Loading...\n                                        "
+                                )
                               ])
                             ])
                           : _vm._e()
@@ -70890,7 +71257,11 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Cancel")]
+                        [
+                          _vm._v(
+                            "\n                                    Cancel\n                                "
+                          )
+                        ]
                       )
                     ])
                   ])
@@ -87511,14 +87882,14 @@ Vue.filter("upText", function (text) {
   return text.toUpperCase();
 });
 Vue.filter("humanDate", function (date) {
-  return moment__WEBPACK_IMPORTED_MODULE_4___default()(date).format("MMMM Do YYYY");
+  return moment__WEBPACK_IMPORTED_MODULE_4___default()(date).format("MMM Do YYYY");
 });
 Vue.filter("formatNumber", function (value) {
   return numeral(value).format("0,0");
-});
-Vue.filter("truncate", function (text, stop, clamp) {
-  return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
-});
+}); // Vue.filter("truncate", function(text, stop, clamp) {
+//     return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
+// });
+
 
 
 window.Swal = sweetalert2__WEBPACK_IMPORTED_MODULE_6___default.a;
@@ -88507,8 +88878,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

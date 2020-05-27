@@ -96,7 +96,12 @@
                                 </td>
                                 <td
                                   v-bind:class="{ 'text-bold' : invoice.unread, 'text-black-50': ! invoice.unread }"
-                                >{{ invoice.title | truncate( 50 ) }}</td>
+                                >
+                                  <span
+                                    class="d-inline-block text-truncate"
+                                    style="max-width: 400px;"
+                                  >{{ invoice.title }}</span>
+                                </td>
                                 <td
                                   class="text-green text-right"
                                   v-bind:class="{ 'text-bold' : invoice.unread, 'text-black-50': ! invoice.unread }"
