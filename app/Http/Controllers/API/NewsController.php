@@ -25,7 +25,19 @@ class NewsController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('isAdmin');
+        $search = \Request::get('q');
+
+        if ($search) {
+            
+            return auth()->user()->news()->where(function ($query) use ($search) {
+                $query->whereLike(['title'], $search);
+            })->paginate(10);
+        } else {            
+            return auth()->user()->news()                
+                ->orderBy('validFrom', 'desc')                
+                ->paginate(10);
+        }
     }
 
     /**
@@ -70,7 +82,9 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        //
+        $this->authorize('isAdmin');
+        $news = News::findOrFail($id);        
+        return $news;
     }
 
     /**

@@ -53,6 +53,10 @@ let routes = [
     },
     {
         path: "/news",
+        component: require("./components/NewsList.vue").default
+    },
+    {
+        path: "/newsd",
         component: require("./components/News.vue").default
     },
     {
@@ -92,6 +96,11 @@ Vue.filter("upText", function(text) {
 Vue.filter("humanDate", function(date) {
     return moment(date).format("MMM Do YYYY");
 });
+
+Vue.filter("humanDateTime", function(date) {
+    return moment(date).format("MMM Do YYYY HH:mm:ss");
+});
+
 Vue.filter("formatNumber", function(value) {
     return numeral(value).format("0,0");
 });

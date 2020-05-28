@@ -154,7 +154,6 @@ export default {
   data() {
     return {
       tabIndex: 0,
-      _invoices: [],
       pgTable: [
         {
           invoices: {},
@@ -213,13 +212,17 @@ export default {
     },
     hasNew() {
       let result = false;
-      result = _.find(this.invoices, function(invoice) {
-        if (invoice.unread) {
+
+      this.pgTable.some(data => {
+        result = _.some(data.invoices, { unread: 1 });
+
+        if (result) {
           return true;
         }
       });
+
       this.$parent.newFlag("INVOICES", result);
-      this.$forceUpdate();
+      //this.$forceUpdate();
     },
     searchTable() {
       if (this.searchText) {
