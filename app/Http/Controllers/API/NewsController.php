@@ -29,13 +29,13 @@ class NewsController extends Controller
         $search = \Request::get('q');
 
         if ($search) {
-            
+
             return auth()->user()->news()->where(function ($query) use ($search) {
                 $query->whereLike(['title'], $search);
-            })->paginate(10);
-        } else {            
-            return auth()->user()->news()                
-                ->orderBy('validFrom', 'desc')                
+            })->orderBy('validFrom', 'asc')->paginate(10);
+        } else {
+            return auth()->user()->news()
+                ->orderBy('validFrom', 'asc')
                 ->paginate(10);
         }
     }
@@ -83,7 +83,7 @@ class NewsController extends Controller
     public function show($id)
     {
         $this->authorize('isAdmin');
-        $news = News::findOrFail($id);        
+        $news = News::findOrFail($id);
         return $news;
     }
 
@@ -96,7 +96,33 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $this->authorize('isAdmin');
+        $user = auth('api')->user();
+
+        $news = News::findOrFail($id);
+
+        $this->validate($request, [
+            'title' => 'required|string|max:191',
+            'description' => 'required|string',
+            'author' => 'sometimes|string',
+            'showAuthor' => 'required|boolean',
+            'validFrom' => 'required|date',
+            'validTo' => 'required|date',
+        ]);
+
+        $validFrom = Carbon::parse($request['validFrom'], 'UTC');
+        $validTo = Carbon::parse($request['validTo'], 'UTC');
+        $user->news()->update([
+            'title' => $request['title'],
+            'description' => $request['description'],
+            'author' => $request['author'],
+            'showauthor' => $request['showAuthor'],
+            'validFrom' => $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss"),
+            'validTo' => $validTo->isoFormat("YYYY-MM-DD HH:mm:ss")
+
+        ]);
+        return ['message' => 'Success'];
     }
 
     /**
@@ -107,6 +133,12 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->authorize('isAdmin');
+
+        $news = News::findOrFail($id);
+
+        $news->delete();
+
+        return ['message' => 'News Deleted'];
     }
 }

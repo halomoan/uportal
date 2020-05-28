@@ -90,14 +90,8 @@
                             class="form-control"
                             autocomplete="off"
                             v-model="form.author"
-                            :disabled="
-                                                            !form.showAuthor
-                                                        "
-                            :class="{
-                                                            'is-invalid': form.errors.has(
-                                                                'author'
-                                                            )
-                                                        }"
+                            :disabled="!form.showAuthor"
+                            :class="{'is-invalid': form.errors.has('author')}"
                             id="author"
                             name="author"
                             placeholder="Enter author name (optional)"
@@ -113,9 +107,7 @@
                             type="checkbox"
                             id="showAuthor"
                             v-model="form.showAuthor"
-                            @change="
-                                                            showAuthor($event)
-                                                        "
+                            @change="showAuthor($event)"
                           />
                           <label for="showAuthor">Show Author</label>
                         </div>
@@ -158,7 +150,16 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer" style="display: block;">
-                  <button class="btn btn-primary float-right btn-sm" @click="submit">Submit</button>
+                  <button
+                    v-show="editMode"
+                    class="btn btn-primary float-right btn-sm"
+                    @click="update"
+                  >Update</button>
+                  <button
+                    v-show="!editMode"
+                    class="btn btn-primary float-right btn-sm"
+                    @click="submit"
+                  >Submit</button>
                   <button
                     v-show="editMode"
                     class="btn btn-default float-right btn-sm mr-3"
@@ -167,8 +168,8 @@
                   <button
                     v-show="!editMode"
                     class="btn btn-default float-right btn-sm mr-3"
-                    @click="reset"
-                  >Reset</button>
+                    @click="cancel"
+                  >Cancel</button>
                 </div>
                 <!-- /.card-footer-->
                 <div class="overlay" v-if="inprogress">
@@ -252,30 +253,91 @@ export default {
       this.preview.showAuthor = this.form.showAuthor;
     },
 
+    update() {
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You want to update the news?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Please Update"
+        }).then(result => {
+          if (result.value) {
+            this.form.description = $(".news").summernote("code");
+            this.form.validFrom = this.dateRange[0];
+            this.form.validTo = this.dateRange[1];
+            this.$Progress.start();
+            this.inprogress = true;
+            this.form
+              .put("api/news/" + this.form.id)
+              .then(data => {
+                Toast.fire({
+                  icon: "success",
+                  title: "News updated successfully"
+                });
+
+                this.inprogress = false;
+                this.$Progress.finish();
+              })
+              .catch(error => {
+                this.inprogress = false;
+                this.$Progress.fail();
+                let message = error.response.data.message;
+                if (message) {
+                  Swal.fire("Failed!", message, "warning");
+                } else {
+                  Swal.fire("Failed!", "There is something wrong.", "warning");
+                }
+              });
+          }
+        });
+      }
+    },
+
     submit() {
       if (this.$Role.isAdmin()) {
-        this.form.description = $(".news").summernote("code");
-        this.form.validFrom = this.dateRange[0];
-        this.form.validTo = this.dateRange[1];
-        this.$Progress.start();
-        this.inprogress = true;
-        this.form
-          .post("api/news")
-          .then(data => {
-            Toast.fire({
-              icon: "success",
-              title: "User created successfully"
-            });
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You want to create the news?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Please Create"
+        }).then(result => {
+          if (result.value) {
+            this.form.description = $(".news").summernote("code");
+            this.form.validFrom = this.dateRange[0];
+            this.form.validTo = this.dateRange[1];
+            this.$Progress.start();
+            this.inprogress = true;
+            this.form
+              .post("api/news")
+              .then(data => {
+                Toast.fire({
+                  icon: "success",
+                  title: "News created successfully"
+                });
 
-            this.reset();
+                this.reset();
 
-            this.inprogress = false;
-            this.$Progress.finish();
-          })
-          .catch(() => {
-            this.inprogress = false;
-            this.$Progress.finish();
-          });
+                this.inprogress = false;
+                this.$Progress.finish();
+              })
+              .catch(error => {
+                this.inprogress = false;
+                this.$Progress.fail();
+                let message = error.response.data.message;
+                if (message) {
+                  Swal.fire("Failed!", message, "warning");
+                } else {
+                  Swal.fire("Failed!", "There is something wrong.", "warning");
+                }
+              });
+          }
+        });
       }
     },
     cancel() {
@@ -304,6 +366,7 @@ export default {
       axios
         .get("api/news/" + newsId)
         .then(({ data }) => {
+          this.form.id = data.id;
           this.form.title = data.title;
           this.form.author = data.author;
           $(".news").summernote("code", data.description);
@@ -312,12 +375,10 @@ export default {
           this.dateRange[0] = moment(data.validFrom).format();
           this.dateRange[1] = moment(data.validTo).format();
 
-          this.editMode = true;
           this.inprogress = false;
           this.$Progress.finish();
         })
         .catch(() => {
-          this.editMode = true;
           this.inprogress = false;
           this.$Progress.fail();
         });

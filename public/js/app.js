@@ -2994,6 +2994,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3056,30 +3057,100 @@ __webpack_require__.r(__webpack_exports__);
       this.preview.description = $(".news").summernote("code");
       this.preview.showAuthor = this.form.showAuthor;
     },
-    submit: function submit() {
+    update: function update() {
       var _this = this;
 
       if (this.$Role.isAdmin()) {
-        this.form.description = $(".news").summernote("code");
-        this.form.validFrom = this.dateRange[0];
-        this.form.validTo = this.dateRange[1];
-        this.$Progress.start();
-        this.inprogress = true;
-        this.form.post("api/news").then(function (data) {
-          Toast.fire({
-            icon: "success",
-            title: "User created successfully"
-          });
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You want to update the news?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Please Update"
+        }).then(function (result) {
+          if (result.value) {
+            _this.form.description = $(".news").summernote("code");
+            _this.form.validFrom = _this.dateRange[0];
+            _this.form.validTo = _this.dateRange[1];
 
-          _this.reset();
+            _this.$Progress.start();
 
-          _this.inprogress = false;
+            _this.inprogress = true;
 
-          _this.$Progress.finish();
-        })["catch"](function () {
-          _this.inprogress = false;
+            _this.form.put("api/news/" + _this.form.id).then(function (data) {
+              Toast.fire({
+                icon: "success",
+                title: "News updated successfully"
+              });
+              _this.inprogress = false;
 
-          _this.$Progress.finish();
+              _this.$Progress.finish();
+            })["catch"](function (error) {
+              _this.inprogress = false;
+
+              _this.$Progress.fail();
+
+              var message = error.response.data.message;
+
+              if (message) {
+                Swal.fire("Failed!", message, "warning");
+              } else {
+                Swal.fire("Failed!", "There is something wrong.", "warning");
+              }
+            });
+          }
+        });
+      }
+    },
+    submit: function submit() {
+      var _this2 = this;
+
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You want to create the news?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Please Create"
+        }).then(function (result) {
+          if (result.value) {
+            _this2.form.description = $(".news").summernote("code");
+            _this2.form.validFrom = _this2.dateRange[0];
+            _this2.form.validTo = _this2.dateRange[1];
+
+            _this2.$Progress.start();
+
+            _this2.inprogress = true;
+
+            _this2.form.post("api/news").then(function (data) {
+              Toast.fire({
+                icon: "success",
+                title: "News created successfully"
+              });
+
+              _this2.reset();
+
+              _this2.inprogress = false;
+
+              _this2.$Progress.finish();
+            })["catch"](function (error) {
+              _this2.inprogress = false;
+
+              _this2.$Progress.fail();
+
+              var message = error.response.data.message;
+
+              if (message) {
+                Swal.fire("Failed!", message, "warning");
+              } else {
+                Swal.fire("Failed!", "There is something wrong.", "warning");
+              }
+            });
+          }
         });
       }
     },
@@ -3102,27 +3173,26 @@ __webpack_require__.r(__webpack_exports__);
       window.history.length > 1 ? this.$router.go(-1) : this.$router.push("/users");
     },
     getNewsData: function getNewsData(newsId) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.inprogress = true;
       this.$Progress.start();
       axios.get("api/news/" + newsId).then(function (_ref) {
         var data = _ref.data;
-        _this2.form.title = data.title;
-        _this2.form.author = data.author;
+        _this3.form.id = data.id;
+        _this3.form.title = data.title;
+        _this3.form.author = data.author;
         $(".news").summernote("code", data.description);
-        _this2.form.showAuthor = data.showauthor;
-        _this2.dateRange[0] = moment__WEBPACK_IMPORTED_MODULE_1___default()(data.validFrom).format();
-        _this2.dateRange[1] = moment__WEBPACK_IMPORTED_MODULE_1___default()(data.validTo).format();
-        _this2.editMode = true;
-        _this2.inprogress = false;
+        _this3.form.showAuthor = data.showauthor;
+        _this3.dateRange[0] = moment__WEBPACK_IMPORTED_MODULE_1___default()(data.validFrom).format();
+        _this3.dateRange[1] = moment__WEBPACK_IMPORTED_MODULE_1___default()(data.validTo).format();
+        _this3.inprogress = false;
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {
-        _this2.editMode = true;
-        _this2.inprogress = false;
+        _this3.inprogress = false;
 
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
     }
   },
@@ -3253,6 +3323,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3262,12 +3357,23 @@ __webpack_require__.r(__webpack_exports__);
         uri: "api/news?page=",
         page: 1,
         perpage: 10,
-        records: 0
+        records: 0,
+        options: {
+          texts: {
+            count: "|||"
+          }
+        }
       }],
       searchText: ""
     };
   },
   methods: {
+    createNews: function createNews() {
+      this.$router.push({
+        path: "/newsd",
+        query: {}
+      });
+    },
     editNews: function editNews(id) {
       this.$router.push({
         path: "/newsd",
@@ -3277,29 +3383,55 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteNews: function deleteNews(id) {
-      this.$router.push({
-        path: "/newsd",
-        query: {
-          newsId: id
-        }
-      });
+      var _this = this;
+
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!"
+        }).then(function (result) {
+          //Send request to the server
+          if (result.value) {
+            axios["delete"]("api/news/" + id).then(function () {
+              if (result.value) {
+                Swal.fire("Deleted!", "The group been deleted.", "success");
+
+                _this.getListData(_this.pgTable[_this.tabIndex].page);
+              }
+            })["catch"](function (error) {
+              var message = error.response.data.message;
+
+              if (message) {
+                Swal.fire("Failed!", message, "warning");
+              } else {
+                Swal.fire("Failed!", "There is something wrong.", "warning");
+              }
+            });
+          }
+        });
+      }
     },
     getListData: function getListData(page) {
-      var _this = this;
+      var _this2 = this;
 
       if (this.$Role.isAdminOrUser()) {
         var uri = this.pgTable[this.tabIndex].uri + page;
         axios.get(uri).then(function (_ref) {
           var data = _ref.data;
-          _this.pgTable[_this.tabIndex].news = data.data;
-          _this.pgTable[_this.tabIndex].records = data.total;
-          _this.pgTable[_this.tabIndex].page = data.current_page;
-          _this.pgTable[_this.tabIndex].perpage = data.per_page;
+          _this2.pgTable[_this2.tabIndex].news = data.data;
+          _this2.pgTable[_this2.tabIndex].records = data.total;
+          _this2.pgTable[_this2.tabIndex].page = data.current_page;
+          _this2.pgTable[_this2.tabIndex].perpage = data.per_page;
         });
       }
     },
     searchTable: function searchTable() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri = "api/news?" + "&q=" + this.searchText + "&page=";
@@ -3310,27 +3442,27 @@ __webpack_require__.r(__webpack_exports__);
       this.$Progress.start();
       axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref2) {
         var data = _ref2.data;
-        _this2.pgTable[_this2.tabIndex].news = data.data;
-        _this2.pgTable[_this2.tabIndex].records = data.total;
-        _this2.pgTable[_this2.tabIndex].page = data.current_page;
-        _this2.pgTable[_this2.tabIndex].perpage = data.per_page;
+        _this3.pgTable[_this3.tabIndex].news = data.data;
+        _this3.pgTable[_this3.tabIndex].records = data.total;
+        _this3.pgTable[_this3.tabIndex].page = data.current_page;
+        _this3.pgTable[_this3.tabIndex].perpage = data.per_page;
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {
         Toast.fire({
           icon: "error",
           title: "Something is wrong. Failed to search."
         });
 
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     Fire.$on("GLOBAL_SEARCH", function () {
-      _this3.searchText = _this3.$parent.searchText;
+      _this4.searchText = _this4.$parent.searchText;
     });
     this.getListData(1);
   }
@@ -69650,6 +69782,31 @@ var render = function() {
                         _c(
                           "button",
                           {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.editMode,
+                                expression: "editMode"
+                              }
+                            ],
+                            staticClass: "btn btn-primary float-right btn-sm",
+                            on: { click: _vm.update }
+                          },
+                          [_vm._v("Update")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: !_vm.editMode,
+                                expression: "!editMode"
+                              }
+                            ],
                             staticClass: "btn btn-primary float-right btn-sm",
                             on: { click: _vm.submit }
                           },
@@ -69687,9 +69844,9 @@ var render = function() {
                             ],
                             staticClass:
                               "btn btn-default float-right btn-sm mr-3",
-                            on: { click: _vm.reset }
+                            on: { click: _vm.cancel }
                           },
-                          [_vm._v("Reset")]
+                          [_vm._v("Cancel")]
                         )
                       ]
                     ),
@@ -69798,6 +69955,23 @@ var render = function() {
                 _c("div", { staticClass: "col-12" }, [
                   _c("div", { staticClass: "card card-default" }, [
                     _c("div", { staticClass: "card-header" }, [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.createNews($event)
+                            }
+                          }
+                        },
+                        [
+                          _c("i", { staticClass: "fa far fa-file" }),
+                          _vm._v(" Create\n                ")
+                        ]
+                      ),
+                      _vm._v(" "),
                       _c("div", { staticClass: "card-tools" }, [
                         _c(
                           "div",
@@ -69866,103 +70040,157 @@ var render = function() {
                     _c(
                       "div",
                       { staticClass: "card-body bg-gray-light" },
-                      _vm._l(_vm.pgTable[_vm.tabIndex].news, function(news) {
-                        return _c("div", { key: news.id, staticClass: "row" }, [
-                          _c("div", { staticClass: "col-12" }, [
-                            _c("p", { staticClass: "text-sm" }, [
-                              _vm._v(
-                                "\n                      Created on: " +
-                                  _vm._s(
-                                    _vm._f("humanDateTime")(news.created_at)
-                                  ) +
-                                  "\n                      "
-                              ),
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "fa fa-edit pl-3",
-                                  attrs: { href: "" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.editNews(news.id)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Edit")]
-                              ),
-                              _vm._v(
-                                "\n                      |\n                      "
-                              ),
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "fa fa-trash text-red",
-                                  attrs: { href: "" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.deleteNews(news.id)
-                                    }
-                                  }
-                                },
-                                [_vm._v("Delete")]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "callout callout-danger elevation-2"
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "d-flex justify-content-end text-right"
+                          },
+                          [
+                            _c("pagination", {
+                              attrs: {
+                                options: _vm.pgTable[0].options,
+                                records: _vm.pgTable[0].records,
+                                "per-page": _vm.pgTable[0].perpage
                               },
-                              [
-                                _c(
-                                  "p",
-                                  {
-                                    staticClass: "text-sm font-italic text-gray"
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                        " +
-                                        _vm._s(_vm._f("humanDate")(news.date)) +
-                                        "\n                      "
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("p", {
-                                  domProps: {
-                                    innerHTML: _vm._s(news.description)
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("p", { staticClass: "text-sm text-gray" }, [
-                                  _vm._v(_vm._s(news.title))
+                              on: { paginate: _vm.getListData },
+                              model: {
+                                value: _vm.pgTable[0].page,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.pgTable[0], "page", $$v)
+                                },
+                                expression: "pgTable[0].page"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.pgTable[_vm.tabIndex].news, function(news) {
+                          return _c(
+                            "div",
+                            { key: news.id, staticClass: "row" },
+                            [
+                              _c("div", { staticClass: "col-12" }, [
+                                _c("p", { staticClass: "text-sm" }, [
+                                  _vm._v(
+                                    "\n                      Created on:\n                      " +
+                                      _vm._s(
+                                        _vm._f("humanDateTime")(news.created_at)
+                                      ) +
+                                      "\n                      "
+                                  ),
+                                  _c("a", {
+                                    staticClass: "fa fa-edit pl-3",
+                                    attrs: { href: "" },
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.editNews(news.id)
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(
+                                    "\n                      |\n                      "
+                                  ),
+                                  _c("a", {
+                                    staticClass: "fa fa-trash text-red",
+                                    attrs: { href: "" },
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.deleteNews(news.id)
+                                      }
+                                    }
+                                  })
                                 ]),
                                 _vm._v(" "),
                                 _c(
-                                  "p",
+                                  "div",
                                   {
-                                    directives: [
-                                      {
-                                        name: "show",
-                                        rawName: "v-show",
-                                        value: news.showauthor,
-                                        expression: "news.showauthor"
-                                      }
-                                    ],
-                                    staticClass: "text-sm font-italic text-gray"
+                                    staticClass:
+                                      "callout callout-danger elevation-2"
                                   },
-                                  [_vm._v("By: " + _vm._s(news.author))]
+                                  [
+                                    _c(
+                                      "p",
+                                      {
+                                        staticClass:
+                                          "text-sm font-italic text-gray"
+                                      },
+                                      [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm._f("humanDate")(news.validFrom)
+                                          )
+                                        )
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("p", {
+                                      domProps: {
+                                        innerHTML: _vm._s(news.description)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "p",
+                                      { staticClass: "text-sm text-gray" },
+                                      [_vm._v(_vm._s(news.title))]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "p",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: news.showauthor,
+                                            expression: "news.showauthor"
+                                          }
+                                        ],
+                                        staticClass:
+                                          "text-sm font-italic text-gray"
+                                      },
+                                      [_vm._v("By: " + _vm._s(news.author))]
+                                    )
+                                  ]
                                 )
-                              ]
-                            )
-                          ])
-                        ])
-                      }),
-                      0
-                    )
+                              ])
+                            ]
+                          )
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "card-footer pb-0" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "d-flex justify-content-end text-right"
+                        },
+                        [
+                          _c("pagination", {
+                            attrs: {
+                              options: _vm.pgTable[0].options,
+                              records: _vm.pgTable[0].records,
+                              "per-page": _vm.pgTable[0].perpage
+                            },
+                            on: { paginate: _vm.getListData },
+                            model: {
+                              value: _vm.pgTable[0].page,
+                              callback: function($$v) {
+                                _vm.$set(_vm.pgTable[0], "page", $$v)
+                              },
+                              expression: "pgTable[0].page"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ])
                   ])
                 ])
               ])
@@ -89541,8 +89769,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
