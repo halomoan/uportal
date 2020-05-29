@@ -26,25 +26,49 @@
           <div class="row">
             <div class="col-12">
               <div class="card card-default">
-                <div class="card-header">
-                  <a href="#" @click.prevent="createNews">
-                    <i class="fa far fa-file"></i> Create
-                  </a>
-                  <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 250px;">
-                      <input
-                        v-model="searchText"
-                        type="text"
-                        name="table_search"
-                        class="form-control float-right"
-                        placeholder="Search"
-                        @keyup.enter="searchTable"
-                      />
-
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-default" @click="searchTable">
-                          <i class="fas fa-search"></i>
-                        </button>
+                <div class="card-header pb-0">
+                  <div class="row">
+                    <div class="col-6">
+                      <a href="#" @click.prevent="createNews">
+                        <i class="fa far fa-file"></i> Create
+                      </a>
+                    </div>
+                    <div class="col-6">
+                      <div class="d-flex justify-content-end">
+                        <div class="form-group">
+                          <select
+                            class="form-control form-control-sm text-b"
+                            id="exampleFormControlSelect1"
+                          >
+                            <option value="today">Today</option>
+                            <option value="thismonth">This month</option>
+                            <option value="upto2months">Up To 2 Months</option>
+                            <option value="upto1year">Up To 1 Year</option>
+                            <option value="upto2years">Up To 2 Years</option>
+                          </select>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-xs-6">
+                            <input
+                              v-model="searchText"
+                              type="text"
+                              name="table_search"
+                              class="form-control form-control-sm ml-4"
+                              placeholder="Search"
+                              @keyup.enter="searchTable"
+                            />
+                          </div>
+                          <div class="col-xs-6">
+                            <button
+                              type="button"
+                              class="btn btn-default btn-sm"
+                              @click="searchTable"
+                            >
+                              <i class="fas fa-search"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <!-- ./card-tool -->
                       </div>
                     </div>
                   </div>

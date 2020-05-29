@@ -2806,6 +2806,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue2_daterange_picker_dist_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue2_daterange_picker_dist_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
 //
 //
 //
@@ -3098,7 +3101,7 @@ __webpack_require__.r(__webpack_exports__);
         endDate: endDate
       },
       dPickerRange: {
-        locale: {
+        locale: _defineProperty({
           direction: "ltr",
           format: "mm/dd/yyyy",
           separator: " - ",
@@ -3109,7 +3112,7 @@ __webpack_require__.r(__webpack_exports__);
           daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
           monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
           firstDay: 0
-        }
+        }, "format", "dd-mm-yyyy HH:MM:ss")
       },
       preview: {
         date: this.today,
@@ -3128,7 +3131,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.showAuthor = e.target.checked;
     },
     showPreview: function showPreview() {
-      this.preview.date = this.dateRange[0];
+      this.preview.date = this.dateRange.startDate;
       this.preview.title = this.form.title;
       this.preview.author = this.form.author;
       this.preview.description = $(".news").summernote("code");
@@ -3149,8 +3152,8 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (result) {
           if (result.value) {
             _this.form.description = $(".news").summernote("code");
-            _this.form.validFrom = _this.dateRange[0];
-            _this.form.validTo = _this.dateRange[1];
+            _this.form.validFrom = moment__WEBPACK_IMPORTED_MODULE_2___default()(_this.dateRange.startDate).format();
+            _this.form.validTo = moment__WEBPACK_IMPORTED_MODULE_2___default()(_this.dateRange.endDate).format();
 
             _this.$Progress.start();
 
@@ -3164,6 +3167,8 @@ __webpack_require__.r(__webpack_exports__);
               _this.inprogress = false;
 
               _this.$Progress.finish();
+
+              _this.goBack();
             })["catch"](function (error) {
               _this.inprogress = false;
 
@@ -3196,8 +3201,8 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (result) {
           if (result.value) {
             _this2.form.description = $(".news").summernote("code");
-            _this2.form.validFrom = _this2.dateRange[0];
-            _this2.form.validTo = _this2.dateRange[1];
+            _this2.form.validFrom = _this2.dateRange.startDate;
+            _this2.form.validTo = _this2.dateRange.endDate;
 
             _this2.$Progress.start();
 
@@ -3261,8 +3266,8 @@ __webpack_require__.r(__webpack_exports__);
         _this3.form.author = data.author;
         $(".news").summernote("code", data.description);
         _this3.form.showAuthor = data.showauthor;
-        _this3.dateRange[0] = moment__WEBPACK_IMPORTED_MODULE_2___default()(data.validFrom).format();
-        _this3.dateRange[1] = moment__WEBPACK_IMPORTED_MODULE_2___default()(data.validTo).format();
+        _this3.dateRange.startDate = new Date(data.validFrom);
+        _this3.dateRange.endDate = new Date(data.validTo);
         _this3.inprogress = false;
 
         _this3.$Progress.finish();
@@ -3271,6 +3276,10 @@ __webpack_require__.r(__webpack_exports__);
 
         _this3.$Progress.fail();
       });
+    },
+    dateRangeUpdate: function dateRangeUpdate(dates) {
+      this.dateRange.startDate = dates.startDate;
+      this.dateRange.endDate = dates.endDate;
     }
   },
   mounted: function mounted() {
@@ -3304,6 +3313,30 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -68112,9 +68145,10 @@ var render = function() {
                                 ref: "picker",
                                 attrs: {
                                   "locale-data": _vm.dPickerRange.locale,
+                                  timePicker: true,
                                   dateFormat: _vm.dPickerRange.dateFormat
                                 },
-                                on: { update: _vm.updateValues },
+                                on: { update: _vm.dateRangeUpdate },
                                 scopedSlots: _vm._u(
                                   [
                                     {
@@ -68578,86 +68612,94 @@ var render = function() {
               _c("div", { staticClass: "row" }, [
                 _c("div", { staticClass: "col-12" }, [
                   _c("div", { staticClass: "card card-default" }, [
-                    _c("div", { staticClass: "card-header" }, [
-                      _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.createNews($event)
-                            }
-                          }
-                        },
-                        [
-                          _c("i", { staticClass: "fa far fa-file" }),
-                          _vm._v(" Create\n                ")
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "card-tools" }, [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "input-group input-group-sm",
-                            staticStyle: { width: "250px" }
-                          },
-                          [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.searchText,
-                                  expression: "searchText"
-                                }
-                              ],
-                              staticClass: "form-control float-right",
-                              attrs: {
-                                type: "text",
-                                name: "table_search",
-                                placeholder: "Search"
-                              },
-                              domProps: { value: _vm.searchText },
+                    _c("div", { staticClass: "card-header pb-0" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-6" }, [
+                          _c(
+                            "a",
+                            {
+                              attrs: { href: "#" },
                               on: {
-                                keyup: function($event) {
-                                  if (
-                                    !$event.type.indexOf("key") &&
-                                    _vm._k(
-                                      $event.keyCode,
-                                      "enter",
-                                      13,
-                                      $event.key,
-                                      "Enter"
-                                    )
-                                  ) {
-                                    return null
-                                  }
-                                  return _vm.searchTable($event)
-                                },
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.searchText = $event.target.value
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.createNews($event)
                                 }
                               }
-                            }),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "input-group-append" }, [
-                              _c(
-                                "button",
-                                {
-                                  staticClass: "btn btn-default",
-                                  attrs: { type: "button" },
-                                  on: { click: _vm.searchTable }
-                                },
-                                [_c("i", { staticClass: "fas fa-search" })]
-                              )
-                            ])
-                          ]
-                        )
+                            },
+                            [
+                              _c("i", { staticClass: "fa far fa-file" }),
+                              _vm._v(" Create\n                    ")
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-6" }, [
+                          _c(
+                            "div",
+                            { staticClass: "d-flex justify-content-end" },
+                            [
+                              _vm._m(1),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c("div", { staticClass: "col-xs-6" }, [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.searchText,
+                                        expression: "searchText"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "form-control form-control-sm ml-4",
+                                    attrs: {
+                                      type: "text",
+                                      name: "table_search",
+                                      placeholder: "Search"
+                                    },
+                                    domProps: { value: _vm.searchText },
+                                    on: {
+                                      keyup: function($event) {
+                                        if (
+                                          !$event.type.indexOf("key") &&
+                                          _vm._k(
+                                            $event.keyCode,
+                                            "enter",
+                                            13,
+                                            $event.key,
+                                            "Enter"
+                                          )
+                                        ) {
+                                          return null
+                                        }
+                                        return _vm.searchTable($event)
+                                      },
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.searchText = $event.target.value
+                                      }
+                                    }
+                                  })
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-xs-6" }, [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-default btn-sm",
+                                      attrs: { type: "button" },
+                                      on: { click: _vm.searchTable }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-search" })]
+                                  )
+                                ])
+                              ])
+                            ]
+                          )
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
@@ -68849,6 +68891,39 @@ var staticRenderFns = [
           ])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c(
+        "select",
+        {
+          staticClass: "form-control form-control-sm text-b",
+          attrs: { id: "exampleFormControlSelect1" }
+        },
+        [
+          _c("option", { attrs: { value: "today" } }, [_vm._v("Today")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "thismonth" } }, [
+            _vm._v("This month")
+          ]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "upto2months" } }, [
+            _vm._v("Up To 2 Months")
+          ]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "upto1year" } }, [
+            _vm._v("Up To 1 Year")
+          ]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "upto2years" } }, [
+            _vm._v("Up To 2 Years")
+          ])
+        ]
+      )
     ])
   }
 ]
@@ -88417,8 +88492,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

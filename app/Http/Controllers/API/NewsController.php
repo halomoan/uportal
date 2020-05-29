@@ -111,9 +111,14 @@ class NewsController extends Controller
             'validTo' => 'required|date',
         ]);
 
+        //return $request['validFrom'];
         $validFrom = Carbon::parse($request['validFrom'], 'UTC');
+
+        //return $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss");
+
+
         $validTo = Carbon::parse($request['validTo'], 'UTC');
-        $user->news()->update([
+        $news->update([
             'title' => $request['title'],
             'description' => $request['description'],
             'author' => $request['author'],

@@ -83,7 +83,8 @@
                                                         dPickerRange.locale
                                                     "
                                                     v-model="dateRange"
-                                                    @update="updateValues"
+                                                    @update="dateRangeUpdate"
+                                                    :timePicker="true"
                                                     :dateFormat="
                                                         dPickerRange.dateFormat
                                                     "
@@ -318,7 +319,8 @@ export default {
                         "Nov",
                         "Dec"
                     ],
-                    firstDay: 0
+                    firstDay: 0,
+                    format: "dd-mm-yyyy HH:MM:ss"
                 }
             },
             preview: {
@@ -338,7 +340,7 @@ export default {
             this.form.showAuthor = e.target.checked;
         },
         showPreview() {
-            this.preview.date = this.dateRange[0];
+            this.preview.date = this.dateRange.startDate;
             this.preview.title = this.form.title;
             this.preview.author = this.form.author;
             this.preview.description = $(".news").summernote("code");
@@ -358,8 +360,13 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         this.form.description = $(".news").summernote("code");
-                        this.form.validFrom = this.dateRange[0];
-                        this.form.validTo = this.dateRange[1];
+                        this.form.validFrom = moment(
+                            this.dateRange.startDate
+                        ).format();
+                        this.form.validTo = moment(
+                            this.dateRange.endDate
+                        ).format();
+
                         this.$Progress.start();
                         this.inprogress = true;
                         this.form
@@ -372,6 +379,8 @@ export default {
 
                                 this.inprogress = false;
                                 this.$Progress.finish();
+
+                                this.goBack();
                             })
                             .catch(error => {
                                 this.inprogress = false;
@@ -405,8 +414,8 @@ export default {
                 }).then(result => {
                     if (result.value) {
                         this.form.description = $(".news").summernote("code");
-                        this.form.validFrom = this.dateRange[0];
-                        this.form.validTo = this.dateRange[1];
+                        this.form.validFrom = this.dateRange.startDate;
+                        this.form.validTo = this.dateRange.endDate;
                         this.$Progress.start();
                         this.inprogress = true;
                         this.form
@@ -472,8 +481,8 @@ export default {
                     $(".news").summernote("code", data.description);
                     this.form.showAuthor = data.showauthor;
 
-                    this.dateRange[0] = moment(data.validFrom).format();
-                    this.dateRange[1] = moment(data.validTo).format();
+                    this.dateRange.startDate = new Date(data.validFrom);
+                    this.dateRange.endDate = new Date(data.validTo);
 
                     this.inprogress = false;
                     this.$Progress.finish();
@@ -482,6 +491,10 @@ export default {
                     this.inprogress = false;
                     this.$Progress.fail();
                 });
+        },
+        dateRangeUpdate(dates) {
+            this.dateRange.startDate = dates.startDate;
+            this.dateRange.endDate = dates.endDate;
         }
     },
     mounted() {
