@@ -38,11 +38,12 @@
                         <div class="form-group">
                           <select
                             class="form-control form-control-sm text-b"
-                            id="exampleFormControlSelect1"
+                            v-model="selSince"
+                            @change="selSinceChange"
                           >
                             <option value="today">Today</option>
-                            <option value="thismonth">This month</option>
-                            <option value="upto2months">Up To 2 Months</option>
+                            <option value="thismth">This month</option>
+                            <option value="upto2mths">Up To 2 Months</option>
                             <option value="upto1year">Up To 1 Year</option>
                             <option value="upto2years">Up To 2 Years</option>
                           </select>
@@ -54,7 +55,7 @@
                               type="text"
                               name="table_search"
                               class="form-control form-control-sm ml-4"
-                              placeholder="Search"
+                              placeholder="Search title"
                               @keyup.enter="searchTable"
                             />
                           </div>
@@ -151,17 +152,13 @@ export default {
       pgTable: [
         {
           news: [],
-          uri: "api/news?page=",
+          uri: "api/news?",
           page: 1,
           perpage: 10,
-          records: 0,
-          options: {
-            texts: {
-              count: "|||"
-            }
-          }
+          records: 0
         }
       ],
+      selSince: "today",
       searchText: ""
     };
   },
@@ -207,7 +204,12 @@ export default {
     },
     getListData(page) {
       if (this.$Role.isAdminOrUser()) {
-        let uri = this.pgTable[this.tabIndex].uri + page;
+        let uri =
+          this.pgTable[this.tabIndex].uri +
+          "t=" +
+          this.selSince +
+          "&page=" +
+          page;
 
         axios.get(uri).then(({ data }) => {
           this.pgTable[this.tabIndex].news = data.data;
@@ -217,12 +219,21 @@ export default {
         });
       }
     },
+    selSinceChange() {
+      this.getListData(1);
+    },
     searchTable() {
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri =
-          "api/news?" + "&q=" + this.searchText + "&page=";
+          "api/news?" +
+          "&q=" +
+          this.searchText +
+          "&t=" +
+          this.selSince +
+          "&page=";
       } else {
-        this.pgTable[this.tabIndex].uri = "api/news?" + "&page=";
+        this.pgTable[this.tabIndex].uri =
+          "api/news?" + "t=" + this.selSince + "&page=";
       }
       this.$Progress.start();
       axios

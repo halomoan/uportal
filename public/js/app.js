@@ -3458,22 +3458,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       tabIndex: 0,
       pgTable: [{
         news: [],
-        uri: "api/news?page=",
+        uri: "api/news?",
         page: 1,
         perpage: 10,
-        records: 0,
-        options: {
-          texts: {
-            count: "|||"
-          }
-        }
+        records: 0
       }],
+      selSince: "today",
       searchText: ""
     };
   },
@@ -3530,7 +3527,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       if (this.$Role.isAdminOrUser()) {
-        var uri = this.pgTable[this.tabIndex].uri + page;
+        var uri = this.pgTable[this.tabIndex].uri + "t=" + this.selSince + "&page=" + page;
         axios.get(uri).then(function (_ref) {
           var data = _ref.data;
           _this2.pgTable[_this2.tabIndex].news = data.data;
@@ -3540,13 +3537,16 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+    selSinceChange: function selSinceChange() {
+      this.getListData(1);
+    },
     searchTable: function searchTable() {
       var _this3 = this;
 
       if (this.searchText) {
-        this.pgTable[this.tabIndex].uri = "api/news?" + "&q=" + this.searchText + "&page=";
+        this.pgTable[this.tabIndex].uri = "api/news?" + "&q=" + this.searchText + "&t=" + this.selSince + "&page=";
       } else {
-        this.pgTable[this.tabIndex].uri = "api/news?" + "&page=";
+        this.pgTable[this.tabIndex].uri = "api/news?" + "t=" + this.selSince + "&page=";
       }
 
       this.$Progress.start();
@@ -68638,7 +68638,78 @@ var render = function() {
                             "div",
                             { staticClass: "d-flex justify-content-end" },
                             [
-                              _vm._m(1),
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.selSince,
+                                        expression: "selSince"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "form-control form-control-sm text-b",
+                                    on: {
+                                      change: [
+                                        function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.selSince = $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        },
+                                        _vm.selSinceChange
+                                      ]
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "today" } },
+                                      [_vm._v("Today")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "thismth" } },
+                                      [_vm._v("This month")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "upto2mths" } },
+                                      [_vm._v("Up To 2 Months")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "upto1year" } },
+                                      [_vm._v("Up To 1 Year")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "upto2years" } },
+                                      [_vm._v("Up To 2 Years")]
+                                    )
+                                  ]
+                                )
+                              ]),
                               _vm._v(" "),
                               _c("div", { staticClass: "form-group row" }, [
                                 _c("div", { staticClass: "col-xs-6" }, [
@@ -68656,7 +68727,7 @@ var render = function() {
                                     attrs: {
                                       type: "text",
                                       name: "table_search",
-                                      placeholder: "Search"
+                                      placeholder: "Search title"
                                     },
                                     domProps: { value: _vm.searchText },
                                     on: {
@@ -68891,39 +68962,6 @@ var staticRenderFns = [
           ])
         ])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "select",
-        {
-          staticClass: "form-control form-control-sm text-b",
-          attrs: { id: "exampleFormControlSelect1" }
-        },
-        [
-          _c("option", { attrs: { value: "today" } }, [_vm._v("Today")]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "thismonth" } }, [
-            _vm._v("This month")
-          ]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "upto2months" } }, [
-            _vm._v("Up To 2 Months")
-          ]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "upto1year" } }, [
-            _vm._v("Up To 1 Year")
-          ]),
-          _vm._v(" "),
-          _c("option", { attrs: { value: "upto2years" } }, [
-            _vm._v("Up To 2 Years")
-          ])
-        ]
-      )
     ])
   }
 ]
@@ -88492,8 +88530,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

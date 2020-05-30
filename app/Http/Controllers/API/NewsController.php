@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\News;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
@@ -27,14 +28,45 @@ class NewsController extends Controller
     {
         $this->authorize('isAdmin');
         $search = \Request::get('q');
+        $since = \Request::get('t');
+
+        $where = "";
+
+        switch ($since) {
+            case 'today':
+                $where = 'DATE(created_at) = CURDATE()';
+                break;
+            case 'thismth':
+                $period1 = date('m');
+                $where = 'Month(created_at) = ' . $period1;
+                break;
+            case 'upto2mths':
+                $period1 = date('m');
+                $period2 = date("m", strtotime('-1 months'));
+                $where = 'Month(created_at) Between ' . $period2  . ' and ' . $period1;
+                break;
+            case 'upto1year':
+                $period1 = date('Y');
+                $where = 'Year(created_at) = ' . $period1;
+                break;
+            case 'upto2years':
+                $period1 = date('Y');
+                $period2 = date('Y') - 1;
+                $where = 'Year(created_at) Between ' . $period2  . ' and ' . $period1;
+                break;
+            default:
+                $where = 'DATE(created_at) = CURDATE()';
+                break;
+        }
 
         if ($search) {
 
             return auth()->user()->news()->where(function ($query) use ($search) {
                 $query->whereLike(['title'], $search);
-            })->orderBy('validFrom', 'asc')->paginate(10);
+            })->whereRaw($where)->orderBy('validFrom', 'asc')->paginate(10);
         } else {
             return auth()->user()->news()
+                ->whereRaw($where)
                 ->orderBy('validFrom', 'asc')
                 ->paginate(10);
         }
