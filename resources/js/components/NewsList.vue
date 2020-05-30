@@ -1,4 +1,4 @@
-<template>
+.<template>
   <div>
     <div v-if="$Role.isAdmin()">
       <section class="content-header pb-1">
@@ -101,7 +101,15 @@
                         <a
                           href
                           class="fa fa-trash text-red"
+                          tooltip="Delete"
                           @click.prevent="deleteNews(news.id)"
+                        ></a>
+                        |
+                        <a
+                          href
+                          class="fa fa-arrow-circle-up text-green"
+                          tooltip="Publish"
+                          @click.prevent="publishFor(news.id)"
                         ></a>
                       </p>
                       <div class="callout callout-danger elevation-2">
@@ -137,6 +145,100 @@
         </div>
         <!-- /.container-fluid -->
       </section>
+      <!-- ./section -->
+      <div class="modal fade" id="publishModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Publish - Set Recipient(s)</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group row">
+                  <label for="recipient-type" class="col-sm-2 col-form-label">Recipient:</label>
+                  <div class="col-sm-10">
+                    <select
+                      class="form-control"
+                      id="recipient-type"
+                      v-model="rcpts.type"
+                      @change="getAvailRcptList()"
+                    >
+                      <option value="group">Group</option>
+                      <option value="user">User</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label for="unassigned">
+                        Available
+                        Member(s):
+                      </label>
+                      <select
+                        v-model="rcpts.checkAvailList"
+                        multiple
+                        class="form-control"
+                        id="unassigned"
+                        size="10"
+                      >
+                        <option
+                          v-for="(rcpt,index) in rcpts.availList"
+                          :key="rcpt.id"
+                          :value="index"
+                        >
+                          {{
+                          rcpt.name
+                          }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-2 d-flex flex-column justify-content-center align-items-center">
+                    <button type="button" class="btn btn-info mb-2" @click.prevent="addsetList">&gt;</button>
+                    <button
+                      type="button"
+                      class="btn btn-default"
+                      @click.prevent="removesetList"
+                    >&lt;</button>
+                  </div>
+                  <div class="col-5">
+                    <div class="form-group">
+                      <label for="setList">
+                        Assigned
+                        Member(s):
+                      </label>
+                      <select
+                        v-model="rcpts.checkSetList"
+                        multiple
+                        class="form-control"
+                        id="setList"
+                        size="10"
+                      >
+                        <option v-for="(rcpt,index) in rcpts.setList" :key="index" :value="index">
+                          {{
+                          rcpt.name
+                          }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- ./modal-body -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            <!-- ./modal-footer -->
+          </div>
+        </div>
+      </div>
+      <!-- ./modal -->
     </div>
     <div v-if="!$Role.isAdminOrUser()">
       <not-found></not-found>
@@ -155,11 +257,24 @@ export default {
           uri: "api/news?",
           page: 1,
           perpage: 10,
-          records: 0
+          records: 0,
+          options: {
+            texts: {
+              count: "|||"
+            }
+          }
         }
       ],
       selSince: "today",
-      searchText: ""
+      searchText: "",
+      rcpts: {
+        type: "user",
+        allList: [],
+        availList: [],
+        setList: [],
+        checkAvailList: [],
+        checkSetList: []
+      }
     };
   },
   methods: {
@@ -202,6 +317,24 @@ export default {
         });
       }
     },
+    getAvailRcptList() {
+      if (this.rcpts.type === "user") {
+      } else {
+        axios
+          .get("api/group")
+          .then(({ data }) => {
+            this.rcpts.availList = data;
+          })
+          .catch(() => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Failed to retrieve Group Info!",
+              footer: "<a href='/news'>Let me redo again</a>"
+            });
+          });
+      }
+    },
     getListData(page) {
       if (this.$Role.isAdminOrUser()) {
         let uri =
@@ -218,6 +351,9 @@ export default {
           this.pgTable[this.tabIndex].perpage = data.per_page;
         });
       }
+    },
+    publishFor(id) {
+      $("#publishModal").modal("show");
     },
     selSinceChange() {
       this.getListData(1);

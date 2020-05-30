@@ -17,7 +17,7 @@ $fa-font-path: "../webfonts";
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 
-@import "~icheck-bootstrap/icheck-bootstrap.min.css";
+//@import "~icheck-bootstrap/icheck-bootstrap.min.css";
 
 @page {
     margin: 0;
@@ -28,4 +28,8 @@ $fa-font-path: "../webfonts";
 }
 .VuePagination__pagination {
     margin-bottom: 1px !important;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.2);
 }
