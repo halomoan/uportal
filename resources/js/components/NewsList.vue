@@ -28,12 +28,12 @@
               <div class="card card-default">
                 <div class="card-header pb-0">
                   <div class="row">
-                    <div class="col-6">
+                    <div class="col-4">
                       <a href="#" @click.prevent="createNews">
                         <i class="fa far fa-file"></i> Create
                       </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-8">
                       <div class="d-flex justify-content-end">
                         <div class="form-group">
                           <select
@@ -198,11 +198,11 @@
                     </div>
                   </div>
                   <div class="col-2 d-flex flex-column justify-content-center align-items-center">
-                    <button type="button" class="btn btn-info mb-2" @click.prevent="addsetList">&gt;</button>
+                    <button type="button" class="btn btn-info mb-2" @click.prevent="addToList">&gt;</button>
                     <button
                       type="button"
                       class="btn btn-default"
-                      @click.prevent="removesetList"
+                      @click.prevent="removeFromList"
                     >&lt;</button>
                   </div>
                   <div class="col-5">
@@ -351,6 +351,46 @@ export default {
           this.pgTable[this.tabIndex].perpage = data.per_page;
         });
       }
+    },
+    addToList() {
+      if (!this.rcpts.availList.length) {
+        return;
+      }
+
+      let selected = [];
+      for (var i in this.rcpts.checkAvailList) {
+        let idx = this.rcpts.checkAvailList[i];
+
+        selected.push(this.rcpts.availList[idx]);
+      }
+
+      this.rcpts.setList = [...this.rcpts.setList, ...selected];
+
+      this.rcpts.availList = _.differenceBy(
+        this.rcpts.availList,
+        this.rcpts.setList,
+        "id"
+      );
+
+      console.log(this.rcpts.setList);
+    },
+    removeFromList() {
+      if (!this.rcpts.setList.length) {
+        return;
+      }
+      let selected = [];
+      for (var i in this.rcpts.checkSetList) {
+        let idx = this.rcpts.checkSetList[i];
+
+        selected.push(this.rcpts.setList[idx]);
+      }
+      this.rcpts.availList = [...this.rcpts.availList, ...selected];
+
+      this.rcpts.setList = _.differenceBy(
+        this.rcpts.setList,
+        this.rcpts.availList,
+        "id"
+      );
     },
     publishFor(id) {
       $("#publishModal").modal("show");

@@ -149,20 +149,12 @@
                         }}
                       </td>
                       <td>
-                        <a
-                          href
-                          class="fa fa-edit"
-                          @click.prevent="
-                                                        editGroup(group.id)
-                                                    "
-                        ></a>
+                        <a href class="fa fa-edit" @click.prevent="editGroup(group.id)"></a>
                         /
                         <a
                           href
                           class="fa fa-trash text-red"
-                          @click.prevent="
-                                                        deleteGroup(group.id)
-                                                    "
+                          @click.prevent="deleteGroup(group.id)"
                         ></a>
                       </td>
                     </tr>

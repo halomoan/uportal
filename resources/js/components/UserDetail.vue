@@ -171,7 +171,7 @@
                           <div class="col-sm-10">
                             <select
                               name="type"
-                              v-model="form.type"
+                              v-model="form.urole"
                               id="type"
                               class="form-control"
                               :class="{

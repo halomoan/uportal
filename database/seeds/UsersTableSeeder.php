@@ -23,14 +23,14 @@ class UsersTableSeeder extends Seeder
             'name' => 'Halomoan',
             'email' => 'halomoan@uportal.test',
             'password' => $password,
-            'type' => 'admin'
+            'urole' => 'admin'
         ]);
 
         for ($i = 0; $i < 10; $i++) {
             User::create([
                 'name' => $faker->name,
                 'email' => $faker->email,
-                'type' => 'user',
+                'urole' => 'user',
                 'password' => $password,
             ]);
         }

@@ -3262,6 +3262,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 //
 //
 //
@@ -3617,6 +3629,37 @@ __webpack_require__.r(__webpack_exports__);
           _this3.pgTable[_this3.tabIndex].perpage = data.per_page;
         });
       }
+    },
+    addToList: function addToList() {
+      if (!this.rcpts.availList.length) {
+        return;
+      }
+
+      var selected = [];
+
+      for (var i in this.rcpts.checkAvailList) {
+        var idx = this.rcpts.checkAvailList[i];
+        selected.push(this.rcpts.availList[idx]);
+      }
+
+      this.rcpts.setList = [].concat(_toConsumableArray(this.rcpts.setList), selected);
+      this.rcpts.availList = _.differenceBy(this.rcpts.availList, this.rcpts.setList, "id");
+      console.log(this.rcpts.setList);
+    },
+    removeFromList: function removeFromList() {
+      if (!this.rcpts.setList.length) {
+        return;
+      }
+
+      var selected = [];
+
+      for (var i in this.rcpts.checkSetList) {
+        var idx = this.rcpts.checkSetList[i];
+        selected.push(this.rcpts.setList[idx]);
+      }
+
+      this.rcpts.availList = [].concat(_toConsumableArray(this.rcpts.availList), selected);
+      this.rcpts.setList = _.differenceBy(this.rcpts.setList, this.rcpts.availList, "id");
     },
     publishFor: function publishFor(id) {
       $("#publishModal").modal("show");
@@ -4925,14 +4968,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5350,11 +5385,11 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (result) {
           //Send request to the server
           if (result.value) {
-            axios["delete"]("api/user/" + id).then(function () {
-              if (result.value) {
+            axios["delete"]("api/user/" + id).then(function (result) {
+              if (result.status === 200) {
                 Swal.fire("Deleted!", "Your user has been deleted.", "success");
 
-                _this2.getTableData(_this2.pgGroups.page);
+                _this2.getTableData(_this2.pgUsers.page);
               }
             })["catch"](function (error) {
               var message = error.response.data.message;
@@ -68642,7 +68677,7 @@ var render = function() {
                   _c("div", { staticClass: "card card-default" }, [
                     _c("div", { staticClass: "card-header pb-0" }, [
                       _c("div", { staticClass: "row" }, [
-                        _c("div", { staticClass: "col-6" }, [
+                        _c("div", { staticClass: "col-4" }, [
                           _c(
                             "a",
                             {
@@ -68661,7 +68696,7 @@ var render = function() {
                           )
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-6" }, [
+                        _c("div", { staticClass: "col-8" }, [
                           _c(
                             "div",
                             { staticClass: "d-flex justify-content-end" },
@@ -69148,7 +69183,7 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       $event.preventDefault()
-                                      return _vm.addsetList($event)
+                                      return _vm.addToList($event)
                                     }
                                   }
                                 },
@@ -69163,7 +69198,7 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       $event.preventDefault()
-                                      return _vm.removesetList($event)
+                                      return _vm.removeFromList($event)
                                     }
                                   }
                                 },
@@ -70716,8 +70751,8 @@ var render = function() {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.form.type,
-                                            expression: "form.type"
+                                            value: _vm.form.urole,
+                                            expression: "form.urole"
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -70745,7 +70780,7 @@ var render = function() {
                                               })
                                             _vm.$set(
                                               _vm.form,
-                                              "type",
+                                              "urole",
                                               $event.target.multiple
                                                 ? $$selectedVal
                                                 : $$selectedVal[0]
@@ -71830,7 +71865,7 @@ var render = function() {
                                   _c("td", [_vm._v(_vm._s(user.email))]),
                                   _vm._v(" "),
                                   _c("td", [
-                                    _vm._v(_vm._s(_vm._f("upText")(user.type)))
+                                    _vm._v(_vm._s(_vm._f("upText")(user.urole)))
                                   ]),
                                   _vm._v(" "),
                                   _c("td", [
@@ -71954,7 +71989,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Email")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Type")]),
+        _c("th", [_vm._v("Role")]),
         _vm._v(" "),
         _c("th", [_vm._v("Registered At")]),
         _vm._v(" "),
@@ -87710,12 +87745,12 @@ var Role = /*#__PURE__*/function () {
   _createClass(Role, [{
     key: "isAdmin",
     value: function isAdmin() {
-      return this.user.type === "admin";
+      return this.user.urole === "admin";
     }
   }, {
     key: "isUser",
     value: function isUser() {
-      return this.user.type === "user";
+      return this.user.urole === "user";
     }
   }, {
     key: "isAdminOrUser",

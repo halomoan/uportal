@@ -183,12 +183,12 @@
   <!-- ./wrapper -->
   @auth
   <script>
-    window.user = { 'type' :  @json(auth()->user()->type) };    
+    window.user = { 'urole' :  @json(auth()->user()->urole) };    
     //@json(auth()->user()->type) 
   </script>
   @endauth
 
-  
+
   <script src="/js/app.js"></script>
   <!-- overlayScrollbars -->
   <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>

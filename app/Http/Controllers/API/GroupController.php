@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Group;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -39,6 +40,7 @@ class GroupController extends Controller
                 return Group::latest()->paginate(10);
             } else {
                 return Group::orderBy('name')->get();
+                //return Group::select('*', DB::Raw("'group' AS member"))->orderBy('name')->get();
             }
         }
     }

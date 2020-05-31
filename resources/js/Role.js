@@ -4,11 +4,11 @@ export default class Role {
     }
 
     isAdmin() {
-        return this.user.type === "admin";
+        return this.user.urole === "admin";
     }
 
     isUser() {
-        return this.user.type === "user";
+        return this.user.urole === "user";
     }
 
     isAdminOrUser() {

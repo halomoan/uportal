@@ -58,7 +58,7 @@
                         <th>Name</th>
                         <th>Company</th>
                         <th>Email</th>
-                        <th>Type</th>
+                        <th>Role</th>
                         <th>Registered At</th>
                         <th>Action</th>
                       </tr>
@@ -69,7 +69,7 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.company }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.type | upText }}</td>
+                        <td>{{ user.urole | upText }}</td>
                         <td>
                           {{
                           user.created_at
@@ -194,14 +194,14 @@ export default {
           if (result.value) {
             axios
               .delete("api/user/" + id)
-              .then(() => {
-                if (result.value) {
+              .then(result => {
+                if (result.status === 200) {
                   Swal.fire(
                     "Deleted!",
                     "Your user has been deleted.",
                     "success"
                   );
-                  this.getTableData(this.pgGroups.page);
+                  this.getTableData(this.pgUsers.page);
                 }
               })
               .catch(error => {
