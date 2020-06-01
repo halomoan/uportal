@@ -158,7 +158,7 @@ export default {
       );
       this.rcpts.checkAvailList = [];
 
-      // this.$emit("userGroupList", this.rcpts.setList);
+      this.$emit("userGroupList", this.rcpts.setList);
     },
     removeFromList() {
       if (!this.rcpts.setList.length) {

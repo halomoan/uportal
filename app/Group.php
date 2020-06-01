@@ -26,6 +26,12 @@ class Group extends Model
         'created_at', 'updated_at'
     ];
 
+    public function news()
+    {
+        //return $this->belongsToMany(News::class, 'group_news');
+        return $this->belongsToMany(News::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class);

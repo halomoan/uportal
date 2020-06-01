@@ -14,4 +14,9 @@ class News extends Model
     protected $hidden = [
         //'created_at', 'updated_at'
     ];
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class);
+    }
 }

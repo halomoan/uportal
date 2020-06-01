@@ -3466,7 +3466,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       }],
       selSince: "today",
-      searchText: ""
+      searchText: "",
+      selUserGroup: null,
+      newsId: null
     };
   },
   methods: {
@@ -3536,6 +3538,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.sel.clearSetList();
     },
     publishFor: function publishFor(id) {
+      this.newsId = id;
       this.$refs.sel.getAvailRcptList();
       $("#publishModal").modal("show");
     },
@@ -3570,14 +3573,55 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     setUserGroup: function setUserGroup(data) {
-      console.log(data);
+      this.setUserGroup = data;
+    },
+    saveUserGroup: function saveUserGroup() {
+      var _this4 = this;
+
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Publish News",
+          text: "You are going to publish this news to the selected user(s)/group(s)",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Publish it!"
+        }).then(function (result) {
+          //Send request to the server
+          var toUser = _.map(_this4.setUserGroup.filter(function (data) {
+            return data.type === "person";
+          }), "id");
+
+          var toGroup = _.map(_this4.setUserGroup.filter(function (data) {
+            return data.type === "group";
+          }), "id");
+
+          if (result.value) {
+            axios.put("api/news/" + _this4.newsId, {
+              toUser: toUser,
+              toGroup: toGroup
+            }).then(function () {
+              if (result.value) {}
+            })["catch"](function (error) {
+              var message = error.response.data.message;
+
+              if (message) {
+                Swal.fire("Failed!", message, "warning");
+              } else {
+                Swal.fire("Failed!", "There is something wrong.", "warning");
+              }
+            });
+          }
+        });
+      }
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     Fire.$on("GLOBAL_SEARCH", function () {
-      _this4.searchText = _this4.$parent.searchText;
+      _this5.searchText = _this5.$parent.searchText;
     });
     this.getListData(1);
   }
@@ -5216,7 +5260,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       this.rcpts.setList = [].concat(_toConsumableArray(this.rcpts.setList), selected);
       this.rcpts.availList = _.differenceBy(this.rcpts.availList, selected, "id");
-      this.rcpts.checkAvailList = []; // this.$emit("userGroupList", this.rcpts.setList);
+      this.rcpts.checkAvailList = [];
+      this.$emit("userGroupList", this.rcpts.setList);
     },
     removeFromList: function removeFromList() {
       var _this2 = this;
@@ -69132,7 +69177,8 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-primary",
-                          attrs: { type: "button" }
+                          attrs: { type: "button" },
+                          on: { click: _vm.saveUserGroup }
                         },
                         [_vm._v("Save changes")]
                       )
@@ -89060,8 +89106,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

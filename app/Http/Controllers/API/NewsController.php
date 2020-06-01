@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\News;
+use App\Group;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -130,35 +131,46 @@ class NewsController extends Controller
     {
 
         $this->authorize('isAdmin');
-        $user = auth('api')->user();
+        //$user = auth('api')->user();
 
         $news = News::findOrFail($id);
 
-        $this->validate($request, [
-            'title' => 'required|string|max:191',
-            'description' => 'required|string',
-            'author' => 'sometimes|string',
-            'showAuthor' => 'required|boolean',
-            'validFrom' => 'required|date',
-            'validTo' => 'required|date',
-        ]);
+        $toUser = \Request::get('toUser');
+        $toGroup = \Request::get('toGroup');
 
-        //return $request['validFrom'];
-        $validFrom = Carbon::parse($request['validFrom'], 'UTC');
+        if ($toUser || $toGroup) {
+            if ($toGroup) {
+                $groups = Group::find($toGroup);
+                $news->groups()->detach($groups);
+                $news->groups()->attach($groups);
+            }
+        } else {
+            $this->validate($request, [
+                'title' => 'required|string|max:191',
+                'description' => 'required|string',
+                'author' => 'sometimes|string',
+                'showAuthor' => 'required|boolean',
+                'validFrom' => 'required|date',
+                'validTo' => 'required|date',
+            ]);
 
-        //return $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss");
+            //return $request['validFrom'];
+            $validFrom = Carbon::parse($request['validFrom'], 'UTC');
+
+            //return $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss");
 
 
-        $validTo = Carbon::parse($request['validTo'], 'UTC');
-        $news->update([
-            'title' => $request['title'],
-            'description' => $request['description'],
-            'author' => $request['author'],
-            'showauthor' => $request['showAuthor'],
-            'validFrom' => $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss"),
-            'validTo' => $validTo->isoFormat("YYYY-MM-DD HH:mm:ss")
+            $validTo = Carbon::parse($request['validTo'], 'UTC');
+            $news->update([
+                'title' => $request['title'],
+                'description' => $request['description'],
+                'author' => $request['author'],
+                'showauthor' => $request['showAuthor'],
+                'validFrom' => $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss"),
+                'validTo' => $validTo->isoFormat("YYYY-MM-DD HH:mm:ss")
 
-        ]);
+            ]);
+        }
         return ['message' => 'Success'];
     }
 

@@ -166,7 +166,7 @@
                 data-dismiss="modal"
                 @click="closePublishModal"
               >Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-primary" @click="saveUserGroup">Save changes</button>
             </div>
             <!-- ./modal-footer -->
           </div>
@@ -204,7 +204,9 @@ export default {
         }
       ],
       selSince: "today",
-      searchText: ""
+      searchText: "",
+      selUserGroup: null,
+      newsId: null
     };
   },
   methods: {
@@ -268,6 +270,7 @@ export default {
       this.$refs.sel.clearSetList();
     },
     publishFor(id) {
+      this.newsId = id;
       this.$refs.sel.getAvailRcptList();
       $("#publishModal").modal("show");
     },
@@ -307,7 +310,52 @@ export default {
     },
 
     setUserGroup(data) {
-      console.log(data);
+      this.setUserGroup = data;
+    },
+
+    saveUserGroup() {
+      if (this.$Role.isAdmin()) {
+        Swal.fire({
+          title: "Publish News",
+          text:
+            "You are going to publish this news to the selected user(s)/group(s)",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Publish it!"
+        }).then(result => {
+          //Send request to the server
+          let toUser = _.map(
+            this.setUserGroup.filter(data => {
+              return data.type === "person";
+            }),
+            "id"
+          );
+          let toGroup = _.map(
+            this.setUserGroup.filter(data => {
+              return data.type === "group";
+            }),
+            "id"
+          );
+          if (result.value) {
+            axios
+              .put("api/news/" + this.newsId, { toUser, toGroup })
+              .then(() => {
+                if (result.value) {
+                }
+              })
+              .catch(error => {
+                let message = error.response.data.message;
+                if (message) {
+                  Swal.fire("Failed!", message, "warning");
+                } else {
+                  Swal.fire("Failed!", "There is something wrong.", "warning");
+                }
+              });
+          }
+        });
+      }
     }
   },
   mounted() {
