@@ -156,82 +156,16 @@
               </button>
             </div>
             <div class="modal-body">
-              <form>
-                <div class="form-group row">
-                  <label for="recipient-type" class="col-sm-2 col-form-label">Recipient:</label>
-                  <div class="col-sm-10">
-                    <select
-                      class="form-control"
-                      id="recipient-type"
-                      v-model="rcpts.type"
-                      @change="getAvailRcptList()"
-                    >
-                      <option value="group">Group</option>
-                      <option value="user">User</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">
-                    <div class="form-group">
-                      <label for="unassigned">
-                        Available
-                        Member(s):
-                      </label>
-                      <select
-                        v-model="rcpts.checkAvailList"
-                        multiple
-                        class="form-control"
-                        id="unassigned"
-                        size="10"
-                      >
-                        <option
-                          v-for="(rcpt,index) in rcpts.availList"
-                          :key="rcpt.id"
-                          :value="index"
-                        >
-                          {{
-                          rcpt.name
-                          }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-2 d-flex flex-column justify-content-center align-items-center">
-                    <button type="button" class="btn btn-info mb-2" @click.prevent="addToList">&gt;</button>
-                    <button
-                      type="button"
-                      class="btn btn-default"
-                      @click.prevent="removeFromList"
-                    >&lt;</button>
-                  </div>
-                  <div class="col-5">
-                    <div class="form-group">
-                      <label for="setList">
-                        Assigned
-                        Member(s):
-                      </label>
-                      <select
-                        v-model="rcpts.checkSetList"
-                        multiple
-                        class="form-control"
-                        id="setList"
-                        size="10"
-                      >
-                        <option v-for="(rcpt,index) in rcpts.setList" :key="index" :value="index">
-                          {{
-                          rcpt.name
-                          }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </form>
+              <user-group-select ref="sel" v-on:userGroupList="setUserGroup"></user-group-select>
             </div>
             <!-- ./modal-body -->
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                @click="closePublishModal"
+              >Close</button>
               <button type="button" class="btn btn-primary">Save changes</button>
             </div>
             <!-- ./modal-footer -->
@@ -247,7 +181,11 @@
 </template>
 
 <script>
+import UserGroupSelect from "./UserGroupSelect.vue";
 export default {
+  components: {
+    UserGroupSelect
+  },
   data() {
     return {
       tabIndex: 0,
@@ -266,18 +204,27 @@ export default {
         }
       ],
       selSince: "today",
-      searchText: "",
-      rcpts: {
-        type: "user",
-        allList: [],
-        availList: [],
-        setList: [],
-        checkAvailList: [],
-        checkSetList: []
-      }
+      searchText: ""
     };
   },
   methods: {
+    getListData(page) {
+      if (this.$Role.isAdminOrUser()) {
+        let uri =
+          this.pgTable[this.tabIndex].uri +
+          "t=" +
+          this.selSince +
+          "&page=" +
+          page;
+
+        axios.get(uri).then(({ data }) => {
+          this.pgTable[this.tabIndex].news = data.data;
+          this.pgTable[this.tabIndex].records = data.total;
+          this.pgTable[this.tabIndex].page = data.current_page;
+          this.pgTable[this.tabIndex].perpage = data.per_page;
+        });
+      }
+    },
     createNews() {
       this.$router.push({ path: "/newsd", query: {} });
     },
@@ -317,82 +264,11 @@ export default {
         });
       }
     },
-    getAvailRcptList() {
-      if (this.rcpts.type === "user") {
-      } else {
-        axios
-          .get("api/group")
-          .then(({ data }) => {
-            this.rcpts.availList = data;
-          })
-          .catch(() => {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Failed to retrieve Group Info!",
-              footer: "<a href='/news'>Let me redo again</a>"
-            });
-          });
-      }
-    },
-    getListData(page) {
-      if (this.$Role.isAdminOrUser()) {
-        let uri =
-          this.pgTable[this.tabIndex].uri +
-          "t=" +
-          this.selSince +
-          "&page=" +
-          page;
-
-        axios.get(uri).then(({ data }) => {
-          this.pgTable[this.tabIndex].news = data.data;
-          this.pgTable[this.tabIndex].records = data.total;
-          this.pgTable[this.tabIndex].page = data.current_page;
-          this.pgTable[this.tabIndex].perpage = data.per_page;
-        });
-      }
-    },
-    addToList() {
-      if (!this.rcpts.availList.length) {
-        return;
-      }
-
-      let selected = [];
-      for (var i in this.rcpts.checkAvailList) {
-        let idx = this.rcpts.checkAvailList[i];
-
-        selected.push(this.rcpts.availList[idx]);
-      }
-
-      this.rcpts.setList = [...this.rcpts.setList, ...selected];
-
-      this.rcpts.availList = _.differenceBy(
-        this.rcpts.availList,
-        this.rcpts.setList,
-        "id"
-      );
-
-      console.log(this.rcpts.setList);
-    },
-    removeFromList() {
-      if (!this.rcpts.setList.length) {
-        return;
-      }
-      let selected = [];
-      for (var i in this.rcpts.checkSetList) {
-        let idx = this.rcpts.checkSetList[i];
-
-        selected.push(this.rcpts.setList[idx]);
-      }
-      this.rcpts.availList = [...this.rcpts.availList, ...selected];
-
-      this.rcpts.setList = _.differenceBy(
-        this.rcpts.setList,
-        this.rcpts.availList,
-        "id"
-      );
+    closePublishModal() {
+      this.$refs.sel.clearSetList();
     },
     publishFor(id) {
+      this.$refs.sel.getAvailRcptList();
       $("#publishModal").modal("show");
     },
     selSinceChange() {
@@ -428,6 +304,10 @@ export default {
           });
           this.$Progress.fail();
         });
+    },
+
+    setUserGroup(data) {
+      console.log(data);
     }
   },
   mounted() {

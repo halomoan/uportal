@@ -319,9 +319,7 @@
                   <button
                     type="button"
                     class="btn btn-info"
-                    @click.prevent="
-                                            editMode ? editUser() : createUser()
-                                        "
+                    @click.prevent="editMode ? editUser() : createUser()"
                   >
                     <span v-show="editMode">Modify</span>
                     <span v-show="!editMode">Create</span>

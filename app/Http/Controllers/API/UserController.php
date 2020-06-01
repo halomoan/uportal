@@ -39,7 +39,11 @@ class UserController extends Controller
             })->paginate(10);
         } else {
 
-            return User::latest()->paginate(10);
+            if (\Request::get('page')) {
+                return User::latest()->paginate(10);
+            }else{
+                return User::orderBy('name')->get();
+            }
         }
     }
 
