@@ -3445,6 +3445,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3468,7 +3473,7 @@ __webpack_require__.r(__webpack_exports__);
       selSince: "today",
       searchText: "",
       selUserGroup: null,
-      newsId: null
+      newsId: 0
     };
   },
   methods: {
@@ -3581,7 +3586,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.$Role.isAdmin()) {
         Swal.fire({
           title: "Publish News",
-          text: "You are going to publish this news to the selected user(s)/group(s)",
+          text: "You are going to publish this news to the selected member(s)",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -4539,11 +4544,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
 
         _this.goBack();
-      })["catch"](function (error) {
+      })["catch"](function (e) {
         _this.$Progress.fail();
 
         _this.inprogress = false;
-        var message = error.response.data.message;
+        var message = e.response.data.message;
+        var errors = e.response.data.errors;
+
+        for (var error in errors) {
+          if (error === "groups") {
+            for (var msg in errors[error]) {
+              message = errors[error][msg];
+            }
+          }
+        }
 
         if (message) {
           Swal.fire("Failed!", message, "warning");
@@ -4591,7 +4605,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         selected.push(this.groups.availGroup[idx]);
       }
 
-      this.groups.userGroup = _toConsumableArray(new Set([].concat(_toConsumableArray(this.groups.userGroup), selected)));
+      this.groups.userGroup = [].concat(_toConsumableArray(this.groups.userGroup), selected);
       this.groups.availGroup = _.differenceBy(this.groups.availGroup, this.groups.userGroup, "id");
     },
     removeUserGroup: function removeUserGroup() {
@@ -4606,7 +4620,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         selected.push(this.groups.userGroup[idx]);
       }
 
-      this.groups.availGroup = _toConsumableArray(new Set([].concat(_toConsumableArray(this.groups.availGroup), selected)));
+      this.groups.availGroup = [].concat(_toConsumableArray(this.groups.availGroup), selected);
       this.groups.userGroup = _.differenceBy(this.groups.userGroup, this.groups.availGroup, "id");
     },
     getGroups: function getGroups() {
@@ -5187,6 +5201,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    id: {
+      type: Number,
+      required: true
+    },
+    url: {
+      type: String,
+      required: true
+    }
+  },
   data: function data() {
     return {
       inprogress: false,
@@ -5214,6 +5238,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
 
           _this.rcpts.availList = _.differenceBy(data, setListByPerson, "id");
+
+          _this.getSelectedList(_this.url, _this.id);
+
           _this.inprogress = false;
         })["catch"](function () {
           _this.inprogress = false;
@@ -5246,6 +5273,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       }
     },
+    getSelectedList: function getSelectedList(url, id) {
+      var _this2 = this;
+
+      this.inprogress = true;
+      axios.get(url + "/" + id).then(function (_ref3) {
+        var data = _ref3.data;
+        console.log(data);
+        _this2.inprogress = false;
+      })["catch"](function (e) {
+        _this2.inprogress = false;
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to retrieve Member Info!",
+          footer: "<a href='/news'>Let me redo again</a>"
+        });
+      });
+    },
     addToList: function addToList() {
       if (!this.rcpts.availList.length) {
         return;
@@ -5264,7 +5309,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.$emit("userGroupList", this.rcpts.setList);
     },
     removeFromList: function removeFromList() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.rcpts.setList.length) {
         return;
@@ -5279,7 +5324,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       this.rcpts.setList = _.difference(this.rcpts.setList, selected);
       selected = selected.filter(function (data) {
-        return data.type === _this2.rcpts.type;
+        return data.type === _this3.rcpts.type;
       });
       this.rcpts.availList = [].concat(_toConsumableArray(this.rcpts.availList), _toConsumableArray(selected));
       this.rcpts.checkSetList = [];
@@ -69156,6 +69201,7 @@ var render = function() {
                       [
                         _c("user-group-select", {
                           ref: "sel",
+                          attrs: { id: _vm.newsId, url: "api/news" },
                           on: { userGroupList: _vm.setUserGroup }
                         })
                       ],
@@ -89106,8 +89152,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -387,10 +387,20 @@ export default {
           });
           this.goBack();
         })
-        .catch(error => {
+        .catch(e => {
           this.$Progress.fail();
           this.inprogress = false;
-          let message = error.response.data.message;
+          let message = e.response.data.message;
+          let errors = e.response.data.errors;
+
+          for (let error in errors) {
+            if (error === "groups") {
+              for (let msg in errors[error]) {
+                message = errors[error][msg];
+              }
+            }
+          }
+
           if (message) {
             Swal.fire("Failed!", message, "warning");
           } else {
@@ -438,7 +448,9 @@ export default {
       }
 
       this.groups.userGroup = [
-        ...new Set([...this.groups.userGroup, ...selected])
+        //...new Set([...this.groups.userGroup, ...selected])
+        ...this.groups.userGroup,
+        ...selected
       ];
 
       this.groups.availGroup = _.differenceBy(
@@ -458,7 +470,9 @@ export default {
         selected.push(this.groups.userGroup[idx]);
       }
       this.groups.availGroup = [
-        ...new Set([...this.groups.availGroup, ...selected])
+        //...new Set([...this.groups.availGroup, ...selected])
+        ...this.groups.availGroup,
+        ...selected
       ];
 
       this.groups.userGroup = _.differenceBy(

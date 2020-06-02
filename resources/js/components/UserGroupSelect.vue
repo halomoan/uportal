@@ -74,6 +74,10 @@
 
 <script>
 export default {
+  props: {
+    id: { type: Number, required: true },
+    url: { type: String, required: true }
+  },
   data() {
     return {
       inprogress: false,
@@ -99,6 +103,8 @@ export default {
             });
 
             this.rcpts.availList = _.differenceBy(data, setListByPerson, "id");
+
+            this.getSelectedList(this.url, this.id);
 
             this.inprogress = false;
           })
@@ -136,6 +142,24 @@ export default {
       }
     },
 
+    getSelectedList(url, id) {
+      this.inprogress = true;
+      axios
+        .get(url + "/" + id)
+        .then(({ data }) => {
+          console.log(data);
+          this.inprogress = false;
+        })
+        .catch(e => {
+          this.inprogress = false;
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Failed to retrieve Member Info!",
+            footer: "<a href='/news'>Let me redo again</a>"
+          });
+        });
+    },
     addToList() {
       if (!this.rcpts.availList.length) {
         return;

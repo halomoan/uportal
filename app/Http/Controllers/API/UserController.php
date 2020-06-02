@@ -73,8 +73,7 @@ class UserController extends Controller
 
         if ($request['groups']) {
             $groups = Group::find($request['groups']);
-            $user->groups()->detach($groups);
-            $user->groups()->attach($groups);
+            $user->groups()->sync($groups);
         }
 
         return $user;
@@ -130,12 +129,11 @@ class UserController extends Controller
         $user->update($request->all());
 
         if ($request['groups']) {
-            $groups = Group::find($request['groups']);
-            $user->groups()->detach($groups);
-            $user->groups()->attach($groups);
+            $groups = Group::find($request['groups']);            
+            $user->groups()->sync($groups);
         }
 
-        return ['message' => 'Success'];
+        return ['message' => 'Success'];        
     }
 
     /**

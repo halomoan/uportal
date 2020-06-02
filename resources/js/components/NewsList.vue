@@ -156,7 +156,12 @@
               </button>
             </div>
             <div class="modal-body">
-              <user-group-select ref="sel" v-on:userGroupList="setUserGroup"></user-group-select>
+              <user-group-select
+                ref="sel"
+                v-on:userGroupList="setUserGroup"
+                :id="newsId"
+                url="api/news"
+              ></user-group-select>
             </div>
             <!-- ./modal-body -->
             <div class="modal-footer">
@@ -206,7 +211,7 @@ export default {
       selSince: "today",
       searchText: "",
       selUserGroup: null,
-      newsId: null
+      newsId: 0
     };
   },
   methods: {
@@ -317,8 +322,7 @@ export default {
       if (this.$Role.isAdmin()) {
         Swal.fire({
           title: "Publish News",
-          text:
-            "You are going to publish this news to the selected user(s)/group(s)",
+          text: "You are going to publish this news to the selected member(s)",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",

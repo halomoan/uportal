@@ -117,6 +117,7 @@ class NewsController extends Controller
     {
         $this->authorize('isAdmin');
         $news = News::findOrFail($id);
+        $news['publishGroup'] = $news->groups()->select('id','name','type')->get();
         return $news;
     }
 
@@ -141,8 +142,7 @@ class NewsController extends Controller
         if ($toUser || $toGroup) {
             if ($toGroup) {
                 $groups = Group::find($toGroup);
-                $news->groups()->detach($groups);
-                $news->groups()->attach($groups);
+                $news->groups()->sync($groups);                
             }
         } else {
             $this->validate($request, [
