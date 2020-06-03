@@ -62,11 +62,11 @@ class NewsController extends Controller
 
         if ($search) {
 
-            return auth()->user()->news()->where(function ($query) use ($search) {
+            return auth()->user()->mynews()->where(function ($query) use ($search) {
                 $query->whereLike(['title'], $search);
             })->whereRaw($where)->orderBy('validFrom', 'asc')->paginate(10);
         } else {
-            return auth()->user()->news()
+            return auth()->user()->mynews()
                 ->whereRaw($where)
                 ->orderBy('validFrom', 'asc')
                 ->paginate(10);

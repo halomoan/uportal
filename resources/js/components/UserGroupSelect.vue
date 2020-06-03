@@ -78,6 +78,13 @@ export default {
     id: { type: Number, required: true },
     url: { type: String, required: true }
   },
+  watch: {
+    id: function(newVal, oldVal) {
+      // watch it
+      //console.log("Prop changed: ", newVal, " | was: ", oldVal);
+      this.getSelectedList();
+    }
+  },
   data() {
     return {
       inprogress: false,
@@ -103,8 +110,6 @@ export default {
             });
 
             this.rcpts.availList = _.differenceBy(data, setListByPerson, "id");
-
-            this.getSelectedList(this.url, this.id);
 
             this.inprogress = false;
           })
@@ -142,12 +147,16 @@ export default {
       }
     },
 
-    getSelectedList(url, id) {
+    getSelectedList() {
       this.inprogress = true;
       axios
-        .get(url + "/" + id)
+        .get(this.url + "/" + this.id)
         .then(({ data }) => {
-          console.log(data);
+          if (data.publishGroup) {
+            this.rcpts.setList = [...data.publishGroup];
+
+            this.getAvailRcptList();
+          }
           this.inprogress = false;
         })
         .catch(e => {

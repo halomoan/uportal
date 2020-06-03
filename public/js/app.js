@@ -3472,7 +3472,7 @@ __webpack_require__.r(__webpack_exports__);
       }],
       selSince: "today",
       searchText: "",
-      selUserGroup: null,
+      userGroup: null,
       newsId: 0
     };
   },
@@ -3544,7 +3544,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     publishFor: function publishFor(id) {
       this.newsId = id;
-      this.$refs.sel.getAvailRcptList();
       $("#publishModal").modal("show");
     },
     selSinceChange: function selSinceChange() {
@@ -3578,7 +3577,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     setUserGroup: function setUserGroup(data) {
-      this.setUserGroup = data;
+      this.userGroup = data;
     },
     saveUserGroup: function saveUserGroup() {
       var _this4 = this;
@@ -3594,11 +3593,11 @@ __webpack_require__.r(__webpack_exports__);
           confirmButtonText: "Yes, Publish it!"
         }).then(function (result) {
           //Send request to the server
-          var toUser = _.map(_this4.setUserGroup.filter(function (data) {
+          var toUser = _.map(_this4.userGroup.filter(function (data) {
             return data.type === "person";
           }), "id");
 
-          var toGroup = _.map(_this4.setUserGroup.filter(function (data) {
+          var toGroup = _.map(_this4.userGroup.filter(function (data) {
             return data.type === "group";
           }), "id");
 
@@ -3606,8 +3605,12 @@ __webpack_require__.r(__webpack_exports__);
             axios.put("api/news/" + _this4.newsId, {
               toUser: toUser,
               toGroup: toGroup
-            }).then(function () {
-              if (result.value) {}
+            }).then(function (resp) {
+              if (resp) {
+                console.log(resp.data);
+              }
+
+              $("#publishModal").modal("hide");
             })["catch"](function (error) {
               var message = error.response.data.message;
 
@@ -5211,6 +5214,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       required: true
     }
   },
+  watch: {
+    id: function id(newVal, oldVal) {
+      // watch it
+      //console.log("Prop changed: ", newVal, " | was: ", oldVal);
+      this.getSelectedList();
+    }
+  },
   data: function data() {
     return {
       inprogress: false,
@@ -5238,9 +5248,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
 
           _this.rcpts.availList = _.differenceBy(data, setListByPerson, "id");
-
-          _this.getSelectedList(_this.url, _this.id);
-
           _this.inprogress = false;
         })["catch"](function () {
           _this.inprogress = false;
@@ -5273,13 +5280,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       }
     },
-    getSelectedList: function getSelectedList(url, id) {
+    getSelectedList: function getSelectedList() {
       var _this2 = this;
 
       this.inprogress = true;
-      axios.get(url + "/" + id).then(function (_ref3) {
+      axios.get(this.url + "/" + this.id).then(function (_ref3) {
         var data = _ref3.data;
-        console.log(data);
+
+        if (data.publishGroup) {
+          _this2.rcpts.setList = _toConsumableArray(data.publishGroup);
+
+          _this2.getAvailRcptList();
+        }
+
         _this2.inprogress = false;
       })["catch"](function (e) {
         _this2.inprogress = false;

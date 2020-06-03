@@ -210,7 +210,7 @@ export default {
       ],
       selSince: "today",
       searchText: "",
-      selUserGroup: null,
+      userGroup: null,
       newsId: 0
     };
   },
@@ -276,7 +276,6 @@ export default {
     },
     publishFor(id) {
       this.newsId = id;
-      this.$refs.sel.getAvailRcptList();
       $("#publishModal").modal("show");
     },
     selSinceChange() {
@@ -315,7 +314,7 @@ export default {
     },
 
     setUserGroup(data) {
-      this.setUserGroup = data;
+      this.userGroup = data;
     },
 
     saveUserGroup() {
@@ -331,13 +330,13 @@ export default {
         }).then(result => {
           //Send request to the server
           let toUser = _.map(
-            this.setUserGroup.filter(data => {
+            this.userGroup.filter(data => {
               return data.type === "person";
             }),
             "id"
           );
           let toGroup = _.map(
-            this.setUserGroup.filter(data => {
+            this.userGroup.filter(data => {
               return data.type === "group";
             }),
             "id"
@@ -345,9 +344,11 @@ export default {
           if (result.value) {
             axios
               .put("api/news/" + this.newsId, { toUser, toGroup })
-              .then(() => {
-                if (result.value) {
+              .then(resp => {
+                if (resp) {
+                  console.log(resp.data);
                 }
+                $("#publishModal").modal("hide");
               })
               .catch(error => {
                 let message = error.response.data.message;
