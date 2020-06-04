@@ -15,6 +15,11 @@ class News extends Model
         //'created_at', 'updated_at'
     ];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function groups()
     {
         return $this->belongsToMany(Group::class);

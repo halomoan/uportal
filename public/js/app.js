@@ -3025,6 +3025,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3045,6 +3062,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         author: "",
         showAuthor: false
       }),
+      color: "bg-success",
       dateRange: {
         startDate: startDate,
         endDate: endDate
@@ -3449,7 +3467,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3540,17 +3557,38 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     closePublishModal: function closePublishModal() {
-      this.$refs.sel.clearSetList();
+      var _this3 = this;
+
+      if (this.$refs.sel.isListChanged()) {
+        Swal.fire({
+          title: "Changed Detected",
+          text: "You have made some changes. Are you sure to discard them?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Ignore it!"
+        }).then(function (result) {
+          if (result.value) {
+            _this3.$refs.sel.clearSetList();
+
+            $("#publishModal").modal("hide");
+          }
+        });
+      } else {
+        $("#publishModal").modal("hide");
+      }
     },
     publishFor: function publishFor(id) {
       this.newsId = id;
+      this.$refs.sel.getSelectedList(id);
       $("#publishModal").modal("show");
     },
     selSinceChange: function selSinceChange() {
       this.getListData(1);
     },
     searchTable: function searchTable() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri = "api/news?" + "&q=" + this.searchText + "&t=" + this.selSince + "&page=";
@@ -3561,26 +3599,26 @@ __webpack_require__.r(__webpack_exports__);
       this.$Progress.start();
       axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref2) {
         var data = _ref2.data;
-        _this3.pgTable[_this3.tabIndex].news = data.data;
-        _this3.pgTable[_this3.tabIndex].records = data.total;
-        _this3.pgTable[_this3.tabIndex].page = data.current_page;
-        _this3.pgTable[_this3.tabIndex].perpage = data.per_page;
+        _this4.pgTable[_this4.tabIndex].news = data.data;
+        _this4.pgTable[_this4.tabIndex].records = data.total;
+        _this4.pgTable[_this4.tabIndex].page = data.current_page;
+        _this4.pgTable[_this4.tabIndex].perpage = data.per_page;
 
-        _this3.$Progress.finish();
+        _this4.$Progress.finish();
       })["catch"](function () {
         Toast.fire({
           icon: "error",
           title: "Something is wrong. Failed to search."
         });
 
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
       });
     },
     setUserGroup: function setUserGroup(data) {
       this.userGroup = data;
     },
     saveUserGroup: function saveUserGroup() {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.$Role.isAdmin()) {
         Swal.fire({
@@ -3593,23 +3631,19 @@ __webpack_require__.r(__webpack_exports__);
           confirmButtonText: "Yes, Publish it!"
         }).then(function (result) {
           //Send request to the server
-          var toUser = _.map(_this4.userGroup.filter(function (data) {
-            return data.type === "person";
-          }), "id");
-
-          var toGroup = _.map(_this4.userGroup.filter(function (data) {
-            return data.type === "group";
-          }), "id");
-
           if (result.value) {
-            axios.put("api/news/" + _this4.newsId, {
+            var toUser = _.map(_this5.userGroup.filter(function (data) {
+              return data.type === "person";
+            }), "id");
+
+            var toGroup = _.map(_this5.userGroup.filter(function (data) {
+              return data.type === "group";
+            }), "id");
+
+            axios.put("api/news/" + _this5.newsId, {
               toUser: toUser,
               toGroup: toGroup
             }).then(function (resp) {
-              if (resp) {
-                console.log(resp.data);
-              }
-
               $("#publishModal").modal("hide");
             })["catch"](function (error) {
               var message = error.response.data.message;
@@ -3626,10 +3660,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    var _this5 = this;
+    var _this6 = this;
 
     Fire.$on("GLOBAL_SEARCH", function () {
-      _this5.searchText = _this5.$parent.searchText;
+      _this6.searchText = _this6.$parent.searchText;
     });
     this.getListData(1);
   }
@@ -5214,13 +5248,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       required: true
     }
   },
-  watch: {
-    id: function id(newVal, oldVal) {
-      // watch it
-      //console.log("Prop changed: ", newVal, " | was: ", oldVal);
-      this.getSelectedList();
-    }
-  },
+  // watch: {
+  //   id: function(newVal, oldVal) {
+  //     this.getSelectedList();
+  //   }
+  // },
   data: function data() {
     return {
       inprogress: false,
@@ -5230,7 +5262,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         availList: [],
         setList: [],
         checkAvailList: [],
-        checkSetList: []
+        checkSetList: [],
+        changed: false
       }
     };
   },
@@ -5280,18 +5313,34 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
       }
     },
-    getSelectedList: function getSelectedList() {
+    getSelectedList: function getSelectedList(id) {
       var _this2 = this;
 
       this.inprogress = true;
-      axios.get(this.url + "/" + this.id).then(function (_ref3) {
+      axios.get(this.url + "/" + id).then(function (_ref3) {
         var data = _ref3.data;
+        var setList = [];
 
         if (data.publishGroup) {
-          _this2.rcpts.setList = _toConsumableArray(data.publishGroup);
-
-          _this2.getAvailRcptList();
+          setList = _toConsumableArray(data.publishGroup);
         }
+
+        if (data.publishUser) {
+          setList = [].concat(_toConsumableArray(setList), _toConsumableArray(data.publishUser));
+        }
+
+        _this2.rcpts.setList = setList.map(function (data) {
+          if (data.type === "group") {
+            data.name = "GROUP\\" + data.name;
+          } else {
+            data.name = "USER\\" + data.name;
+          }
+
+          return data;
+        });
+        _this2.rcpts.changed = false;
+
+        _this2.getAvailRcptList();
 
         _this2.inprogress = false;
       })["catch"](function (e) {
@@ -5316,9 +5365,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         selected.push(this.rcpts.availList[idx]);
       }
 
-      this.rcpts.setList = [].concat(_toConsumableArray(this.rcpts.setList), selected);
+      selected = selected.map(function (data) {
+        if (data.type === "group") {
+          data.name = "GROUP\\" + data.name;
+        } else {
+          data.name = "USER\\" + data.name;
+        }
+
+        return data;
+      });
+      this.rcpts.setList = [].concat(_toConsumableArray(this.rcpts.setList), _toConsumableArray(selected));
       this.rcpts.availList = _.differenceBy(this.rcpts.availList, selected, "id");
       this.rcpts.checkAvailList = [];
+      this.rcpts.changed = true;
       this.$emit("userGroupList", this.rcpts.setList);
     },
     removeFromList: function removeFromList() {
@@ -5341,7 +5400,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       this.rcpts.availList = [].concat(_toConsumableArray(this.rcpts.availList), _toConsumableArray(selected));
       this.rcpts.checkSetList = [];
+      this.rcpts.changed = true;
       this.$emit("userGroupList", this.rcpts.setList);
+    },
+    isListChanged: function isListChanged() {
+      return this.rcpts.changed;
+    },
+    setListChanged: function setListChanged(val) {
+      this.rcpts.changed = val;
     },
     clearSetList: function clearSetList() {
       this.rcpts.setList = [];
@@ -68340,254 +68406,389 @@ var render = function() {
                     _c("div", { staticClass: "card-body card-cyan" }, [
                       _c("div", { staticClass: "row" }, [
                         _c("div", { staticClass: "col-6" }, [
-                          _c("div", { staticClass: "form-group row" }, [
-                            _c(
-                              "label",
-                              {
-                                staticClass: "col-sm-2 col-form-label",
-                                attrs: { for: "title" }
-                              },
-                              [_vm._v("Title")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-sm-10" },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.title,
-                                      expression: "form.title"
-                                    }
-                                  ],
-                                  staticClass: "form-control",
-                                  class: {
-                                    "is-invalid": _vm.form.errors.has("title")
-                                  },
-                                  attrs: {
-                                    type: "text",
-                                    autocomplete: "off",
-                                    id: "title",
-                                    name: "title",
-                                    placeholder: "Please give a title",
-                                    required: ""
-                                  },
-                                  domProps: { value: _vm.form.title },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.form,
-                                        "title",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("has-error", {
-                                  attrs: { form: _vm.form, field: "title" }
-                                })
-                              ],
-                              1
-                            )
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-6" }, [
-                          _c(
-                            "div",
-                            { staticClass: "form-group row" },
-                            [
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "col-sm-2 col-form-label width"
-                                },
-                                [_vm._v("Validity:")]
-                              ),
-                              _vm._v(" "),
-                              _c("date-range-picker", {
-                                ref: "picker",
-                                attrs: {
-                                  "locale-data": _vm.dPickerRange.locale,
-                                  timePicker: true,
-                                  dateFormat: _vm.dPickerRange.dateFormat
-                                },
-                                on: { update: _vm.dateRangeUpdate },
-                                scopedSlots: _vm._u(
-                                  [
-                                    {
-                                      key: "input",
-                                      fn: function(picker) {
-                                        return [
-                                          _vm._v(
-                                            "\n                          " +
-                                              _vm._s(
-                                                _vm._f("humanDate")(
-                                                  picker.startDate
-                                                )
-                                              ) +
-                                              "\n                          -\n                          " +
-                                              _vm._s(
-                                                _vm._f("humanDate")(
-                                                  picker.endDate
-                                                )
-                                              ) +
-                                              "\n                        "
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ],
-                                  null,
-                                  false,
-                                  4021191683
-                                ),
-                                model: {
-                                  value: _vm.dateRange,
-                                  callback: function($$v) {
-                                    _vm.dateRange = $$v
-                                  },
-                                  expression: "dateRange"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "row" }, [
-                        _c("div", { staticClass: "col-6" }, [
-                          _c("div", { staticClass: "form-group row" }, [
-                            _c(
-                              "label",
-                              {
-                                staticClass: "col-sm-2 col-form-label",
-                                attrs: { for: "author" }
-                              },
-                              [_vm._v("Author")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-sm-10" },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.author,
-                                      expression: "form.author"
-                                    }
-                                  ],
-                                  staticClass: "form-control",
-                                  class: {
-                                    "is-invalid": _vm.form.errors.has("author")
-                                  },
-                                  attrs: {
-                                    type: "text",
-                                    autocomplete: "off",
-                                    disabled: !_vm.form.showAuthor,
-                                    id: "author",
-                                    name: "author",
-                                    placeholder: "Enter author name (optional)"
-                                  },
-                                  domProps: { value: _vm.form.author },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.$set(
-                                        _vm.form,
-                                        "author",
-                                        $event.target.value
-                                      )
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("has-error", {
-                                  attrs: { form: _vm.form, field: "author" }
-                                })
-                              ],
-                              1
-                            )
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-6" }, [
-                          _c("div", { staticClass: "form-group pt-2" }, [
-                            _c("div", { staticClass: "form-check" }, [
-                              _c("input", {
-                                directives: [
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-12" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
                                   {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.form.showAuthor,
-                                    expression:
-                                      "\n                                                          form.showAuthor\n                                                      "
-                                  }
-                                ],
-                                staticClass: "form-check-input",
-                                attrs: { type: "checkbox", id: "showAuthor" },
-                                domProps: {
-                                  checked: Array.isArray(_vm.form.showAuthor)
-                                    ? _vm._i(_vm.form.showAuthor, null) > -1
-                                    : _vm.form.showAuthor
-                                },
-                                on: {
-                                  change: [
-                                    function($event) {
-                                      var $$a = _vm.form.showAuthor,
-                                        $$el = $event.target,
-                                        $$c = $$el.checked ? true : false
-                                      if (Array.isArray($$a)) {
-                                        var $$v = null,
-                                          $$i = _vm._i($$a, $$v)
-                                        if ($$el.checked) {
-                                          $$i < 0 &&
-                                            _vm.$set(
-                                              _vm.form,
-                                              "showAuthor",
-                                              $$a.concat([$$v])
-                                            )
-                                        } else {
-                                          $$i > -1 &&
-                                            _vm.$set(
-                                              _vm.form,
-                                              "showAuthor",
-                                              $$a
-                                                .slice(0, $$i)
-                                                .concat($$a.slice($$i + 1))
-                                            )
+                                    staticClass: "col-sm-2 col-form-label",
+                                    attrs: { for: "title" }
+                                  },
+                                  [_vm._v("Title")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  { staticClass: "col-sm-10" },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.title,
+                                          expression: "form.title"
                                         }
-                                      } else {
-                                        _vm.$set(_vm.form, "showAuthor", $$c)
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "title"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "text",
+                                        autocomplete: "off",
+                                        id: "title",
+                                        name: "title",
+                                        placeholder: "Please give a title",
+                                        required: ""
+                                      },
+                                      domProps: { value: _vm.form.title },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "title",
+                                            $event.target.value
+                                          )
+                                        }
                                       }
-                                    },
-                                    function($event) {
-                                      return _vm.showAuthor($event)
-                                    }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: { form: _vm.form, field: "title" }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-12" }, [
+                              _c("div", { staticClass: "form-group row" }, [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "col-sm-2 col-form-label",
+                                    attrs: { for: "author" }
+                                  },
+                                  [_vm._v("Author")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  { staticClass: "col-sm-10" },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.form.author,
+                                          expression: "form.author"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      class: {
+                                        "is-invalid": _vm.form.errors.has(
+                                          "author"
+                                        )
+                                      },
+                                      attrs: {
+                                        type: "text",
+                                        autocomplete: "off",
+                                        disabled: !_vm.form.showAuthor,
+                                        id: "author",
+                                        name: "author",
+                                        placeholder:
+                                          "Enter author name (optional)"
+                                      },
+                                      domProps: { value: _vm.form.author },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.$set(
+                                            _vm.form,
+                                            "author",
+                                            $event.target.value
+                                          )
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("has-error", {
+                                      attrs: { form: _vm.form, field: "author" }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-12" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c(
+                                  "div",
+                                  { staticClass: "offset-sm-2 col-sm-10" },
+                                  [
+                                    _c("div", { staticClass: "form-check" }, [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.form.showAuthor,
+                                            expression: "form.showAuthor"
+                                          }
+                                        ],
+                                        staticClass: "form-check-input",
+                                        attrs: {
+                                          type: "checkbox",
+                                          id: "showAuthor"
+                                        },
+                                        domProps: {
+                                          checked: Array.isArray(
+                                            _vm.form.showAuthor
+                                          )
+                                            ? _vm._i(
+                                                _vm.form.showAuthor,
+                                                null
+                                              ) > -1
+                                            : _vm.form.showAuthor
+                                        },
+                                        on: {
+                                          change: [
+                                            function($event) {
+                                              var $$a = _vm.form.showAuthor,
+                                                $$el = $event.target,
+                                                $$c = $$el.checked
+                                                  ? true
+                                                  : false
+                                              if (Array.isArray($$a)) {
+                                                var $$v = null,
+                                                  $$i = _vm._i($$a, $$v)
+                                                if ($$el.checked) {
+                                                  $$i < 0 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "showAuthor",
+                                                      $$a.concat([$$v])
+                                                    )
+                                                } else {
+                                                  $$i > -1 &&
+                                                    _vm.$set(
+                                                      _vm.form,
+                                                      "showAuthor",
+                                                      $$a
+                                                        .slice(0, $$i)
+                                                        .concat(
+                                                          $$a.slice($$i + 1)
+                                                        )
+                                                    )
+                                                }
+                                              } else {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "showAuthor",
+                                                  $$c
+                                                )
+                                              }
+                                            },
+                                            function($event) {
+                                              return _vm.showAuthor($event)
+                                            }
+                                          ]
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          staticClass: "form-check-label",
+                                          attrs: { for: "showAuthor" }
+                                        },
+                                        [_vm._v("Show Author")]
+                                      )
+                                    ])
                                   ]
-                                }
-                              }),
-                              _vm._v(" "),
+                                )
+                              ])
+                            ])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-6" }, [
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _c(
-                                "label",
+                                "div",
+                                { staticClass: "form-group row" },
+                                [
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass:
+                                        "col-sm-2 col-form-label width"
+                                    },
+                                    [_vm._v("Validity")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("date-range-picker", {
+                                    ref: "picker",
+                                    attrs: {
+                                      "locale-data": _vm.dPickerRange.locale,
+                                      timePicker: true,
+                                      dateFormat: _vm.dPickerRange.dateFormat
+                                    },
+                                    on: { update: _vm.dateRangeUpdate },
+                                    scopedSlots: _vm._u(
+                                      [
+                                        {
+                                          key: "input",
+                                          fn: function(picker) {
+                                            return [
+                                              _vm._v(
+                                                "\n                              " +
+                                                  _vm._s(
+                                                    _vm._f("humanDate")(
+                                                      picker.startDate
+                                                    )
+                                                  ) +
+                                                  "\n                              -\n                              " +
+                                                  _vm._s(
+                                                    _vm._f("humanDate")(
+                                                      picker.endDate
+                                                    )
+                                                  ) +
+                                                  "\n                            "
+                                              )
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      null,
+                                      false,
+                                      4081391619
+                                    ),
+                                    model: {
+                                      value: _vm.dateRange,
+                                      callback: function($$v) {
+                                        _vm.dateRange = $$v
+                                      },
+                                      expression: "dateRange"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col-12" }, [
+                              _c(
+                                "div",
                                 {
-                                  staticClass: "form-check-label",
-                                  attrs: { for: "showAuthor" }
+                                  staticClass: "form-group row",
+                                  attrs: { width: "50px" }
                                 },
-                                [_vm._v("Show Author")]
+                                [
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "col-sm-2 col-form-label",
+                                      attrs: { for: "color" }
+                                    },
+                                    [_vm._v("Color")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-sm-10 pl-0" }, [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.color,
+                                            expression: "color"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        class: _vm.color,
+                                        staticStyle: { width: "50px" },
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.color = $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("option", {
+                                          staticClass: "bg-dark",
+                                          attrs: { value: "bg-dark" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-secondary",
+                                          attrs: { value: "bg-secondary" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-success",
+                                          attrs: { value: "bg-success" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-danger",
+                                          attrs: { value: "bg-danger" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-warning",
+                                          attrs: { value: "bg-warning" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-info",
+                                          attrs: { value: "bg-info" }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("option", {
+                                          staticClass: "bg-primary",
+                                          attrs: { value: "bg-primary" }
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                ]
                               )
                             ])
                           ])
@@ -69226,8 +69427,13 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-secondary",
-                          attrs: { type: "button", "data-dismiss": "modal" },
-                          on: { click: _vm.closePublishModal }
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.closePublishModal($event)
+                            }
+                          }
                         },
                         [_vm._v("Close")]
                       ),

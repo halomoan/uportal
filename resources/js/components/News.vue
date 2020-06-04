@@ -42,99 +42,116 @@
                 <div class="card-body card-cyan">
                   <div class="row">
                     <div class="col-6">
-                      <div class="form-group row">
-                        <label for="title" class="col-sm-2 col-form-label">Title</label>
-                        <div class="col-sm-10">
-                          <input
-                            type="text"
-                            class="form-control"
-                            autocomplete="off"
-                            v-model="form.title"
-                            :class="{
-                                                            'is-invalid': form.errors.has(
-                                                                'title'
-                                                            )
-                                                        }"
-                            id="title"
-                            name="title"
-                            placeholder="Please give a title"
-                            required
-                          />
-                          <has-error :form="form" field="title"></has-error>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group row">
+                            <label for="title" class="col-sm-2 col-form-label">Title</label>
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                autocomplete="off"
+                                v-model="form.title"
+                                :class="{'is-invalid': form.errors.has('title')}"
+                                id="title"
+                                name="title"
+                                placeholder="Please give a title"
+                                required
+                              />
+                              <has-error :form="form" field="title"></has-error>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group row">
+                            <label for="author" class="col-sm-2 col-form-label">Author</label>
+                            <div class="col-sm-10">
+                              <input
+                                type="text"
+                                class="form-control"
+                                autocomplete="off"
+                                v-model="form.author"
+                                :disabled="!form.showAuthor"
+                                :class="{'is-invalid': form.errors.has('author')}"
+                                id="author"
+                                name="author"
+                                placeholder="Enter author name (optional)"
+                              />
+                              <has-error :form="form" field="author"></has-error>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <div class="offset-sm-2 col-sm-10">
+                              <div class="form-check">
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  id="showAuthor"
+                                  v-model="form.showAuthor"
+                                  @change="showAuthor($event)"
+                                />
+                                <label class="form-check-label" for="showAuthor">Show Author</label>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div class="col-6">
-                      <div class="form-group row">
-                        <label class="col-sm-2 col-form-label width">Validity:</label>
-                        <date-range-picker
-                          ref="picker"
-                          :locale-data="
-                                                        dPickerRange.locale
-                                                    "
-                          v-model="dateRange"
-                          @update="dateRangeUpdate"
-                          :timePicker="true"
-                          :dateFormat="
-                                                        dPickerRange.dateFormat
-                                                    "
-                        >
-                          <template v-slot:input="picker" style="min-width: 350px;">
-                            {{
-                            picker.startDate
-                            | humanDate
-                            }}
-                            -
-                            {{
-                            picker.endDate
-                            | humanDate
-                            }}
-                          </template>
-                        </date-range-picker>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                      <div class="form-group row">
-                        <label for="author" class="col-sm-2 col-form-label">Author</label>
-                        <div class="col-sm-10">
-                          <input
-                            type="text"
-                            class="form-control"
-                            autocomplete="off"
-                            v-model="form.author"
-                            :disabled="
-                                                            !form.showAuthor
-                                                        "
-                            :class="{
-                                                            'is-invalid': form.errors.has(
-                                                                'author'
-                                                            )
-                                                        }"
-                            id="author"
-                            name="author"
-                            placeholder="Enter author name (optional)"
-                          />
-                          <has-error :form="form" field="author"></has-error>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group row">
+                            <label class="col-sm-2 col-form-label width">Validity</label>
+                            <date-range-picker
+                              ref="picker"
+                              :locale-data="dPickerRange.locale"
+                              v-model="dateRange"
+                              @update="dateRangeUpdate"
+                              :timePicker="true"
+                              :dateFormat="dPickerRange.dateFormat"
+                            >
+                              <template v-slot:input="picker" style="min-width: 350px;">
+                                {{
+                                picker.startDate
+                                | humanDate
+                                }}
+                                -
+                                {{
+                                picker.endDate
+                                | humanDate
+                                }}
+                              </template>
+                            </date-range-picker>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="form-group pt-2">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="showAuthor"
-                            v-model="
-                                                            form.showAuthor
-                                                        "
-                            @change="
-                                                            showAuthor($event)
-                                                        "
-                          />
-                          <label class="form-check-label" for="showAuthor">Show Author</label>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="form-group row" width="50px">
+                            <label for="color" class="col-sm-2 col-form-label">Color</label>
+                            <div class="col-sm-10 pl-0">
+                              <select
+                                class="form-control"
+                                v-bind:class="color"
+                                style="width: 50px;"
+                                v-model="color"
+                              >
+                                <option value="bg-dark" class="bg-dark"></option>
+                                <option value="bg-secondary" class="bg-secondary"></option>
+                                <option value="bg-success" class="bg-success"></option>
+                                <option value="bg-danger" class="bg-danger"></option>
+                                <option value="bg-warning" class="bg-warning"></option>
+                                <option value="bg-info" class="bg-info"></option>
+                                <option value="bg-primary" class="bg-primary"></option>
+                              </select>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -235,6 +252,7 @@ export default {
         author: "",
         showAuthor: false
       }),
+      color: "bg-success",
       dateRange: { startDate, endDate },
       dPickerRange: {
         locale: {

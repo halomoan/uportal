@@ -45,7 +45,8 @@ class User extends Authenticatable
 
     public function news()
     {
-        return $this->hasMany(News::class);
+        //return $this->hasMany(News::class);
+        return $this->belongsToMany(News::class);
     }
 
     public function mynews()

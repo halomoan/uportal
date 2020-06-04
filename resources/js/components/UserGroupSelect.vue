@@ -78,13 +78,11 @@ export default {
     id: { type: Number, required: true },
     url: { type: String, required: true }
   },
-  watch: {
-    id: function(newVal, oldVal) {
-      // watch it
-      //console.log("Prop changed: ", newVal, " | was: ", oldVal);
-      this.getSelectedList();
-    }
-  },
+  // watch: {
+  //   id: function(newVal, oldVal) {
+  //     this.getSelectedList();
+  //   }
+  // },
   data() {
     return {
       inprogress: false,
@@ -94,7 +92,8 @@ export default {
         availList: [],
         setList: [],
         checkAvailList: [],
-        checkSetList: []
+        checkSetList: [],
+        changed: false
       }
     };
   },
@@ -147,16 +146,33 @@ export default {
       }
     },
 
-    getSelectedList() {
+    getSelectedList(id) {
       this.inprogress = true;
-      axios
-        .get(this.url + "/" + this.id)
-        .then(({ data }) => {
-          if (data.publishGroup) {
-            this.rcpts.setList = [...data.publishGroup];
 
-            this.getAvailRcptList();
+      axios
+        .get(this.url + "/" + id)
+        .then(({ data }) => {
+          let setList = [];
+          if (data.publishGroup) {
+            setList = [...data.publishGroup];
           }
+
+          if (data.publishUser) {
+            setList = [...setList, ...data.publishUser];
+          }
+
+          this.rcpts.setList = setList.map(data => {
+            if (data.type === "group") {
+              data.name = "GROUP\\" + data.name;
+            } else {
+              data.name = "USER\\" + data.name;
+            }
+            return data;
+          });
+
+          this.rcpts.changed = false;
+
+          this.getAvailRcptList();
           this.inprogress = false;
         })
         .catch(e => {
@@ -182,6 +198,15 @@ export default {
         selected.push(this.rcpts.availList[idx]);
       }
 
+      selected = selected.map(data => {
+        if (data.type === "group") {
+          data.name = "GROUP\\" + data.name;
+        } else {
+          data.name = "USER\\" + data.name;
+        }
+        return data;
+      });
+
       this.rcpts.setList = [...this.rcpts.setList, ...selected];
 
       this.rcpts.availList = _.differenceBy(
@@ -191,6 +216,7 @@ export default {
       );
       this.rcpts.checkAvailList = [];
 
+      this.rcpts.changed = true;
       this.$emit("userGroupList", this.rcpts.setList);
     },
     removeFromList() {
@@ -213,7 +239,15 @@ export default {
       this.rcpts.availList = [...this.rcpts.availList, ...selected];
       this.rcpts.checkSetList = [];
 
+      this.rcpts.changed = true;
       this.$emit("userGroupList", this.rcpts.setList);
+    },
+
+    isListChanged() {
+      return this.rcpts.changed;
+    },
+    setListChanged(val) {
+      this.rcpts.changed = val;
     },
     clearSetList() {
       this.rcpts.setList = [];

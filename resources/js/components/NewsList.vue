@@ -168,8 +168,7 @@
               <button
                 type="button"
                 class="btn btn-secondary"
-                data-dismiss="modal"
-                @click="closePublishModal"
+                @click.prevent="closePublishModal"
               >Close</button>
               <button type="button" class="btn btn-primary" @click="saveUserGroup">Save changes</button>
             </div>
@@ -272,10 +271,28 @@ export default {
       }
     },
     closePublishModal() {
-      this.$refs.sel.clearSetList();
+      if (this.$refs.sel.isListChanged()) {
+        Swal.fire({
+          title: "Changed Detected",
+          text: "You have made some changes. Are you sure to discard them?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Ignore it!"
+        }).then(result => {
+          if (result.value) {
+            this.$refs.sel.clearSetList();
+            $("#publishModal").modal("hide");
+          }
+        });
+      } else {
+        $("#publishModal").modal("hide");
+      }
     },
     publishFor(id) {
       this.newsId = id;
+      this.$refs.sel.getSelectedList(id);
       $("#publishModal").modal("show");
     },
     selSinceChange() {
@@ -329,25 +346,22 @@ export default {
           confirmButtonText: "Yes, Publish it!"
         }).then(result => {
           //Send request to the server
-          let toUser = _.map(
-            this.userGroup.filter(data => {
-              return data.type === "person";
-            }),
-            "id"
-          );
-          let toGroup = _.map(
-            this.userGroup.filter(data => {
-              return data.type === "group";
-            }),
-            "id"
-          );
           if (result.value) {
+            let toUser = _.map(
+              this.userGroup.filter(data => {
+                return data.type === "person";
+              }),
+              "id"
+            );
+            let toGroup = _.map(
+              this.userGroup.filter(data => {
+                return data.type === "group";
+              }),
+              "id"
+            );
             axios
               .put("api/news/" + this.newsId, { toUser, toGroup })
               .then(resp => {
-                if (resp) {
-                  console.log(resp.data);
-                }
                 $("#publishModal").modal("hide");
               })
               .catch(error => {
