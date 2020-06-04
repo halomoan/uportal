@@ -8,7 +8,7 @@ class News extends Model
 {
 
     protected $fillable = [
-        'title', 'description', 'author', 'validFrom', 'validTo', 'showauthor'
+        'title', 'description', 'author', 'validFrom', 'validTo', 'showauthor', 'color'
     ];
 
     protected $hidden = [

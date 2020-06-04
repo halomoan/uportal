@@ -21,6 +21,7 @@ class CreateNewsTable extends Migration
             $table->boolean('showauthor');
             $table->dateTime('validFrom')->useCurrent();
             $table->dateTime('validTo');
+            $table->string('color', 10);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

@@ -137,18 +137,16 @@
                             <label for="color" class="col-sm-2 col-form-label">Color</label>
                             <div class="col-sm-10 pl-0">
                               <select
-                                class="form-control"
-                                v-bind:class="color"
+                                class="form-control form-control-sm"
+                                v-bind:class="'bg-' + form.color"
                                 style="width: 50px;"
-                                v-model="color"
+                                v-model="form.color"
                               >
-                                <option value="bg-dark" class="bg-dark"></option>
-                                <option value="bg-secondary" class="bg-secondary"></option>
-                                <option value="bg-success" class="bg-success"></option>
-                                <option value="bg-danger" class="bg-danger"></option>
-                                <option value="bg-warning" class="bg-warning"></option>
-                                <option value="bg-info" class="bg-info"></option>
-                                <option value="bg-primary" class="bg-primary"></option>
+                                <option value="secondary" class="bg-secondary"></option>
+                                <option value="success" class="bg-success"></option>
+                                <option value="danger" class="bg-danger"></option>
+                                <option value="warning" class="bg-warning"></option>
+                                <option value="info" class="bg-info"></option>
                               </select>
                             </div>
                           </div>
@@ -174,7 +172,7 @@
                   </div>
                   <div class="row">
                     <div class="col-12">
-                      <div class="callout callout-danger">
+                      <div class="callout" v-bind:class="'callout-' + form.color">
                         <p class="text-sm font-italic text-gray">
                           {{
                           preview.date | humanDate
@@ -250,9 +248,10 @@ export default {
       form: new Form({
         title: "",
         author: "",
-        showAuthor: false
+        showAuthor: false,
+        color: "success"
       }),
-      color: "bg-success",
+
       dateRange: { startDate, endDate },
       dPickerRange: {
         locale: {
@@ -292,6 +291,10 @@ export default {
     };
   },
   methods: {
+    getColor() {
+      return "bg-" + this.form.color;
+    },
+
     disabledDate(time) {
       return time < this.yesterday;
     },

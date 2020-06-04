@@ -112,7 +112,7 @@
                           @click.prevent="publishFor(news.id)"
                         ></a>
                       </p>
-                      <div class="callout callout-danger elevation-2">
+                      <div class="callout elevation-2" v-bind:class="'callout-' + news.color">
                         <p class="text-sm font-italic text-gray">{{ news.validFrom | humanDate }}</p>
                         <p v-html="news.description"></p>
                         <p class="text-sm text-gray">{{ news.title }}</p>
@@ -201,6 +201,7 @@ export default {
           perpage: 10,
           records: 0,
           options: {
+            chunksNavigation: scroll,
             texts: {
               count: "|||"
             }
@@ -360,7 +361,11 @@ export default {
               "id"
             );
             axios
-              .put("api/news/" + this.newsId, { toUser, toGroup })
+              .put("api/news/" + this.newsId, {
+                setUserGroup: true,
+                toUser,
+                toGroup
+              })
               .then(resp => {
                 $("#publishModal").modal("hide");
               })

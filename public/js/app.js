@@ -1993,7 +1993,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      tabIndex: 0,
+      pgTable: [{
+        news: [],
+        uri: "api/news?",
+        page: 1,
+        perpage: 3,
+        records: 0,
+        options: {
+          chunksNavigation: scroll,
+          texts: {
+            count: "|||"
+          }
+        }
+      }],
+      selSince: "upto2mths"
+    };
+  },
+  methods: {
+    getListData: function getListData(page) {
+      var _this = this;
+
+      if (this.$Role.isAdminOrUser()) {
+        var uri = this.pgTable[this.tabIndex].uri + "t=" + this.selSince + "&up=" + this.pgTable[this.tabIndex].perpage + "&page=" + page;
+        axios.get(uri).then(function (_ref) {
+          var data = _ref.data;
+          _this.pgTable[_this.tabIndex].news = data.data;
+          _this.pgTable[_this.tabIndex].records = data.total;
+          _this.pgTable[_this.tabIndex].page = data.current_page;
+          _this.pgTable[_this.tabIndex].perpage = parseInt(data.per_page);
+        });
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.getListData(1);
+  }
+});
 
 /***/ }),
 
@@ -3040,8 +3098,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 
 
@@ -3060,9 +3116,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       form: new Form({
         title: "",
         author: "",
-        showAuthor: false
+        showAuthor: false,
+        color: "success"
       }),
-      color: "bg-success",
       dateRange: {
         startDate: startDate,
         endDate: endDate
@@ -3091,6 +3147,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   methods: {
+    getColor: function getColor() {
+      return "bg-" + this.form.color;
+    },
     disabledDate: function disabledDate(time) {
       return time < this.yesterday;
     },
@@ -3482,6 +3541,7 @@ __webpack_require__.r(__webpack_exports__);
         perpage: 10,
         records: 0,
         options: {
+          chunksNavigation: scroll,
           texts: {
             count: "|||"
           }
@@ -3641,6 +3701,7 @@ __webpack_require__.r(__webpack_exports__);
             }), "id");
 
             axios.put("api/news/" + _this5.newsId, {
+              setUserGroup: true,
               toUser: toUser,
               toGroup: toGroup
             }).then(function (resp) {
@@ -66966,106 +67027,169 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "content" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-lg-12" }, [
+            _c("div", { staticClass: "card card-default" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "card-body bg-gray-light" },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "d-flex justify-content-end text-right" },
+                    [
+                      _c("pagination", {
+                        attrs: {
+                          options: _vm.pgTable[0].options,
+                          records: _vm.pgTable[0].records,
+                          "per-page": _vm.pgTable[0].perpage
+                        },
+                        on: { paginate: _vm.getListData },
+                        model: {
+                          value: _vm.pgTable[0].page,
+                          callback: function($$v) {
+                            _vm.$set(_vm.pgTable[0], "page", $$v)
+                          },
+                          expression: "pgTable[0].page"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.pgTable[_vm.tabIndex].news, function(news) {
+                    return _c("div", { key: news.id, staticClass: "row" }, [
+                      _c("div", { staticClass: "col-12" }, [
+                        _c("p", { staticClass: "text-sm" }, [
+                          _vm._v(
+                            "\n                    Created on:\n                    " +
+                              _vm._s(_vm._f("humanDateTime")(news.created_at)) +
+                              "\n                  "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "callout elevation-2",
+                            class: "callout-" + news.color
+                          },
+                          [
+                            _c(
+                              "p",
+                              { staticClass: "text-sm font-italic text-gray" },
+                              [
+                                _vm._v(
+                                  _vm._s(_vm._f("humanDate")(news.validFrom))
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("p", {
+                              domProps: { innerHTML: _vm._s(news.description) }
+                            }),
+                            _vm._v(" "),
+                            _c("p", { staticClass: "text-sm text-gray" }, [
+                              _vm._v(_vm._s(news.title))
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "p",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: news.showauthor,
+                                    expression: "news.showauthor"
+                                  }
+                                ],
+                                staticClass: "text-sm font-italic text-gray"
+                              },
+                              [_vm._v("By: " + _vm._s(news.author))]
+                            )
+                          ]
+                        )
+                      ])
+                    ])
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-footer pb-0" }, [
+                _c(
+                  "div",
+                  { staticClass: "d-flex justify-content-end text-right" },
+                  [
+                    _c("pagination", {
+                      attrs: {
+                        options: _vm.pgTable[0].options,
+                        records: _vm.pgTable[0].records,
+                        "per-page": _vm.pgTable[0].perpage
+                      },
+                      on: { paginate: _vm.getListData },
+                      model: {
+                        value: _vm.pgTable[0].page,
+                        callback: function($$v) {
+                          _vm.$set(_vm.pgTable[0], "page", $$v)
+                        },
+                        expression: "pgTable[0].page"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "content-header" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "row mb-2" }, [
-            _c("div", { staticClass: "col-sm-6" }, [
-              _c("h1", { staticClass: "m-0 text-dark" }, [
+    return _c("div", { staticClass: "content-header" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row mb-2" }, [
+          _c("div", { staticClass: "col-sm-6" }, [
+            _c("h1", { staticClass: "m-0 text-dark" }, [_vm._v("Annoucements")])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-sm-6" }, [
+            _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
+              _c("li", { staticClass: "breadcrumb-item" }, [
+                _c("a", { attrs: { href: "#" } }, [_vm._v("Home")])
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "breadcrumb-item active" }, [
                 _vm._v("Annoucements")
               ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-sm-6" }, [
-              _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
-                _c("li", { staticClass: "breadcrumb-item" }, [
-                  _c("a", { attrs: { href: "#" } }, [_vm._v("Home")])
-                ]),
-                _vm._v(" "),
-                _c("li", { staticClass: "breadcrumb-item active" }, [
-                  _vm._v("Annoucements")
-                ])
-              ])
             ])
           ])
         ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "content" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-lg-12" }, [
-              _c("div", { staticClass: "card card-default" }, [
-                _c("div", { staticClass: "card-header" }, [
-                  _c("h3", { staticClass: "card-title" }, [
-                    _c("i", { staticClass: "fas fa-bullhorn" }),
-                    _vm._v("\n                News\n              ")
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "callout callout-danger" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "close",
-                        attrs: {
-                          type: "button",
-                          "data-dismiss": "callout",
-                          "aria-hidden": "true"
-                        }
-                      },
-                      [_vm._v("×")]
-                    ),
-                    _vm._v(" "),
-                    _c("h5", [_vm._v("!!! O$P$ !!!")]),
-                    _vm._v(" "),
-                    _c("p", [_vm._v("Dear valued customer, last warning.")])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "callout callout-info" }, [
-                    _c("span", { staticClass: "text-sm text-gray-light" }, [
-                      _vm._v("12-May-2020")
-                    ]),
-                    _vm._v(" "),
-                    _c("h5", [_vm._v("Your payment is overdue !")]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v("Please go to Invoices section to find out.")
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "callout callout-warning" }, [
-                    _c("h5", [
-                      _vm._v(
-                        "Dear valued customer, you have pending payment for this month."
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v("Please go to Invoices section to find out.")
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "callout callout-success" }, [
-                    _c("h5", [_vm._v("You have 1 new invoice unread")]),
-                    _vm._v(" "),
-                    _c("p", [
-                      _vm._v("Please go to Invoices section to find out.")
-                    ])
-                  ])
-                ])
-              ])
-            ])
-          ])
-        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [
+        _c("i", { staticClass: "fas fa-bullhorn" }),
+        _vm._v("\n                News\n              ")
       ])
     ])
   }
@@ -68721,12 +68845,13 @@ var render = function() {
                                           {
                                             name: "model",
                                             rawName: "v-model",
-                                            value: _vm.color,
-                                            expression: "color"
+                                            value: _vm.form.color,
+                                            expression: "form.color"
                                           }
                                         ],
-                                        staticClass: "form-control",
-                                        class: _vm.color,
+                                        staticClass:
+                                          "form-control form-control-sm",
+                                        class: "bg-" + _vm.form.color,
                                         staticStyle: { width: "50px" },
                                         on: {
                                           change: function($event) {
@@ -68744,46 +68869,40 @@ var render = function() {
                                                     : o.value
                                                 return val
                                               })
-                                            _vm.color = $event.target.multiple
-                                              ? $$selectedVal
-                                              : $$selectedVal[0]
+                                            _vm.$set(
+                                              _vm.form,
+                                              "color",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
                                           }
                                         }
                                       },
                                       [
                                         _c("option", {
-                                          staticClass: "bg-dark",
-                                          attrs: { value: "bg-dark" }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("option", {
                                           staticClass: "bg-secondary",
-                                          attrs: { value: "bg-secondary" }
+                                          attrs: { value: "secondary" }
                                         }),
                                         _vm._v(" "),
                                         _c("option", {
                                           staticClass: "bg-success",
-                                          attrs: { value: "bg-success" }
+                                          attrs: { value: "success" }
                                         }),
                                         _vm._v(" "),
                                         _c("option", {
                                           staticClass: "bg-danger",
-                                          attrs: { value: "bg-danger" }
+                                          attrs: { value: "danger" }
                                         }),
                                         _vm._v(" "),
                                         _c("option", {
                                           staticClass: "bg-warning",
-                                          attrs: { value: "bg-warning" }
+                                          attrs: { value: "warning" }
                                         }),
                                         _vm._v(" "),
                                         _c("option", {
                                           staticClass: "bg-info",
-                                          attrs: { value: "bg-info" }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("option", {
-                                          staticClass: "bg-primary",
-                                          attrs: { value: "bg-primary" }
+                                          attrs: { value: "info" }
                                         })
                                       ]
                                     )
@@ -68829,47 +68948,56 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "row" }, [
                         _c("div", { staticClass: "col-12" }, [
-                          _c("div", { staticClass: "callout callout-danger" }, [
-                            _c(
-                              "p",
-                              { staticClass: "text-sm font-italic text-gray" },
-                              [
-                                _vm._v(
-                                  "\n                        " +
-                                    _vm._s(
-                                      _vm._f("humanDate")(_vm.preview.date)
-                                    ) +
-                                    "\n                      "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c("p", {
-                              domProps: {
-                                innerHTML: _vm._s(_vm.preview.description)
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("p", { staticClass: "text-sm text-gray" }, [
-                              _vm._v(_vm._s(_vm.preview.title))
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "p",
-                              {
-                                directives: [
-                                  {
-                                    name: "show",
-                                    rawName: "v-show",
-                                    value: _vm.preview.showAuthor,
-                                    expression: "preview.showAuthor"
-                                  }
-                                ],
-                                staticClass: "text-sm font-italic text-gray"
-                              },
-                              [_vm._v("By: " + _vm._s(_vm.preview.author))]
-                            )
-                          ])
+                          _c(
+                            "div",
+                            {
+                              staticClass: "callout",
+                              class: "callout-" + _vm.form.color
+                            },
+                            [
+                              _c(
+                                "p",
+                                {
+                                  staticClass: "text-sm font-italic text-gray"
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                        " +
+                                      _vm._s(
+                                        _vm._f("humanDate")(_vm.preview.date)
+                                      ) +
+                                      "\n                      "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("p", {
+                                domProps: {
+                                  innerHTML: _vm._s(_vm.preview.description)
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("p", { staticClass: "text-sm text-gray" }, [
+                                _vm._v(_vm._s(_vm.preview.title))
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "p",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.preview.showAuthor,
+                                      expression: "preview.showAuthor"
+                                    }
+                                  ],
+                                  staticClass: "text-sm font-italic text-gray"
+                                },
+                                [_vm._v("By: " + _vm._s(_vm.preview.author))]
+                              )
+                            ]
+                          )
                         ])
                       ])
                     ]),
@@ -69303,8 +69431,8 @@ var render = function() {
                                 _c(
                                   "div",
                                   {
-                                    staticClass:
-                                      "callout callout-danger elevation-2"
+                                    staticClass: "callout elevation-2",
+                                    class: "callout-" + news.color
                                   },
                                   [
                                     _c(
@@ -89371,8 +89499,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

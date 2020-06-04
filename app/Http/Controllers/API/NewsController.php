@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
+
+    private $AUTHORS = ['admin', 'author'];
     /**
      * Create a new controller instance.
      *
@@ -27,9 +29,16 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $this->authorize('isAdmin');
+
+        $role = auth()->user()->urole;
+
         $search = \Request::get('q');
         $since = \Request::get('t');
+        $perpage = \Request::get('up');
+
+        if (!$perpage) {
+            $perpage = 10;
+        }
 
         $where = "";
 
@@ -62,14 +71,26 @@ class NewsController extends Controller
 
         if ($search) {
 
-            return auth()->user()->mynews()->where(function ($query) use ($search) {
-                $query->whereLike(['title'], $search);
-            })->whereRaw($where)->orderBy('validFrom', 'asc')->paginate(10);
+
+
+            if (in_array($role, $this->AUTHORS)) {
+                return auth()->user()->mynews()->where(function ($query) use ($search) {
+                    $query->whereLike(['title'], $search);
+                })->whereRaw($where)->orderBy('validFrom', 'desc')->paginate($perpage);
+            } else {
+            }
         } else {
-            return auth()->user()->mynews()
-                ->whereRaw($where)
-                ->orderBy('validFrom', 'asc')
-                ->paginate(10);
+            if (in_array($role, $this->AUTHORS)) {
+                return auth()->user()->mynews()
+                    ->whereRaw($where)
+                    ->orderBy('validFrom', 'desc')
+                    ->paginate($perpage);
+            } else {
+                return auth()->user()->news()
+                    ->whereRaw($where)
+                    ->orderBy('validFrom', 'desc')
+                    ->paginate($perpage);
+            }
         }
     }
 
@@ -81,7 +102,7 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('isAdmin');
+        $this->authorize('isAuthor');
         $user = auth('api')->user();
 
         $this->validate($request, [
@@ -95,11 +116,12 @@ class NewsController extends Controller
 
         $validFrom = Carbon::parse($request['validFrom'], 'UTC');
         $validTo = Carbon::parse($request['validTo'], 'UTC');
-        $user->news()->create([
+        $user->mynews()->create([
             'title' => $request['title'],
             'description' => $request['description'],
             'author' => $request['author'],
             'showauthor' => $request['showAuthor'],
+            'color' => $request['color'],
             'validFrom' => $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss"),
             'validTo' => $validTo->isoFormat("YYYY-MM-DD HH:mm:ss")
 
@@ -115,10 +137,10 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('isAdmin');
+        $this->authorize('isAuthor');
         $news = News::findOrFail($id);
-        $news['publishUser'] = $news->users()->select('id','name','type')->get();
-        $news['publishGroup'] = $news->groups()->select('id','name','type')->get();
+        $news['publishUser'] = $news->users()->select('id', 'name', 'type')->get();
+        $news['publishGroup'] = $news->groups()->select('id', 'name', 'type')->get();
         return $news;
     }
 
@@ -132,25 +154,30 @@ class NewsController extends Controller
     public function update(Request $request, $id)
     {
 
-        $this->authorize('isAdmin');
+        $this->authorize('isAuthor');
         //$user = auth('api')->user();
 
         $news = News::findOrFail($id);
 
         $toUser = \Request::get('toUser');
         $toGroup = \Request::get('toGroup');
+        $setUserGroup = \Request::get('setUserGroup');
 
-        if ($toUser || $toGroup) {
-            if ($toUser){
-                $users = News::find($toUser);
-                $news->users()->sync($users);                
-            }
+        if ($setUserGroup) {
+            if ($toUser || $toGroup) {
+                if ($toUser) {
+                    $users = News::find($toUser);
+                    $news->users()->sync($users);
+                }
 
-            if ($toGroup) {
-                $groups = Group::find($toGroup);
-                $news->groups()->sync($groups);                
+                if ($toGroup) {
+                    $groups = Group::find($toGroup);
+                    $news->groups()->sync($groups);
+                }
+            } else {
+                $news->groups()->detach();
+                $news->users()->detach();
             }
-            
         } else {
             $this->validate($request, [
                 'title' => 'required|string|max:191',
@@ -173,6 +200,7 @@ class NewsController extends Controller
                 'description' => $request['description'],
                 'author' => $request['author'],
                 'showauthor' => $request['showAuthor'],
+                'color' => $request['color'],
                 'validFrom' => $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss"),
                 'validTo' => $validTo->isoFormat("YYYY-MM-DD HH:mm:ss")
 
@@ -189,7 +217,7 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('isAdmin');
+        $this->authorize('isAuthor');
 
         $news = News::findOrFail($id);
 
