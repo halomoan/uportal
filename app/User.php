@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->hasMany(News::class);
     }
 
+    public function readNews(){
+        
+        return $this->hasMany(readNews::class);
+    }
+
     public function groups()
     {
         return $this->belongsToMany(Group::class);

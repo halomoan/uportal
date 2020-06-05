@@ -156,7 +156,13 @@ export default {
         uri: "api/user?page=",
         page: 1,
         perpage: 10,
-        records: 0
+        records: 0,
+        options: {
+          chunksNavigation: scroll,
+          texts: {
+            count: "|||"
+          }
+        }
       },
       searchText: ""
     };

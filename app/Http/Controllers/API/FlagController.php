@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\News;
+use Illuminate\Support\Facades\DB;
 
 class FlagController extends Controller
 {
@@ -30,7 +32,24 @@ class FlagController extends Controller
             ->where('unread', true)->get();
 
 
+            $userId = auth()->user()->id;
+            $groups = auth()->user()->groups()->select('id')->get()->toArray();
+
+            $groupsId = join(",",$groups);
+
+            $sql = 'SELECT news_id FROM users INNER JOIN news_user ON users.id = news_user.user_id WHERE users.id = :userId
+            UNION
+            SELECT news_id FROM groups INNER JOIN group_news ON groups.id = group_news.group_id WHERE groups.id in (:groupIds)';
+
+            $results = DB::select( DB::raw($sql), array(
+                'userId' => $userId,
+                'groupIds' => $groupsId
+            ));
+
+            return $results;
+
         $flag = ['name' => 'INVOICES', 'value' => ($invoices->count() > 0)];
+        $flag = ['name' => 'ANNOUNCE', 'value' => true];
         array_push($flags, $flag);
 
         return ['flags' => $flags];

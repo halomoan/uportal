@@ -2020,7 +2020,7 @@ __webpack_require__.r(__webpack_exports__);
         news: [],
         uri: "api/news?",
         page: 1,
-        perpage: 3,
+        perpage: 5,
         records: 0,
         options: {
           chunksNavigation: scroll,
@@ -5644,7 +5644,13 @@ __webpack_require__.r(__webpack_exports__);
         uri: "api/user?page=",
         page: 1,
         perpage: 10,
-        records: 0
+        records: 0,
+        options: {
+          chunksNavigation: scroll,
+          texts: {
+            count: "|||"
+          }
+        }
       },
       searchText: ""
     };
@@ -88455,6 +88461,10 @@ var app = new Vue({
           this.hasNew.Invoice = bValue;
           break;
 
+        case "ANNOUNCE":
+          this.hasNew.Announce = bValue;
+          break;
+
         default:
       }
     },
@@ -88500,6 +88510,8 @@ var app = new Vue({
       flags.map(function (flag) {
         _this2.newFlag(flag.name, flag.value);
       });
+
+      _this2.$forceUpdate();
     })["catch"](function () {});
   }
 });
@@ -89499,8 +89511,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

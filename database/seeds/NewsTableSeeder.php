@@ -16,8 +16,9 @@ class NewsTableSeeder extends Seeder
         News::truncate();
         $faker = \Faker\Factory::create();
         $userIDs = DB::table('users')->pluck('id');
+        $color = ['warning','success','danger','info'];
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 2; $i++) {
 
             News::create([
                 //'user_id' => $faker->randomElement($userIDs),
@@ -26,8 +27,9 @@ class NewsTableSeeder extends Seeder
                 'description' => $faker->paragraph($nbSentences = 3, $variableNbSentences = true),
                 'author' => $faker->name,
                 'showauthor' => $faker->boolean,
-                'validFrom' => $faker->dateTime($max = 'now', $timezone = null),
-                'validTo' => $faker->dateTime($min = 'now', $timezone = null),
+                'validFrom' => $faker->dateTimeBetween($startDate = 'now', $endDate = '+3 months', $timezone = null),
+                'validTo' => $faker->dateTimeBetween($startDate = '+30 days', $endDate = '+3 months', $timezone = null),
+                'color' => $faker->randomElement($color),
 
             ]);
         }

@@ -180,6 +180,9 @@ const app = new Vue({
                 case "INVOICES":
                     this.hasNew.Invoice = bValue;
                     break;
+                case "ANNOUNCE":
+                    this.hasNew.Announce = bValue;
+                    break;
                 default:
             }
         },
@@ -228,6 +231,8 @@ const app = new Vue({
                 flags.map(flag => {
                     this.newFlag(flag.name, flag.value);
                 });
+
+                this.$forceUpdate();
             })
             .catch(() => {});
     }

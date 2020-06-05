@@ -85,8 +85,8 @@
               <router-link to="/announces" class="nav-link" exact-active-class="active">
                 <i class="nav-icon fas fa-bullhorn text-maroon"></i>
                 <p>
-                  Announcements
-                  <span v-if="hasNew.announce" class="right badge badge-danger">New</span>
+                  Announcements                  
+                  <span v-if="hasNew.Announce" class="right badge badge-danger">New</span>
                 </p>
               </router-link>
             </li>

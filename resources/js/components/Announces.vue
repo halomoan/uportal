@@ -95,7 +95,7 @@ export default {
           news: [],
           uri: "api/news?",
           page: 1,
-          perpage: 3,
+          perpage: 5,
           records: 0,
           options: {
             chunksNavigation: scroll,

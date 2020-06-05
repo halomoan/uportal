@@ -5,9 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\News;
+use App\User;
 use App\Group;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+//use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 class NewsController extends Controller
 {
@@ -86,10 +89,29 @@ class NewsController extends Controller
                     ->orderBy('validFrom', 'desc')
                     ->paginate($perpage);
             } else {
-                return auth()->user()->news()
-                    ->whereRaw($where)
-                    ->orderBy('validFrom', 'desc')
-                    ->paginate($perpage);
+
+            
+                $userId = auth()->user()->id;
+                $groups = auth()->user()->groups()->select('id')->get();
+
+                $news1 = News::whereHas('groups',function($q) use ($groups){
+                    $q->whereIn('id',$groups);
+                });
+
+                $news = News::whereHas('users',function($q) use ($userId){
+                    $q->where('id',$userId);
+                })->union($news1)->orderBy('validFrom', 'desc')->limit(5)->get();
+                               
+
+                foreach($news as $item){
+                    DB::table('read_news')->insertOrIgnore([
+                        ['user_id' => $userId, 'news_id' => $item->id]
+                    ]);
+                }
+              
+
+                $total = count($news);
+                return  new Paginator($news, $total, 5);      
             }
         }
     }
@@ -166,7 +188,7 @@ class NewsController extends Controller
         if ($setUserGroup) {
             if ($toUser || $toGroup) {
                 if ($toUser) {
-                    $users = News::find($toUser);
+                    $users = User::find($toUser);
                     $news->users()->sync($users);
                 }
 
