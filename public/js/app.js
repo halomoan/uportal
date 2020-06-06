@@ -2050,6 +2050,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getListData(1);
+    this.$parent.newFlag("ANNOUNCE", false);
   }
 });
 
@@ -3705,6 +3706,13 @@ __webpack_require__.r(__webpack_exports__);
               toUser: toUser,
               toGroup: toGroup
             }).then(function (resp) {
+              Swal.fire({
+                icon: "success",
+                position: "top-end",
+                title: "The news has been successfully published to the selected member(s)",
+                showConfirmButton: false,
+                timer: 1500
+              });
               $("#publishModal").modal("hide");
             })["catch"](function (error) {
               var message = error.response.data.message;
@@ -88448,7 +88456,8 @@ var app = new Vue({
   data: {
     searchText: "",
     hasNew: {
-      Invoice: false
+      Invoice: false,
+      Announce: false
     }
   },
   methods: {
@@ -89511,8 +89520,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

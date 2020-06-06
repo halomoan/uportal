@@ -90,28 +90,28 @@ class NewsController extends Controller
                     ->paginate($perpage);
             } else {
 
-            
+
                 $userId = auth()->user()->id;
                 $groups = auth()->user()->groups()->select('id')->get();
 
-                $news1 = News::whereHas('groups',function($q) use ($groups){
-                    $q->whereIn('id',$groups);
+                $news1 = News::whereHas('groups', function ($q) use ($groups) {
+                    $q->whereIn('id', $groups);
                 });
 
-                $news = News::whereHas('users',function($q) use ($userId){
-                    $q->where('id',$userId);
+                $news = News::whereHas('users', function ($q) use ($userId) {
+                    $q->where('id', $userId);
                 })->union($news1)->orderBy('validFrom', 'desc')->limit(5)->get();
-                               
 
-                foreach($news as $item){
+
+                foreach ($news as $item) {
                     DB::table('read_news')->insertOrIgnore([
                         ['user_id' => $userId, 'news_id' => $item->id]
                     ]);
                 }
-              
+
 
                 $total = count($news);
-                return  new Paginator($news, $total, 5);      
+                return  new Paginator($news, $total, 5);
             }
         }
     }

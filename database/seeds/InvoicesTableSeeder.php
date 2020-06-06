@@ -18,18 +18,18 @@ class InvoicesTableSeeder extends Seeder
         $faker = \Faker\Factory::create();
         $userIDs = DB::table('users')->pluck('id');
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 50; $i++) {
 
             Invoice::create([
-                //'user_id' => $faker->randomElement($userIDs),
-                'user_id' => '1',
+                'user_id' => $faker->randomElement($userIDs),
+                //'user_id' => '1',
                 'inv_no' => $faker->ean13,
                 'inv_date' => $faker->dateTimeBetween($startDate = '-3 years', $endDate = 'now', $timezone = null),
-                'year' => $faker->randomElement($array = array ('2020','2019','2018','2017')),
+                'year' => $faker->randomElement($array = array('2020', '2019', '2018', '2017')),
                 'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
                 'amount' => $faker->randomNumber(8),
                 'filename' => $faker->bankAccountNumber . ".pdf",
-                'unread' => $faker->randomElement($array = array (false,true)),
+                'unread' => $faker->randomElement($array = array(false, true)),
             ]);
         }
     }

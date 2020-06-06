@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\News;
 use Illuminate\Support\Facades\DB;
 
 class FlagController extends Controller
@@ -99,22 +98,18 @@ class FlagController extends Controller
         $groups = DB::table('group_user')->where('user_id', $userId)->select('group_id as id')->get()->toArray();
         $groupsId = array_column($groups, 'id');
 
-        $userNews = DB::table('news_user')->select('news.id', 'read_news.news_id')->where('news_user.user_id', $userId)
+        $userNews = DB::table('news_user')->select('news.id')->where('news_user.user_id', $userId)
             ->join('news', function ($join) {
-                $join->on('news_user.news_id', '=', 'news.id')
-                    ->orderBy('news.validFrom', 'desc')
-                    ->limit(5);
+                $join->on('news_user.news_id', '=', 'news.id');
             })
             ->leftJoin('read_news', function ($join) use ($userId) {
                 $join->on('read_news.news_id', '=', 'news.id')
                     ->where('read_news.user_id', '=', $userId);
             })->whereNull('read_news.news_id');
 
-        $allNews = DB::table('group_news')->select('news.id', 'read_news.news_id')->whereIn('group_news.group_id', $groupsId)
+        $allNews = DB::table('group_news')->select('news.id')->whereIn('group_news.group_id', $groupsId)
             ->join('news', function ($join) {
-                $join->on('group_news.news_id', '=', 'news.id')
-                    ->orderBy('news.validFrom', 'desc')
-                    ->limit(5);
+                $join->on('group_news.news_id', '=', 'news.id');
             })
             ->leftJoin('read_news', function ($join) use ($userId) {
                 $join->on('read_news.news_id', '=', 'news.id')

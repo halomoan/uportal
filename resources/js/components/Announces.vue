@@ -131,6 +131,7 @@ export default {
   },
   mounted() {
     this.getListData(1);
+    this.$parent.newFlag("ANNOUNCE", false);
   }
 };
 </script>

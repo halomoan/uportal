@@ -367,6 +367,14 @@ export default {
                 toGroup
               })
               .then(resp => {
+                Swal.fire({
+                  icon: "success",
+                  position: "top-end",
+                  title:
+                    "The news has been successfully published to the selected member(s)",
+                  showConfirmButton: false,
+                  timer: 1500
+                });
                 $("#publishModal").modal("hide");
               })
               .catch(error => {

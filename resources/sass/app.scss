@@ -30,6 +30,10 @@ $fa-font-path: "../webfonts";
     margin-bottom: 1px !important;
 }
 
+body {
+    padding-right: 0 !important;
+}
+
 input[type="checkbox"] {
     transform: scale(1.2);
 }

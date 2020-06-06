@@ -167,7 +167,8 @@ const app = new Vue({
     data: {
         searchText: "",
         hasNew: {
-            Invoice: false
+            Invoice: false,
+            Announce: false
         }
     },
     methods: {
@@ -182,6 +183,7 @@ const app = new Vue({
                     break;
                 case "ANNOUNCE":
                     this.hasNew.Announce = bValue;
+
                     break;
                 default:
             }

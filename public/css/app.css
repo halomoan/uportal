@@ -37292,6 +37292,10 @@ readers do not read off random characters that represent icons */
   margin-bottom: 1px !important;
 }
 
+body {
+  padding-right: 0 !important;
+}
+
 input[type=checkbox] {
   transform: scale(1.2);
 }
