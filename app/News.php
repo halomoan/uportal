@@ -11,9 +11,7 @@ class News extends Model
         'title', 'description', 'author', 'validFrom', 'validTo', 'showauthor', 'color'
     ];
 
-    protected $hidden = [
-        //'created_at', 'updated_at'
-    ];
+    protected $hidden = [];
 
     public function users()
     {

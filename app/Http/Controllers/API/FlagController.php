@@ -28,28 +28,10 @@ class FlagController extends Controller
     {
         $flags = [];
 
-        $invoices = auth()->user()->invoices()
-            ->where('unread', true)->get();
+        $flag = $this->getAnnounceFlag();
+        array_push($flags, $flag);
 
-
-            $userId = auth()->user()->id;
-            $groups = auth()->user()->groups()->select('id')->get()->toArray();
-
-            $groupsId = join(",",$groups);
-
-            $sql = 'SELECT news_id FROM users INNER JOIN news_user ON users.id = news_user.user_id WHERE users.id = :userId
-            UNION
-            SELECT news_id FROM groups INNER JOIN group_news ON groups.id = group_news.group_id WHERE groups.id in (:groupIds)';
-
-            $results = DB::select( DB::raw($sql), array(
-                'userId' => $userId,
-                'groupIds' => $groupsId
-            ));
-
-            return $results;
-
-        $flag = ['name' => 'INVOICES', 'value' => ($invoices->count() > 0)];
-        $flag = ['name' => 'ANNOUNCE', 'value' => true];
+        $flag = $this->getInvoiceFlag();
         array_push($flags, $flag);
 
         return ['flags' => $flags];
@@ -98,5 +80,50 @@ class FlagController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    protected function getInvoiceFlag()
+    {
+        $invoices = auth()->user()->invoices()
+            ->where('unread', true)->get();
+
+        $flag = ['name' => 'INVOICES', 'value' => ($invoices->count() > 0)];
+
+        return $flag;
+    }
+
+    protected function getAnnounceFlag()
+    {
+        $userId = auth()->user()->id;
+
+        $groups = DB::table('group_user')->where('user_id', $userId)->select('group_id as id')->get()->toArray();
+        $groupsId = array_column($groups, 'id');
+
+        $userNews = DB::table('news_user')->select('news.id', 'read_news.news_id')->where('news_user.user_id', $userId)
+            ->join('news', function ($join) {
+                $join->on('news_user.news_id', '=', 'news.id')
+                    ->orderBy('news.validFrom', 'desc')
+                    ->limit(5);
+            })
+            ->leftJoin('read_news', function ($join) use ($userId) {
+                $join->on('read_news.news_id', '=', 'news.id')
+                    ->where('read_news.user_id', '=', $userId);
+            })->whereNull('read_news.news_id');
+
+        $allNews = DB::table('group_news')->select('news.id', 'read_news.news_id')->whereIn('group_news.group_id', $groupsId)
+            ->join('news', function ($join) {
+                $join->on('group_news.news_id', '=', 'news.id')
+                    ->orderBy('news.validFrom', 'desc')
+                    ->limit(5);
+            })
+            ->leftJoin('read_news', function ($join) use ($userId) {
+                $join->on('read_news.news_id', '=', 'news.id')
+                    ->where('read_news.user_id', '=', $userId);
+            })->whereNull('read_news.news_id')
+            ->union($userNews)->get();
+
+
+        $flag = ['name' => 'ANNOUNCE', 'value' => ($allNews->count() > 0)];
+        return $flag;
     }
 }
