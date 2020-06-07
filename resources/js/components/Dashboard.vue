@@ -92,7 +92,7 @@
                         class="nav-link"
                         v-bind:class="{ 'active' : tabIndex === 0 }"
                         href="#month-chart"
-                        data-toggle="tab"
+                        @click.stop.prevent="setActiveTab(0)"
                       >3 Months</a>
                     </li>
                     <li class="nav-item">
@@ -100,7 +100,7 @@
                         class="nav-link"
                         v-bind:class="{ 'active' : tabIndex === 1 }"
                         href="#yoy-chart"
-                        data-toggle="tab"
+                        @click.stop.prevent="setActiveTab(1)"
                       >Y-o-Y</a>
                     </li>
                   </ul>
@@ -111,7 +111,7 @@
                 <div class="tab-content p-0">
                   <div
                     class="chart tab-pane"
-                    v-bind:class="{ 'active' : tabIndex === 0 }"
+                    v-bind:class="{ 'active' : tabIndex === 0}"
                     id="month-chart"
                   >
                     <div class="d-flex flex-column">
@@ -135,19 +135,44 @@
                           <span class="text-muted">Since last month</span>
                         </p>
                       </div>
-                      <div class>
+                      <div class="chart-container" style="position: relative;height: 300px;">
                         <canvas id="invoicemth-canvas" height="300" style="height: 300px;"></canvas>
                       </div>
                     </div>
                   </div>
+                  <!-- ./tab-pane -->
                   <div
                     class="chart tab-pane"
                     v-bind:class="{ 'active' : tabIndex === 1 }"
                     id="yoy-chart"
-                    style="position: relative; height: 300px;"
                   >
-                    <canvas id="invoiceyoy-canvas" height="300" style="height: 300px;"></canvas>
+                    <div class="d-flex flex-column">
+                      <div class="d-flex">
+                        <p class="d-flex flex-column">
+                          <span
+                            class="text-bold text-lg"
+                          >{{ invoiceYOYChart.aux.amount | currency('SGD',2) }}</span>
+                          <span>This Month</span>
+                        </p>
+                        <p class="ml-auto d-flex flex-column text-right">
+                          <span
+                            v-bind:class="parseFloat(invoiceYOYChart.aux.perctg) >= 0.0 ? 'text-danger' : 'text-success'"
+                          >
+                            <i
+                              class="fas"
+                              v-bind:class="invoiceYOYChart.aux.perctg >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"
+                            ></i>
+                            {{ invoiceYOYChart.aux.perctg | currency('',2) }} %
+                          </span>
+                          <span class="text-muted">Compare to Last Year</span>
+                        </p>
+                      </div>
+                      <div class="chart-container" style="position: relative;height: 300px;">
+                        <canvas id="invoiceyoy-canvas" height="300" style="height: 300px;"></canvas>
+                      </div>
+                    </div>
                   </div>
+                  <!-- ./tab-pane -->
                 </div>
               </div>
               <!-- /.card-body -->
@@ -335,6 +360,9 @@ export default {
   },
 
   methods: {
+    setActiveTab(idx) {
+      this.tabIndex = idx;
+    },
     getSingleStats() {
       let uri = "/api/dashboard?s=true";
       axios.get(uri).then(({ data }) => {

@@ -2398,6 +2398,31 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2414,6 +2439,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     };
   },
   methods: {
+    setActiveTab: function setActiveTab(idx) {
+      this.tabIndex = idx;
+    },
     getSingleStats: function getSingleStats() {
       var _this = this;
 
@@ -83634,9 +83662,13 @@ var render = function() {
                             {
                               staticClass: "nav-link",
                               class: { active: _vm.tabIndex === 0 },
-                              attrs: {
-                                href: "#month-chart",
-                                "data-toggle": "tab"
+                              attrs: { href: "#month-chart" },
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  $event.preventDefault()
+                                  return _vm.setActiveTab(0)
+                                }
                               }
                             },
                             [_vm._v("3 Months")]
@@ -83649,9 +83681,13 @@ var render = function() {
                             {
                               staticClass: "nav-link",
                               class: { active: _vm.tabIndex === 1 },
-                              attrs: {
-                                href: "#yoy-chart",
-                                "data-toggle": "tab"
+                              attrs: { href: "#yoy-chart" },
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  $event.preventDefault()
+                                  return _vm.setActiveTab(1)
+                                }
                               }
                             },
                             [_vm._v("Y-o-Y")]
@@ -83746,14 +83782,75 @@ var render = function() {
                       {
                         staticClass: "chart tab-pane",
                         class: { active: _vm.tabIndex === 1 },
-                        staticStyle: { position: "relative", height: "300px" },
                         attrs: { id: "yoy-chart" }
                       },
                       [
-                        _c("canvas", {
-                          staticStyle: { height: "300px" },
-                          attrs: { id: "invoiceyoy-canvas", height: "300" }
-                        })
+                        _c("div", { staticClass: "d-flex flex-column" }, [
+                          _c("div", { staticClass: "d-flex" }, [
+                            _c("p", { staticClass: "d-flex flex-column" }, [
+                              _c("span", { staticClass: "text-bold text-lg" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm._f("currency")(
+                                      _vm.invoiceYOYChart.aux.amount,
+                                      "SGD",
+                                      2
+                                    )
+                                  )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("span", [_vm._v("This Month")])
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "p",
+                              {
+                                staticClass:
+                                  "ml-auto d-flex flex-column text-right"
+                              },
+                              [
+                                _c(
+                                  "span",
+                                  {
+                                    class:
+                                      parseFloat(
+                                        _vm.invoiceYOYChart.aux.perctg
+                                      ) >= 0.0
+                                        ? "text-danger"
+                                        : "text-success"
+                                  },
+                                  [
+                                    _c("i", {
+                                      staticClass: "fas",
+                                      class:
+                                        _vm.invoiceYOYChart.aux.perctg >= 0
+                                          ? "fa-arrow-up"
+                                          : "fa-arrow-down"
+                                    }),
+                                    _vm._v(
+                                      "\n                          " +
+                                        _vm._s(
+                                          _vm._f("currency")(
+                                            _vm.invoiceYOYChart.aux.perctg,
+                                            "",
+                                            2
+                                          )
+                                        ) +
+                                        " %\n                        "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "text-muted" }, [
+                                  _vm._v("Compare to Last Year")
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(6)
+                        ])
                       ]
                     )
                   ])
@@ -83762,7 +83859,7 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._m(6)
+          _vm._m(7)
         ])
       ])
     ])
@@ -83832,12 +83929,37 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", {}, [
-      _c("canvas", {
-        staticStyle: { height: "300px" },
-        attrs: { id: "invoicemth-canvas", height: "300" }
-      })
-    ])
+    return _c(
+      "div",
+      {
+        staticClass: "chart-container",
+        staticStyle: { position: "relative", height: "300px" }
+      },
+      [
+        _c("canvas", {
+          staticStyle: { height: "300px" },
+          attrs: { id: "invoicemth-canvas", height: "300" }
+        })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "chart-container",
+        staticStyle: { position: "relative", height: "300px" }
+      },
+      [
+        _c("canvas", {
+          staticStyle: { height: "300px" },
+          attrs: { id: "invoiceyoy-canvas", height: "300" }
+        })
+      ]
+    )
   },
   function() {
     var _vm = this
