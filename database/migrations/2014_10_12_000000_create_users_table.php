@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('photo')->default('profile.png');
             $table->string('company')->nullable();
             $table->string('password');
+            $table->dateTime('latest_login')->nullable();
+            $table->dateTime('previous_visit')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

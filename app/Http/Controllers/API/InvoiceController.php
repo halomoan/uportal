@@ -29,15 +29,15 @@ class InvoiceController extends Controller
         $year = \Request::get('y');
 
         if ($search) {
-            
+
             return auth()->user()->invoices()->where(function ($query) use ($search) {
                 $query->whereLike(['inv_no', 'title', 'filename'], $search);
             })->paginate(10);
-        } else {            
+        } else {
             return auth()->user()->invoices()
                 ->where('year', $year)
-                ->orderBy('unread', 'desc')
                 ->orderBy('inv_date', 'desc')
+                ->orderBy('unread', 'desc')
                 ->paginate(10);
         }
     }

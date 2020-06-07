@@ -20,14 +20,15 @@ class InvoicesTableSeeder extends Seeder
 
         for ($i = 0; $i < 50; $i++) {
 
+            $date = $faker->dateTimeBetween($startDate = '-12 months', $endDate = 'now', $timezone = null);
             Invoice::create([
-                'user_id' => $faker->randomElement($userIDs),
-                //'user_id' => '1',
+                //'user_id' => $faker->randomElement($userIDs),
+                'user_id' => '1',
                 'inv_no' => $faker->ean13,
-                'inv_date' => $faker->dateTimeBetween($startDate = '-3 years', $endDate = 'now', $timezone = null),
-                'year' => $faker->randomElement($array = array('2020', '2019', '2018', '2017')),
+                'inv_date' => $date,
+                'year' => $date->format('Y'),
                 'title' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-                'amount' => $faker->randomNumber(8),
+                'amount' => $faker->randomNumber(4),
                 'filename' => $faker->bankAccountNumber . ".pdf",
                 'unread' => $faker->randomElement($array = array(false, true)),
             ]);

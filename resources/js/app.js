@@ -110,7 +110,6 @@ Vue.filter("formatNumber", function(value) {
 // });
 
 import Swal from "sweetalert2";
-import Axios from "axios";
 window.Swal = Swal;
 
 const Toast = Swal.mixin({

@@ -20,8 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources(['user' => 'API\UserController']);
-
-
 Route::apiResources(['group' => 'API\GroupController']);
 
 Route::apiResources(['news' => 'API\NewsController']);
@@ -33,3 +31,4 @@ Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 Route::get('invoices', 'API\InvoiceController@index')->name('invoices.index');
 
 Route::get('flag', 'API\FlagController@index')->name('flag.index');
+Route::get('dashboard', 'API\DashboardController@index')->name('dashboard.index');

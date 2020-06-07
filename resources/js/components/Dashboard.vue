@@ -25,12 +25,12 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-6 col-6">
+          <div class="col-lg-4 col-4">
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>2</h3>
-                <p>New Invoices</p>
+                <h3>{{ stat.noOfNewInvoice }}</h3>
+                <p>New Invoice</p>
               </div>
               <div class="icon">
                 <i class="ion ion-email"></i>
@@ -42,18 +42,34 @@
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-6 col-6">
+          <div class="col-lg-4 col-4">
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>1</h3>
-                <p>New Announcements</p>
+                <h3>{{ stat.noOfNewAnnounce }}</h3>
+                <p>New Announcement</p>
               </div>
               <div class="icon">
                 <i class="ion ion-chatbubble"></i>
               </div>
               <router-link to="/announces" class="small-box-footer">
                 More info
+                <i class="fas fa-arrow-circle-right"></i>
+              </router-link>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-4 col-4">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{ stat.lastVisit }}</h3>
+                <p>Last Visit</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-eye"></i>
+              </div>
+              <router-link to="/dashboard" class="small-box-footer">
                 <i class="fas fa-arrow-circle-right"></i>
               </router-link>
             </div>
@@ -67,15 +83,25 @@
               <div class="card-header ui-sortable-handle" style="cursor: move;">
                 <h3 class="card-title">
                   <i class="fas fa-chart-pie mr-1"></i>
-                  Sales
+                  Invoices
                 </h3>
                 <div class="card-tools">
                   <ul class="nav nav-pills ml-auto">
                     <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+                      <a
+                        class="nav-link"
+                        v-bind:class="{ 'active' : tabIndex === 0 }"
+                        href="#month-chart"
+                        data-toggle="tab"
+                      >3 Months</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+                      <a
+                        class="nav-link"
+                        v-bind:class="{ 'active' : tabIndex === 1 }"
+                        href="#yoy-chart"
+                        data-toggle="tab"
+                      >Y-o-Y</a>
                     </li>
                   </ul>
                 </div>
@@ -83,40 +109,44 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
                   <div
-                    class="chart tab-pane active"
-                    id="revenue-chart"
-                    style="position: relative; height: 300px;"
+                    class="chart tab-pane"
+                    v-bind:class="{ 'active' : tabIndex === 0 }"
+                    id="month-chart"
                   >
-                    <div class="chartjs-size-monitor">
-                      <div class="chartjs-size-monitor-expand">
-                        <div class></div>
+                    <div class="d-flex flex-column">
+                      <div class="d-flex">
+                        <p class="d-flex flex-column">
+                          <span
+                            class="text-bold text-lg"
+                          >{{ invoiceMTHChart.aux.amount | currency('SGD',2) }}</span>
+                          <span>This Month</span>
+                        </p>
+                        <p class="ml-auto d-flex flex-column text-right">
+                          <span
+                            v-bind:class="parseFloat(invoiceMTHChart.aux.perctg) >= 0.0 ? 'text-danger' : 'text-success'"
+                          >
+                            <i
+                              class="fas"
+                              v-bind:class="invoiceMTHChart.aux.perctg >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"
+                            ></i>
+                            {{ invoiceMTHChart.aux.perctg | currency('',2) }} %
+                          </span>
+                          <span class="text-muted">Since last month</span>
+                        </p>
                       </div>
-                      <div class="chartjs-size-monitor-shrink">
-                        <div class></div>
+                      <div class>
+                        <canvas id="invoicemth-canvas" height="300" style="height: 300px;"></canvas>
                       </div>
                     </div>
-                    <canvas
-                      id="revenue-chart-canvas"
-                      height="300"
-                      style="height: 300px; display: block; width: 620px;"
-                      width="620"
-                      class="chartjs-render-monitor"
-                    ></canvas>
                   </div>
                   <div
                     class="chart tab-pane"
-                    id="sales-chart"
+                    v-bind:class="{ 'active' : tabIndex === 1 }"
+                    id="yoy-chart"
                     style="position: relative; height: 300px;"
                   >
-                    <canvas
-                      id="sales-chart-canvas"
-                      height="0"
-                      style="height: 0px; display: block; width: 0px;"
-                      class="chartjs-render-monitor"
-                      width="0"
-                    ></canvas>
+                    <canvas id="invoiceyoy-canvas" height="300" style="height: 300px;"></canvas>
                   </div>
                 </div>
               </div>
@@ -146,17 +176,24 @@
                       <i class="fas fa-envelope bg-blue"></i>
                       <div class="timeline-item">
                         <span class="time">
-                          <i class="fas fa-clock"></i> 12:05
+                          <i class="fas fa-clock"></i>
+                          12:05
                         </span>
                         <h3 class="timeline-header">
-                          <a href="#">Support Team</a> sent you an email
+                          <a href="#">Support Team</a>
+                          sent you an email
                         </h3>
 
                         <div class="timeline-body">
-                          Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                          quora plaxo ideeli hulu weebly balihoo...
+                          Etsy doostang zoodles disqus
+                          groupon greplin oooj voxy
+                          zoodles, weebly ning heekya
+                          handango imeem plugg dopplr
+                          jibjab, movity jajah
+                          plickers sifteo edmodo ifttt
+                          zimbra. Babblely odeo
+                          kaboodle quora plaxo ideeli
+                          hulu weebly balihoo...
                         </div>
                         <div class="timeline-footer">
                           <a class="btn btn-primary btn-sm">Read more</a>
@@ -170,10 +207,12 @@
                       <i class="fas fa-user bg-green"></i>
                       <div class="timeline-item">
                         <span class="time">
-                          <i class="fas fa-clock"></i> 5 mins ago
+                          <i class="fas fa-clock"></i>
+                          5 mins ago
                         </span>
                         <h3 class="timeline-header no-border">
-                          <a href="#">Sarah Young</a> accepted your friend request
+                          <a href="#">Sarah Young</a>
+                          accepted your friend request
                         </h3>
                       </div>
                     </div>
@@ -183,15 +222,19 @@
                       <i class="fas fa-comments bg-yellow"></i>
                       <div class="timeline-item">
                         <span class="time">
-                          <i class="fas fa-clock"></i> 27 mins ago
+                          <i class="fas fa-clock"></i>
+                          27 mins ago
                         </span>
                         <h3 class="timeline-header">
-                          <a href="#">Jay White</a> commented on your post
+                          <a href="#">Jay White</a>
+                          commented on your post
                         </h3>
                         <div class="timeline-body">
                           Take me to your leader!
-                          Switzerland is small and neutral!
-                          We are more like Germany, ambitious and misunderstood!
+                          Switzerland is small and
+                          neutral! We are more like
+                          Germany, ambitious and
+                          misunderstood!
                         </div>
                         <div class="timeline-footer">
                           <a class="btn btn-warning btn-sm">View comment</a>
@@ -209,10 +252,12 @@
                       <i class="fa fa-camera bg-purple"></i>
                       <div class="timeline-item">
                         <span class="time">
-                          <i class="fas fa-clock"></i> 2 days ago
+                          <i class="fas fa-clock"></i>
+                          2 days ago
                         </span>
                         <h3 class="timeline-header">
-                          <a href="#">Mina Lee</a> uploaded new photos
+                          <a href="#">Mina Lee</a>
+                          uploaded new photos
                         </h3>
                         <div class="timeline-body">
                           <img src="http://placehold.it/150x100" alt="..." />
@@ -230,11 +275,13 @@
 
                       <div class="timeline-item">
                         <span class="time">
-                          <i class="fas fa-clock"></i> 5 days ago
+                          <i class="fas fa-clock"></i>
+                          5 days ago
                         </span>
 
                         <h3 class="timeline-header">
-                          <a href="#">Mr. Doe</a> shared a video
+                          <a href="#">Mr. Doe</a>
+                          shared a video
                         </h3>
 
                         <div class="timeline-body">
@@ -270,7 +317,73 @@
 </template>
 
 <script>
+import Chart from "chart.js";
+import invoice1Chart from "../data/barchart-invoice1.js";
+
 export default {
-  mounted() {}
+  data() {
+    return {
+      tabIndex: 0,
+      stat: {
+        noOfNewInvoice: 0,
+        noOfNewAnnounce: 0,
+        lastVisit: ""
+      },
+      invoiceMTHChart: invoice1Chart,
+      invoiceYOYChart: _.cloneDeep(invoice1Chart)
+    };
+  },
+
+  methods: {
+    getSingleStats() {
+      let uri = "/api/dashboard?s=true";
+      axios.get(uri).then(({ data }) => {
+        this.stat.noOfNewInvoice = data.noOfNewInvoice
+          ? data.noOfNewInvoice
+          : 0;
+        this.stat.noOfNewAnnounce = data.noOfNewAnnounce
+          ? data.noOfNewAnnounce
+          : 0;
+        this.stat.lastVisit = data.lastVisit;
+      });
+    },
+    createChart(chartId, chartData) {
+      const ctx = document.getElementById(chartId);
+      const myChart = new Chart(ctx, {
+        type: chartData.type,
+        data: chartData.data,
+        options: chartData.options
+      });
+    },
+    getInvoicesMTHChart() {
+      let uri = "/api/dashboard?chart=invoicemth";
+      axios.get(uri).then(({ data }) => {
+        this.invoiceMTHChart.data.datasets[0].data = [...data.data];
+        this.invoiceMTHChart.data.labels = data.labels;
+
+        this.invoiceMTHChart.aux.amount = data.amount;
+        this.invoiceMTHChart.aux.perctg = data.perctg;
+
+        this.createChart("invoicemth-canvas", this.invoiceMTHChart);
+      });
+    },
+    getInvoicesYOYChart() {
+      let uri = "/api/dashboard?chart=invoiceyoy";
+      axios.get(uri).then(({ data }) => {
+        this.invoiceYOYChart.data.datasets[0].data = [...data.data];
+        this.invoiceYOYChart.data.labels = data.labels;
+
+        this.invoiceYOYChart.aux.amount = data.amount;
+        this.invoiceYOYChart.aux.perctg = data.perctg;
+        this.createChart("invoiceyoy-canvas", this.invoiceYOYChart);
+      });
+    }
+  },
+  mounted() {
+    this.getSingleStats();
+    this.getInvoicesMTHChart();
+    this.getInvoicesYOYChart();
+    this.get;
+  }
 };
 </script>
