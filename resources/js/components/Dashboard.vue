@@ -399,6 +399,7 @@ export default {
       let uri = "/api/dashboard?chart=invoiceyoy";
       axios.get(uri).then(({ data }) => {
         this.invoiceYOYChart.data.datasets[0].data = [...data.data];
+        this.invoiceYOYChart.data.datasets[0].backgroundColor[1] = this.invoiceMTHChart.data.datasets[0].backgroundColor[2];
         this.invoiceYOYChart.data.labels = data.labels;
 
         this.invoiceYOYChart.aux.amount = data.amount;

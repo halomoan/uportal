@@ -2482,6 +2482,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios.get(uri).then(function (_ref3) {
         var data = _ref3.data;
         _this3.invoiceYOYChart.data.datasets[0].data = _toConsumableArray(data.data);
+        _this3.invoiceYOYChart.data.datasets[0].backgroundColor[1] = _this3.invoiceMTHChart.data.datasets[0].backgroundColor[2];
         _this3.invoiceYOYChart.data.labels = data.labels;
         _this3.invoiceYOYChart.aux.amount = data.amount;
         _this3.invoiceYOYChart.aux.perctg = data.perctg;
@@ -106054,8 +106055,8 @@ var invoice1Barchart = {
       // one line graph
       label: "Amount",
       data: [0, 0, 0],
-      backgroundColor: ["rgba(60,141,188,0.9)", // Blue
-      "rgba(30,141,188,0.9)", "rgba(20,141,188,0.9)"],
+      backgroundColor: ["#1C6C8C", // Blue
+      "#F2B90F", "#F2790F"],
       borderColor: ["rgb(180, 180, 180)", "rgb(180, 180, 180)", "rgb(180, 180, 180)"],
       borderWidth: 1
     }]

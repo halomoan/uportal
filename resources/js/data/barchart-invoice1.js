@@ -12,9 +12,9 @@ export const invoice1Barchart = {
                 label: "Amount",
                 data: [0, 0, 0],
                 backgroundColor: [
-                    "rgba(60,141,188,0.9)", // Blue
-                    "rgba(30,141,188,0.9)",
-                    "rgba(20,141,188,0.9)"
+                    "#1C6C8C", // Blue
+                    "#F2B90F",
+                    "#F2790F"
                 ],
                 borderColor: [
                     "rgb(180, 180, 180)",
