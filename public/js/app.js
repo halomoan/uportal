@@ -2056,6 +2056,83 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      tldata: [{
+        id: 1,
+        date: "3 Jan. 2014",
+        created: "5 days ago",
+        from: "",
+        title: "New Invoice",
+        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious",
+        readmore: "/invoice"
+      }, {
+        id: 2,
+        date: "3 Jan. 2014",
+        created: "5 days ago",
+        from: "Mr. Doe",
+        title: "shared a video",
+        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
+      }, {
+        id: 3,
+        date: "3 Jan. 2014",
+        created: "5 days ago",
+        from: "Mr. Doe",
+        title: "shared a video",
+        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
+      }]
+    };
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/UserGroupSelect.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/UserGroupSelect.vue?vue&type=script&lang=js& ***!
@@ -2343,6 +2420,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
 /* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chart_js__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _charts_barchart_invoice1_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../charts/barchart-invoice1.js */ "./resources/js/charts/barchart-invoice1.js");
+/* harmony import */ var _Common_Timeline_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Common/Timeline.vue */ "./resources/js/components/Common/Timeline.vue");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2560,147 +2638,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    Timeline: _Common_Timeline_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   data: function data() {
     return {
       tabIndex: 0,
@@ -83507,6 +83451,84 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "timeline" },
+    [
+      _vm._l(_vm.tldata, function(item) {
+        return [
+          _c("div", { key: item.id, staticClass: "time-label" }, [
+            _c("span", { staticClass: "bg-red" }, [_vm._v(_vm._s(item.date))])
+          ]),
+          _vm._v(" "),
+          _c("div", { key: "body" + item.id }, [
+            _c("i", { staticClass: "fas fa-envelope bg-blue" }),
+            _vm._v(" "),
+            _c("div", { staticClass: "timeline-item" }, [
+              _c("span", { staticClass: "time" }, [
+                _c("i", { staticClass: "fas fa-clock" }),
+                _vm._v("\n          " + _vm._s(item.created) + "\n        ")
+              ]),
+              _vm._v(" "),
+              _c("h3", { staticClass: "timeline-header" }, [
+                _c("a", { attrs: { href: "#" } }, [_vm._v(_vm._s(item.from))]),
+                _vm._v("\n          " + _vm._s(item.title) + "\n        ")
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "timeline-body" }, [
+                _vm._v(_vm._s(item.body))
+              ]),
+              _vm._v(" "),
+              _vm._m(0, true)
+            ])
+          ])
+        ]
+      }),
+      _vm._v(" "),
+      _vm._m(1)
+    ],
+    2
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "timeline-footer" }, [
+      _c("a", { staticClass: "btn btn-primary btn-sm" }, [_vm._v("Read more")]),
+      _vm._v(" "),
+      _c("a", { staticClass: "btn btn-danger btn-sm" }, [_vm._v("Delete")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [_c("i", { staticClass: "fas fa-clock bg-gray" })])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/UserGroupSelect.vue?vue&type=template&id=2477f512&":
 /*!*************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Common/UserGroupSelect.vue?vue&type=template&id=2477f512& ***!
@@ -84074,7 +84096,24 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._m(7)
+          _c(
+            "section",
+            { staticClass: "col-lg-5 connectedSortable ui-sortable" },
+            [
+              _c("div", { staticClass: "card" }, [
+                _vm._m(7),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "tab-content p-0" },
+                    [_c("timeline")],
+                    1
+                  )
+                ])
+              ])
+            ]
+          )
         ])
       ])
     ])
@@ -84181,242 +84220,15 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c(
-      "section",
-      { staticClass: "col-lg-5 connectedSortable ui-sortable" },
+      "div",
+      {
+        staticClass: "card-header ui-sortable-handle",
+        staticStyle: { cursor: "move" }
+      },
       [
-        _c("div", { staticClass: "card" }, [
-          _c(
-            "div",
-            {
-              staticClass: "card-header ui-sortable-handle",
-              staticStyle: { cursor: "move" }
-            },
-            [
-              _c("h3", { staticClass: "card-title" }, [
-                _c("i", { staticClass: "fas fa-calendar-alt mr-1" }),
-                _vm._v("\n                Timeline\n              ")
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "tab-content p-0" }, [
-              _c("div", { staticClass: "timeline" }, [
-                _c("div", { staticClass: "time-label" }, [
-                  _c("span", { staticClass: "bg-red" }, [
-                    _vm._v("10 Feb. 2014")
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [
-                  _c("i", { staticClass: "fas fa-envelope bg-blue" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "timeline-item" }, [
-                    _c("span", { staticClass: "time" }, [
-                      _c("i", { staticClass: "fas fa-clock" }),
-                      _vm._v(
-                        "\n                        12:05\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h3", { staticClass: "timeline-header" }, [
-                      _c("a", { attrs: { href: "#" } }, [
-                        _vm._v("Support Team")
-                      ]),
-                      _vm._v(
-                        "\n                        sent you an email\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-body" }, [
-                      _vm._v(
-                        "\n                        Etsy doostang zoodles disqus\n                        groupon greplin oooj voxy\n                        zoodles, weebly ning heekya\n                        handango imeem plugg dopplr\n                        jibjab, movity jajah\n                        plickers sifteo edmodo ifttt\n                        zimbra. Babblely odeo\n                        kaboodle quora plaxo ideeli\n                        hulu weebly balihoo...\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-footer" }, [
-                      _c("a", { staticClass: "btn btn-primary btn-sm" }, [
-                        _vm._v("Read more")
-                      ]),
-                      _vm._v(" "),
-                      _c("a", { staticClass: "btn btn-danger btn-sm" }, [
-                        _vm._v("Delete")
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [
-                  _c("i", { staticClass: "fas fa-user bg-green" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "timeline-item" }, [
-                    _c("span", { staticClass: "time" }, [
-                      _c("i", { staticClass: "fas fa-clock" }),
-                      _vm._v(
-                        "\n                        5 mins ago\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h3", { staticClass: "timeline-header no-border" }, [
-                      _c("a", { attrs: { href: "#" } }, [
-                        _vm._v("Sarah Young")
-                      ]),
-                      _vm._v(
-                        "\n                        accepted your friend request\n                      "
-                      )
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [
-                  _c("i", { staticClass: "fas fa-comments bg-yellow" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "timeline-item" }, [
-                    _c("span", { staticClass: "time" }, [
-                      _c("i", { staticClass: "fas fa-clock" }),
-                      _vm._v(
-                        "\n                        27 mins ago\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h3", { staticClass: "timeline-header" }, [
-                      _c("a", { attrs: { href: "#" } }, [_vm._v("Jay White")]),
-                      _vm._v(
-                        "\n                        commented on your post\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-body" }, [
-                      _vm._v(
-                        "\n                        Take me to your leader!\n                        Switzerland is small and\n                        neutral! We are more like\n                        Germany, ambitious and\n                        misunderstood!\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-footer" }, [
-                      _c("a", { staticClass: "btn btn-warning btn-sm" }, [
-                        _vm._v("View comment")
-                      ])
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "time-label" }, [
-                  _c("span", { staticClass: "bg-green" }, [
-                    _vm._v("3 Jan. 2014")
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [
-                  _c("i", { staticClass: "fa fa-camera bg-purple" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "timeline-item" }, [
-                    _c("span", { staticClass: "time" }, [
-                      _c("i", { staticClass: "fas fa-clock" }),
-                      _vm._v(
-                        "\n                        2 days ago\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h3", { staticClass: "timeline-header" }, [
-                      _c("a", { attrs: { href: "#" } }, [_vm._v("Mina Lee")]),
-                      _vm._v(
-                        "\n                        uploaded new photos\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-body" }, [
-                      _c("img", {
-                        attrs: {
-                          src: "http://placehold.it/150x100",
-                          alt: "..."
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("img", {
-                        attrs: {
-                          src: "http://placehold.it/150x100",
-                          alt: "..."
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("img", {
-                        attrs: {
-                          src: "http://placehold.it/150x100",
-                          alt: "..."
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("img", {
-                        attrs: {
-                          src: "http://placehold.it/150x100",
-                          alt: "..."
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("img", {
-                        attrs: {
-                          src: "http://placehold.it/150x100",
-                          alt: "..."
-                        }
-                      })
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [
-                  _c("i", { staticClass: "fas fa-video bg-maroon" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "timeline-item" }, [
-                    _c("span", { staticClass: "time" }, [
-                      _c("i", { staticClass: "fas fa-clock" }),
-                      _vm._v(
-                        "\n                        5 days ago\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("h3", { staticClass: "timeline-header" }, [
-                      _c("a", { attrs: { href: "#" } }, [_vm._v("Mr. Doe")]),
-                      _vm._v(
-                        "\n                        shared a video\n                      "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-body" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "embed-responsive embed-responsive-16by9"
-                        },
-                        [
-                          _c("iframe", {
-                            staticClass: "embed-responsive-item",
-                            attrs: {
-                              src: "https://www.youtube.com/embed/tMWkeBIohBs",
-                              frameborder: "0",
-                              allowfullscreen: ""
-                            }
-                          })
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "timeline-footer" }, [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-sm bg-maroon",
-                          attrs: { href: "#" }
-                        },
-                        [_vm._v("See comments")]
-                      )
-                    ])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", [_c("i", { staticClass: "fas fa-clock bg-gray" })])
-              ])
-            ])
-          ])
+        _c("h3", { staticClass: "card-title" }, [
+          _c("i", { staticClass: "fas fa-calendar-alt mr-1" }),
+          _vm._v("\n                Timeline\n              ")
         ])
       ]
     )
@@ -105194,6 +105006,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Announces_vue_vue_type_template_id_4fb8fe4f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Announces_vue_vue_type_template_id_4fb8fe4f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Timeline.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/Common/Timeline.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Timeline.vue?vue&type=template&id=05bbe9ea& */ "./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea&");
+/* harmony import */ var _Timeline_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Timeline.vue?vue&type=script&lang=js& */ "./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Timeline_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Common/Timeline.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Timeline_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Timeline.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Timeline.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Timeline_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Timeline.vue?vue&type=template&id=05bbe9ea& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Common/Timeline.vue?vue&type=template&id=05bbe9ea&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Timeline_vue_vue_type_template_id_05bbe9ea___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
