@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UsersTableSeeder extends Seeder
 {
@@ -14,7 +15,9 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         // Let's clear the users table first
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         User::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
 
         $faker = \Faker\Factory::create();
         $password = Hash::make('sap12345');

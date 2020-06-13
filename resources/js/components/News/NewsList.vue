@@ -185,7 +185,7 @@
 </template>
 
 <script>
-import UserGroupSelect from "./UserGroupSelect.vue";
+import UserGroupSelect from "../Common/UserGroupSelect.vue";
 export default {
   components: {
     UserGroupSelect

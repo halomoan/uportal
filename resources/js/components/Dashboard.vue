@@ -343,7 +343,7 @@
 
 <script>
 import Chart from "chart.js";
-import invoice1Chart from "../data/barchart-invoice1.js";
+import invoice1Chart from "../charts/barchart-invoice1.js";
 
 export default {
   data() {

@@ -32,20 +32,20 @@ let routes = [
     },
     {
         path: "/invoices",
-        component: require("./components/Invoices.vue").default
+        component: require("./components/Invoices/Invoices.vue").default
     },
     {
         path: "/invoiced",
-        component: require("./components/InvoiceDetail.vue").default
+        component: require("./components/Invoices/InvoiceDetail.vue").default
     },
     {
         path: "/printInvoice",
-        component: require("./components/InvoiceDetail.vue").default
+        component: require("./components/Invoices/InvoiceDetail.vue").default
     },
-    {
-        path: "/gentoken",
-        component: require("./components/GenToken.vue").default
-    },
+    // {
+    //     path: "/gentoken",
+    //     component: require("./components/GenToken.vue").default
+    // },
     { path: "/users", component: require("./components/Users.vue").default },
     {
         path: "/usergroup",
@@ -53,11 +53,11 @@ let routes = [
     },
     {
         path: "/news",
-        component: require("./components/NewsList.vue").default
+        component: require("./components/News/NewsList.vue").default
     },
     {
         path: "/newsd",
-        component: require("./components/News.vue").default
+        component: require("./components/News/News.vue").default
     },
     {
         path: "/profile",

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupUserPivotTable extends Migration
+class CreateTimelinesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,20 @@ class CreateGroupUserPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_user', function (Blueprint $table) {
+        Schema::create('timelines', function (Blueprint $table) {
             $table->engine = 'InnoDB';
+            $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('group_id');
+            $table->string('from')->nullable();
+            $table->string('title');
+            $table->string('readmore')->nullable();
+            $table->unsignedTinyInteger('type');
+            $table->timestamp('created_at')->useCurrent();
+            //$table->index('user_id');
         });
 
-        Schema::table('group_user', function (Blueprint $table) {
+        Schema::table('timelines', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade');
-            $table->foreign('group_id')->references('id')->on('groups')
                 ->onDelete('cascade');
         });
     }
@@ -34,6 +38,6 @@ class CreateGroupUserPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_user');
+        Schema::dropIfExists('timelines');
     }
 }

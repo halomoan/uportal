@@ -1,1 +1,15 @@
 composer require laravel/helpers
+
+
+
+
+php artisan make:model Timeline -m create_timeline_table
+php artisan make:migration create_newstype_table
+
+php artisan make:factory TimelineFactory
+
+php artisan make:seeder TimelinesTableSeeder
+
+php artisan db:seed --class=UsersTableSeeder
+
+

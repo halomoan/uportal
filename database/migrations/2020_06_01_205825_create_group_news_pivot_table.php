@@ -14,10 +14,12 @@ class CreateGroupNewsPivotTable extends Migration
     public function up()
     {
         Schema::create('group_news', function (Blueprint $table) {
-            //$table->id();
-            $table->integer('group_id')->unsigned();
-            $table->integer('news_id')->unsigned();
+            $table->engine = 'InnoDB';
+            $table->unsignedBigInteger('group_id');
+            $table->unsignedBigInteger('news_id');
+        });
 
+        Schema::table('group_news', function (Blueprint $table) {
             $table->foreign('group_id')->references('id')->on('groups')
                 ->onDelete('cascade');
             $table->foreign('news_id')->references('id')->on('news')
