@@ -60,6 +60,12 @@ class User extends Authenticatable
         return $this->hasMany(readNews::class);
     }
 
+    public function timelines()
+    {
+        return $this->hasMany(Timeline::class);
+    }
+
+
     public function groups()
     {
         return $this->belongsToMany(Group::class);
