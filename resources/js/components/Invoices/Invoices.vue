@@ -151,6 +151,7 @@
 
 <script>
 export default {
+  props: { year: String },
   data() {
     return {
       tabIndex: 0,
@@ -184,46 +185,63 @@ export default {
           records: 0
         }
       ],
-      years: ["2020", "2019", "2018", "2017"],
       searchText: ""
     };
   },
+  computed: {
+    years: {
+      get: function() {
+        const date = new Date();
+        const year = date.getFullYear();
+        return [year + "", year - 1 + "", year - 2 + "", year - 3 + ""];
+      },
+      set: function() {}
+    }
+  },
+
   methods: {
     setActive(tab) {
-      this.tabIndex = tab;
+      this.tabIndex = tab > -1 ? tab : 0;
       this.getTableData(1);
     },
     getTableData(page) {
       if (this.$Role.isAdminOrUser()) {
-        let uri =
+        const uri =
           this.pgTable[this.tabIndex].uri +
           page +
           "&y=" +
           this.years[this.tabIndex];
 
-        axios.get(uri).then(({ data }) => {
-          this.pgTable[this.tabIndex].invoices = data.data;
-          this.pgTable[this.tabIndex].records = data.total;
-          this.pgTable[this.tabIndex].page = data.current_page;
-          this.pgTable[this.tabIndex].perpage = data.per_page;
-          this.hasNew();
-        });
+        axios.all([axios.get("/api/invoices?n=true"), axios.get(uri)]).then(
+          axios.spread((hasNew, data) => {
+            if (hasNew.data === 1) {
+              this.$parent.newFlag("INVOICES", true);
+            } else {
+              this.$parent.newFlag("INVOICES", false);
+            }
+            const invoiceData = data.data;
+
+            this.pgTable[this.tabIndex].invoices = invoiceData.data;
+            this.pgTable[this.tabIndex].records = invoiceData.total;
+            this.pgTable[this.tabIndex].page = invoiceData.current_page;
+            this.pgTable[this.tabIndex].perpage = invoiceData.per_page;
+          })
+        );
       }
     },
-    hasNew() {
-      let result = false;
+    // hasNew() {
+    //   let result = false;
 
-      this.pgTable.some(data => {
-        result = _.some(data.invoices, { unread: 1 });
+    //   this.pgTable.some(data => {
+    //     result = _.some(data.invoices, { unread: 1 });
 
-        if (result) {
-          return true;
-        }
-      });
+    //     if (result) {
+    //       return true;
+    //     }
+    //   });
 
-      this.$parent.newFlag("INVOICES", result);
-      //this.$forceUpdate();
-    },
+    //   this.$parent.newFlag("INVOICES", result);
+    // },
     searchTable() {
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri =
@@ -261,7 +279,12 @@ export default {
     Fire.$on("GLOBAL_SEARCH", () => {
       this.searchText = this.$parent.searchText;
     });
-    this.getTableData(1);
+    if (this.year) {
+      const tab = this.years.indexOf(this.year);
+      this.setActive(tab);
+    } else {
+      this.setActive(0);
+    }
   }
 };
 </script>

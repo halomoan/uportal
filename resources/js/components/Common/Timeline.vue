@@ -28,7 +28,12 @@
 
           <div class="timeline-body">{{ item.body}}</div>
           <div class="timeline-footer">
-            <router-link :to="item.link" class="small-box-footer" v-if="item.link != ''">
+            <router-link
+              :to="{ name: item.link, params: {year: item.param1 }}"
+              class="small-box-footer"
+              v-if="item.link != ''"
+            >
+              <!-- <router-link :to="item.link" class="small-box-footer" v-if="item.link != ''"> -->
               <a class="btn btn-primary btn-sm">Show Me</a>
             </router-link>
           </div>

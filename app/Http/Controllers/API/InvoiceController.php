@@ -27,12 +27,15 @@ class InvoiceController extends Controller
     {
         $search = \Request::get('q');
         $year = \Request::get('y');
+        $new = \Request::get('n');
 
         if ($search) {
 
             return auth()->user()->invoices()->where(function ($query) use ($search) {
                 $query->whereLike(['inv_no', 'title', 'filename'], $search);
             })->paginate(10);
+        } elseif ($new) {
+            return true;
         } else {
             return auth()->user()->invoices()
                 ->where('year', $year)

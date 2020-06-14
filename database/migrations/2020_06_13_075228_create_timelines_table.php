@@ -19,7 +19,8 @@ class CreateTimelinesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('from')->nullable();
             $table->string('title');
-            $table->string('link')->nullable();
+            $table->string('link', 20)->nullable();
+            $table->string('param1', 20)->nullable();
             $table->unsignedTinyInteger('type');
             $table->timestamp('created_at')->useCurrent();
             //$table->index('user_id');

@@ -42,7 +42,8 @@ class TimelineController extends Controller
                 'title' => $item->title,
                 'body' => ($body ? $body->body : ""),
                 'type' => $item->type,
-                'link' => $item->link ? $item->link : ""
+                'link' => $item->link ? $item->link : "",
+                'param1' => $item->param1
 
             ];
 

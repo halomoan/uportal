@@ -9,10 +9,11 @@ use Faker\Generator as Faker;
 $factory->define(Timeline::class, function (Faker $faker) {
     return [
         'user_id' => 1,
-        'title' => '_FROM_ sent you an email',
+        'title' => 'sent you an email',
         'from' => $faker->name,
         'type' => 1,
-        'link' =>  $faker->randomElement(['/invoice', null])
+        'link' =>  $faker->randomElement(['invoices', null]),
+        'param1' => $faker->randomElement(['2020', '2019', '2018', null]),
     ];
 });
 

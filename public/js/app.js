@@ -2127,6 +2127,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3116,6 +3121,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    year: String
+  },
   data: function data() {
     return {
       tabIndex: 0,
@@ -3144,13 +3152,22 @@ __webpack_require__.r(__webpack_exports__);
         perpage: 10,
         records: 0
       }],
-      years: ["2020", "2019", "2018", "2017"],
       searchText: ""
     };
   },
+  computed: {
+    years: {
+      get: function get() {
+        var date = new Date();
+        var year = date.getFullYear();
+        return [year + "", year - 1 + "", year - 2 + "", year - 3 + ""];
+      },
+      set: function set() {}
+    }
+  },
   methods: {
     setActive: function setActive(tab) {
-      this.tabIndex = tab;
+      this.tabIndex = tab > -1 ? tab : 0;
       this.getTableData(1);
     },
     getTableData: function getTableData(page) {
@@ -3158,30 +3175,31 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.$Role.isAdminOrUser()) {
         var uri = this.pgTable[this.tabIndex].uri + page + "&y=" + this.years[this.tabIndex];
-        axios.get(uri).then(function (_ref) {
-          var data = _ref.data;
-          _this.pgTable[_this.tabIndex].invoices = data.data;
-          _this.pgTable[_this.tabIndex].records = data.total;
-          _this.pgTable[_this.tabIndex].page = data.current_page;
-          _this.pgTable[_this.tabIndex].perpage = data.per_page;
+        axios.all([axios.get("/api/invoices?n=true"), axios.get(uri)]).then(axios.spread(function (hasNew, data) {
+          if (hasNew.data === 1) {
+            _this.$parent.newFlag("INVOICES", true);
+          } else {
+            _this.$parent.newFlag("INVOICES", false);
+          }
 
-          _this.hasNew();
-        });
+          var invoiceData = data.data;
+          _this.pgTable[_this.tabIndex].invoices = invoiceData.data;
+          _this.pgTable[_this.tabIndex].records = invoiceData.total;
+          _this.pgTable[_this.tabIndex].page = invoiceData.current_page;
+          _this.pgTable[_this.tabIndex].perpage = invoiceData.per_page;
+        }));
       }
     },
-    hasNew: function hasNew() {
-      var result = false;
-      this.pgTable.some(function (data) {
-        result = _.some(data.invoices, {
-          unread: 1
-        });
-
-        if (result) {
-          return true;
-        }
-      });
-      this.$parent.newFlag("INVOICES", result); //this.$forceUpdate();
-    },
+    // hasNew() {
+    //   let result = false;
+    //   this.pgTable.some(data => {
+    //     result = _.some(data.invoices, { unread: 1 });
+    //     if (result) {
+    //       return true;
+    //     }
+    //   });
+    //   this.$parent.newFlag("INVOICES", result);
+    // },
     searchTable: function searchTable() {
       var _this2 = this;
 
@@ -3192,8 +3210,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.$Progress.start();
-      axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref2) {
-        var data = _ref2.data;
+      axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref) {
+        var data = _ref.data;
         //this.invoices[this.tabIndex] = data.data;
         _this2.pgTable[_this2.tabIndex].invoices = data.data;
         _this2.pgTable[_this2.tabIndex].records = data.total;
@@ -3217,7 +3235,13 @@ __webpack_require__.r(__webpack_exports__);
     Fire.$on("GLOBAL_SEARCH", function () {
       _this3.searchText = _this3.$parent.searchText;
     });
-    this.getTableData(1);
+
+    if (this.year) {
+      var tab = this.years.indexOf(this.year);
+      this.setActive(tab);
+    } else {
+      this.setActive(0);
+    }
   }
 });
 
@@ -83539,7 +83563,12 @@ var render = function() {
                         "router-link",
                         {
                           staticClass: "small-box-footer",
-                          attrs: { to: item.link }
+                          attrs: {
+                            to: {
+                              name: item.link,
+                              params: { year: item.param1 }
+                            }
+                          }
                         },
                         [
                           _c("a", { staticClass: "btn btn-primary btn-sm" }, [
@@ -104674,8 +104703,10 @@ var routes = [{
   path: "/announces",
   component: __webpack_require__(/*! ./components/Announces.vue */ "./resources/js/components/Announces.vue")["default"]
 }, {
-  path: "/invoices/:year?",
-  component: __webpack_require__(/*! ./components/Invoices/Invoices.vue */ "./resources/js/components/Invoices/Invoices.vue")["default"]
+  name: "invoices",
+  path: "/invoices",
+  component: __webpack_require__(/*! ./components/Invoices/Invoices.vue */ "./resources/js/components/Invoices/Invoices.vue")["default"],
+  props: true
 }, {
   path: "/invoiced",
   component: __webpack_require__(/*! ./components/Invoices/InvoiceDetail.vue */ "./resources/js/components/Invoices/InvoiceDetail.vue")["default"]
