@@ -31,7 +31,7 @@ let routes = [
         component: require("./components/Announces.vue").default
     },
     {
-        path: "/invoices",
+        path: "/invoices/:year?",
         component: require("./components/Invoices/Invoices.vue").default
     },
     {

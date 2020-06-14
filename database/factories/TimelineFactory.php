@@ -12,7 +12,7 @@ $factory->define(Timeline::class, function (Faker $faker) {
         'title' => '_FROM_ sent you an email',
         'from' => $faker->name,
         'type' => 1,
-        'readmore' =>  $faker->randomElement(['/invoice', null])
+        'link' =>  $faker->randomElement(['/invoice', null])
     ];
 });
 

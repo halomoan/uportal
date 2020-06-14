@@ -13,7 +13,9 @@
       <!-- /.timeline time label -->
       <!-- timeline item -->
       <div v-bind:key="'body' + item.id">
-        <i class="fas fa-envelope bg-blue"></i>
+        <i class="fas fa-envelope bg-blue" v-if="item.type === 1"></i>
+        <i class="fas fa-user bg-green" v-if="item.type === 2"></i>
+        <i class="fas fa-bullhorn bg-red" v-if="item.type === 3"></i>
         <div class="timeline-item">
           <span class="time">
             <i class="fas fa-clock"></i>
@@ -26,8 +28,9 @@
 
           <div class="timeline-body">{{ item.body}}</div>
           <div class="timeline-footer">
-            <a class="btn btn-primary btn-sm">Read more</a>
-            <a class="btn btn-danger btn-sm">Delete</a>
+            <router-link :to="item.link" class="small-box-footer" v-if="item.link != ''">
+              <a class="btn btn-primary btn-sm">Show Me</a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -36,7 +39,7 @@
 
     <div v-if="page < 3">
       <div class="timeline-inverse">
-        <a class="btn btn-success btn-sm text-white" v-on:click="getMore">More...</a>
+        <a class="btn btn-success btn-sm text-white" v-on:click="getMore">More ...</a>
       </div>
     </div>
     <div>
@@ -59,7 +62,6 @@ export default {
       axios
         .get(uri)
         .then(result => {
-          console.log(result);
           this.tldata = [...this.tldata, ...result.data];
         })
         .catch(err => {});

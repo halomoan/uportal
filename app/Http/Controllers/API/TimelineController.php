@@ -40,7 +40,9 @@ class TimelineController extends Controller
                 'created' => $date->diffForHumans(),
                 'from' => $item->from,
                 'title' => $item->title,
-                'body' => ($body ? $body->body : "")
+                'body' => ($body ? $body->body : ""),
+                'type' => $item->type,
+                'link' => $item->link ? $item->link : ""
 
             ];
 

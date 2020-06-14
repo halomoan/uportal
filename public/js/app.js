@@ -2124,6 +2124,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2137,7 +2140,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       var uri = "/api/timeline?page=" + this.page;
       axios.get(uri).then(function (result) {
-        console.log(result);
         _this.tldata = [].concat(_toConsumableArray(_this.tldata), _toConsumableArray(result.data));
       })["catch"](function (err) {});
     },
@@ -83501,7 +83503,17 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("div", { key: "body" + item.id }, [
-            _c("i", { staticClass: "fas fa-envelope bg-blue" }),
+            item.type === 1
+              ? _c("i", { staticClass: "fas fa-envelope bg-blue" })
+              : _vm._e(),
+            _vm._v(" "),
+            item.type === 2
+              ? _c("i", { staticClass: "fas fa-user bg-green" })
+              : _vm._e(),
+            _vm._v(" "),
+            item.type === 3
+              ? _c("i", { staticClass: "fas fa-bullhorn bg-red" })
+              : _vm._e(),
             _vm._v(" "),
             _c("div", { staticClass: "timeline-item" }, [
               _c("span", { staticClass: "time" }, [
@@ -83518,7 +83530,27 @@ var render = function() {
                 _vm._v(_vm._s(item.body))
               ]),
               _vm._v(" "),
-              _vm._m(0, true)
+              _c(
+                "div",
+                { staticClass: "timeline-footer" },
+                [
+                  item.link != ""
+                    ? _c(
+                        "router-link",
+                        {
+                          staticClass: "small-box-footer",
+                          attrs: { to: item.link }
+                        },
+                        [
+                          _c("a", { staticClass: "btn btn-primary btn-sm" }, [
+                            _vm._v("Show Me")
+                          ])
+                        ]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
             ])
           ])
         ]
@@ -83533,28 +83565,18 @@ var render = function() {
                   staticClass: "btn btn-success btn-sm text-white",
                   on: { click: _vm.getMore }
                 },
-                [_vm._v("More...")]
+                [_vm._v("More ...")]
               )
             ])
           ])
         : _vm._e(),
       _vm._v(" "),
-      _vm._m(1)
+      _vm._m(0)
     ],
     2
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "timeline-footer" }, [
-      _c("a", { staticClass: "btn btn-primary btn-sm" }, [_vm._v("Read more")]),
-      _vm._v(" "),
-      _c("a", { staticClass: "btn btn-danger btn-sm" }, [_vm._v("Delete")])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -104652,7 +104674,7 @@ var routes = [{
   path: "/announces",
   component: __webpack_require__(/*! ./components/Announces.vue */ "./resources/js/components/Announces.vue")["default"]
 }, {
-  path: "/invoices",
+  path: "/invoices/:year?",
   component: __webpack_require__(/*! ./components/Invoices/Invoices.vue */ "./resources/js/components/Invoices/Invoices.vue")["default"]
 }, {
   path: "/invoiced",

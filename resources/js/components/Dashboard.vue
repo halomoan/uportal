@@ -250,7 +250,7 @@ export default {
       });
     },
     getInvoicesMTHChart() {
-      let uri = "/api/dashboard?chart=invoicemth";
+      const uri = "/api/dashboard?chart=invoicemth";
       axios.get(uri).then(({ data }) => {
         this.invoiceMTHChart.data.datasets[0].data = [...data.data];
         this.invoiceMTHChart.data.labels = data.labels;
@@ -262,7 +262,7 @@ export default {
       });
     },
     getInvoicesYOYChart() {
-      let uri = "/api/dashboard?chart=invoiceyoy";
+      const uri = "/api/dashboard?chart=invoiceyoy";
       axios.get(uri).then(({ data }) => {
         this.invoiceYOYChart.data.datasets[0].data = [...data.data];
         this.invoiceYOYChart.data.datasets[0].backgroundColor[1] = this.invoiceMTHChart.data.datasets[0].backgroundColor[2];
