@@ -1,8 +1,13 @@
 <template>
   <div class="timeline">
-    <template v-for="item in tldata">
+    <template v-for="(item,idx) in tldata">
       <!-- timeline time label -->
-      <div class="time-label" :key="item.id">
+
+      <div
+        class="time-label"
+        :key="item.id"
+        v-if="idx === 0 || tldata[idx].date != tldata[idx - 1].date"
+      >
         <span class="bg-red">{{item.date}}</span>
       </div>
       <!-- /.timeline time label -->
@@ -28,6 +33,12 @@
       </div>
       <!-- END timeline item -->
     </template>
+
+    <div v-if="page < 3">
+      <div class="timeline-inverse">
+        <a class="btn btn-success btn-sm text-white" v-on:click="getMore">More...</a>
+      </div>
+    </div>
     <div>
       <i class="fas fa-clock bg-gray"></i>
     </div>
@@ -38,37 +49,28 @@
 export default {
   data() {
     return {
-      tldata: [
-        {
-          id: 1,
-          date: "3 Jan. 2014",
-          created: "5 days ago",
-          from: "",
-          title: "New Invoice",
-          body:
-            "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious",
-          readmore: "/invoice"
-        },
-        {
-          id: 2,
-          date: "3 Jan. 2014",
-          created: "5 days ago",
-          from: "Mr. Doe",
-          title: "shared a video",
-          body:
-            "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
-        },
-        {
-          id: 3,
-          date: "3 Jan. 2014",
-          created: "5 days ago",
-          from: "Mr. Doe",
-          title: "shared a video",
-          body:
-            "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
-        }
-      ]
+      page: 0,
+      tldata: []
     };
+  },
+  methods: {
+    getUserTimeline() {
+      const uri = "/api/timeline?page=" + this.page;
+      axios
+        .get(uri)
+        .then(result => {
+          console.log(result);
+          this.tldata = [...this.tldata, ...result.data];
+        })
+        .catch(err => {});
+    },
+    getMore() {
+      this.page = this.page + 1;
+      this.getUserTimeline();
+    }
+  },
+  mounted() {
+    this.getUserTimeline();
   }
 };
 </script>

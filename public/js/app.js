@@ -2065,6 +2065,29 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2104,30 +2127,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      tldata: [{
-        id: 1,
-        date: "3 Jan. 2014",
-        created: "5 days ago",
-        from: "",
-        title: "New Invoice",
-        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious",
-        readmore: "/invoice"
-      }, {
-        id: 2,
-        date: "3 Jan. 2014",
-        created: "5 days ago",
-        from: "Mr. Doe",
-        title: "shared a video",
-        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
-      }, {
-        id: 3,
-        date: "3 Jan. 2014",
-        created: "5 days ago",
-        from: "Mr. Doe",
-        title: "shared a video",
-        body: "Take me to your leader! Switzerland is small and neutral! We are more like Germany, ambitious"
-      }]
+      page: 0,
+      tldata: []
     };
+  },
+  methods: {
+    getUserTimeline: function getUserTimeline() {
+      var _this = this;
+
+      var uri = "/api/timeline?page=" + this.page;
+      axios.get(uri).then(function (result) {
+        console.log(result);
+        _this.tldata = [].concat(_toConsumableArray(_this.tldata), _toConsumableArray(result.data));
+      })["catch"](function (err) {});
+    },
+    getMore: function getMore() {
+      this.page = this.page + 1;
+      this.getUserTimeline();
+    }
+  },
+  mounted: function mounted() {
+    this.getUserTimeline();
   }
 });
 
@@ -83470,11 +83490,15 @@ var render = function() {
     "div",
     { staticClass: "timeline" },
     [
-      _vm._l(_vm.tldata, function(item) {
+      _vm._l(_vm.tldata, function(item, idx) {
         return [
-          _c("div", { key: item.id, staticClass: "time-label" }, [
-            _c("span", { staticClass: "bg-red" }, [_vm._v(_vm._s(item.date))])
-          ]),
+          idx === 0 || _vm.tldata[idx].date != _vm.tldata[idx - 1].date
+            ? _c("div", { key: item.id, staticClass: "time-label" }, [
+                _c("span", { staticClass: "bg-red" }, [
+                  _vm._v(_vm._s(item.date))
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c("div", { key: "body" + item.id }, [
             _c("i", { staticClass: "fas fa-envelope bg-blue" }),
@@ -83499,6 +83523,21 @@ var render = function() {
           ])
         ]
       }),
+      _vm._v(" "),
+      _vm.page < 3
+        ? _c("div", [
+            _c("div", { staticClass: "timeline-inverse" }, [
+              _c(
+                "a",
+                {
+                  staticClass: "btn btn-success btn-sm text-white",
+                  on: { click: _vm.getMore }
+                },
+                [_vm._v("More...")]
+              )
+            ])
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _vm._m(1)
     ],
