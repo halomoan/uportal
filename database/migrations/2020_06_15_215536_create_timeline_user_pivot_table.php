@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTlbodyTable extends Migration
+class CreateTimelineUserPivotTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateTlbodyTable extends Migration
      */
     public function up()
     {
-        Schema::create('tlbody', function (Blueprint $table) {
+        Schema::create('timeline_user', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            //$table->id();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('timeline_id');
-            $table->string('body')->nullable();
-            $table->index('timeline_id');
-        });
+            $table->unsignedBigInteger('news_id')->nullable();
+            $table->timestamp('created_at')->useCurrent();
 
-        Schema::table('tlbody', function (Blueprint $table) {
+            $table->index('news_id');
+
+            $table->foreign('user_id')->references('id')->on('users')
+                ->onDelete('cascade');
             $table->foreign('timeline_id')->references('id')->on('timelines')
                 ->onDelete('cascade');
         });
@@ -34,6 +36,6 @@ class CreateTlbodyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tlbody');
+        Schema::dropIfExists('timeline_user');
     }
 }

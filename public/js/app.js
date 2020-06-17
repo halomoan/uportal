@@ -2135,6 +2135,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      noMore: false,
       page: 0,
       tldata: []
     };
@@ -2145,7 +2146,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       var uri = "/api/timeline?page=" + this.page;
       axios.get(uri).then(function (result) {
-        _this.tldata = [].concat(_toConsumableArray(_this.tldata), _toConsumableArray(result.data));
+        if (jQuery.isArray(result.data)) {
+          if (result.data.length > 0) {
+            _this.tldata = [].concat(_toConsumableArray(_this.tldata), _toConsumableArray(result.data));
+          } else {
+            _this.noMore = true;
+          }
+        }
       })["catch"](function (err) {});
     },
     getMore: function getMore() {
@@ -83585,7 +83592,7 @@ var render = function() {
         ]
       }),
       _vm._v(" "),
-      _vm.page < 3
+      _vm.page < 3 && !_vm.noMore
         ? _c("div", [
             _c("div", { staticClass: "timeline-inverse" }, [
               _c(

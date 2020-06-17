@@ -13,10 +13,12 @@ class NewsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         News::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
         $faker = \Faker\Factory::create();
         $userIDs = DB::table('users')->pluck('id');
-        $color = ['warning','success','danger','info'];
+        $color = ['warning', 'success', 'danger', 'info'];
 
         for ($i = 0; $i < 2; $i++) {
 

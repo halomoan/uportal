@@ -62,9 +62,8 @@ class User extends Authenticatable
 
     public function timelines()
     {
-        return $this->hasMany(Timeline::class);
+        return $this->belongsToMany(Timeline::class);
     }
-
 
     public function groups()
     {

@@ -35,7 +35,9 @@ class InvoiceController extends Controller
                 $query->whereLike(['inv_no', 'title', 'filename'], $search);
             })->paginate(10);
         } elseif ($new) {
-            return true;
+            return (auth()->user()->invoices()
+                ->where('unread', true)
+                ->count() > 0);
         } else {
             return auth()->user()->invoices()
                 ->where('year', $year)

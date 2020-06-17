@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\TLBody;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class TimelineController extends Controller
@@ -23,13 +24,25 @@ class TimelineController extends Controller
     {
         $limit = 3;
         $page = \Request::get('page');
-        $items = auth()->user()->timelines()
+
+        $result = auth()->user()->timelines()->select(DB::raw('timelines.*'))
             ->orderBy('created_at', 'desc')
             ->offset($limit * $page)->limit(3)->get();
 
-        $timelines = [];
 
-        foreach ($items as $item) {
+
+        $groups = auth()->user()->groups()->get();
+
+        foreach ($groups as $group) {
+            $gresult =
+                $group->timelines()->select(DB::raw('timelines.*'))
+                ->offset($limit * $page)->limit(3)->get();
+
+            $result = $result->merge($gresult);
+        }
+
+        $timelines = [];
+        foreach ($result->all() as $item) {
 
             $date = Carbon::parse($item->created_at);
 

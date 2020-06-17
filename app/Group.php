@@ -36,4 +36,9 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function timelines()
+    {
+        return $this->belongsToMany(Timeline::class);
+    }
 }

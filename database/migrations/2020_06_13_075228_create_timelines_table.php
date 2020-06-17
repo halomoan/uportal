@@ -16,19 +16,13 @@ class CreateTimelinesTable extends Migration
         Schema::create('timelines', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('from')->nullable();
             $table->string('title');
             $table->string('link', 20)->nullable();
+            $table->string('linktext', 20)->nullable();
             $table->string('param1', 20)->nullable();
             $table->unsignedTinyInteger('type');
             $table->timestamp('created_at')->useCurrent();
-            //$table->index('user_id');
-        });
-
-        Schema::table('timelines', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade');
         });
     }
 

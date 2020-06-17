@@ -9,7 +9,8 @@ use App\User;
 use App\Group;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-//use Illuminate\Pagination\Paginator;
+use App\MyLibs\Timeliner;
+use Facade\FlareClient\Time\Time;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 class NewsController extends Controller
@@ -74,8 +75,6 @@ class NewsController extends Controller
 
         if ($search) {
 
-
-
             if (in_array($role, $this->AUTHORS)) {
                 return auth()->user()->mynews()->where(function ($query) use ($search) {
                     $query->whereLike(['title'], $search);
@@ -126,6 +125,12 @@ class NewsController extends Controller
     {
         $this->authorize('isAuthor');
         $user = auth('api')->user();
+
+        //$news = News::find(1);
+        //$timeliner = new Timeliner(null, $news->groups()->get());
+        //$timeliner = new Timeliner([$user]);
+        //$timeliner->forNews($news);
+        //return;
 
         $this->validate($request, [
             'title' => 'required|string|max:191',
@@ -195,6 +200,9 @@ class NewsController extends Controller
                 if ($toGroup) {
                     $groups = Group::find($toGroup);
                     $news->groups()->sync($groups);
+
+                    $timeliner = new Timeliner();
+                    $timeliner->News($news)->forGroups($groups);
                 }
             } else {
                 $news->groups()->detach();

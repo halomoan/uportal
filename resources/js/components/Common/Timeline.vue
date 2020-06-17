@@ -42,7 +42,7 @@
       <!-- END timeline item -->
     </template>
 
-    <div v-if="page < 3">
+    <div v-if="page < 3 && !noMore">
       <div class="timeline-inverse">
         <a class="btn btn-success btn-sm text-white" v-on:click="getMore">More ...</a>
       </div>
@@ -57,6 +57,7 @@
 export default {
   data() {
     return {
+      noMore: false,
       page: 0,
       tldata: []
     };
@@ -67,7 +68,13 @@ export default {
       axios
         .get(uri)
         .then(result => {
-          this.tldata = [...this.tldata, ...result.data];
+          if (jQuery.isArray(result.data)) {
+            if (result.data.length > 0) {
+              this.tldata = [...this.tldata, ...result.data];
+            } else {
+              this.noMore = true;
+            }
+          }
         })
         .catch(err => {});
     },
