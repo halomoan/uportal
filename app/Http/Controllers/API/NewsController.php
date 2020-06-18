@@ -195,14 +195,16 @@ class NewsController extends Controller
                 if ($toUser) {
                     $users = User::find($toUser);
                     $news->users()->sync($users);
+                    
+                    Timeliner::getInstance()->News($news)->forUsers($users);
+
                 }
 
                 if ($toGroup) {
                     $groups = Group::find($toGroup);
                     $news->groups()->sync($groups);
-
-                    $timeliner = new Timeliner();
-                    $timeliner->News($news)->forGroups($groups);
+                    
+                    Timeliner::getInstance()->News($news)->forGroups($groups);
                 }
             } else {
                 $news->groups()->detach();

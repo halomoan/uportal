@@ -9,18 +9,23 @@ use \App\TLBody;
 
 class Timeliner
 {
+    private static $_instance = null;
+
     protected  $timeline_id;
     protected  $news_id;
 
-    // public function  __construct($users = null, $groups = null)
-    // {
-    //     $this->users = $users;
-    //     $this->groups = $groups;
-    // }
+    public static function getInstance ()
+    {
+        if (self::$_instance === null) {
+            self::$_instance = new self;
+        }
+
+        return self::$_instance;
+    }
 
     public  function News(\App\News $news)
     {
-
+               
         $timeline = Timeline::create([
             'from' => '',
             'title' => 'Annoucement',
@@ -31,7 +36,7 @@ class Timeliner
 
 
         $text = "";
-        if (preg_match('/^.{1,180}\b/s', $news->description, $match)) {
+        if (preg_match('/^.{1,180}\b/s', $news->title, $match)) {
             $text = $match[0] . "...";
         }
 
@@ -48,8 +53,10 @@ class Timeliner
     public  function forUsers($users = null)
     {
         if ($users) {
+
+            DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
             foreach ($users as $user) {
-                $user->timelines()->attach($this->timeline_id);
+                $user->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
             }
         }
 

@@ -83557,9 +83557,10 @@ var render = function() {
                 _vm._v("\n          " + _vm._s(item.title) + "\n        ")
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "timeline-body" }, [
-                _vm._v(_vm._s(item.body))
-              ]),
+              _c("div", {
+                staticClass: "timeline-body",
+                domProps: { innerHTML: _vm._s(item.body) }
+              }),
               _vm._v(" "),
               _c(
                 "div",
@@ -105987,8 +105988,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

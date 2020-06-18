@@ -26,7 +26,7 @@
             {{ item.title}}
           </h3>
 
-          <div class="timeline-body">{{ item.body}}</div>
+          <div class="timeline-body" v-html="item.body"></div>
           <div class="timeline-footer">
             <router-link
               :to="{ name: item.link, params: {year: item.param1 }}"
