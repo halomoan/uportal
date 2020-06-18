@@ -41,6 +41,10 @@ let routes = [
         component: require("./components/Invoices/InvoiceDetail.vue").default
     },
     {
+        path: "/viewPDF",
+        component: require("./components/Invoices/viewPDF.vue").default
+    },
+    {
         path: "/printInvoice",
         component: require("./components/Invoices/InvoiceDetail.vue").default
     },

@@ -11,7 +11,7 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
+  {{-- <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}"> --}}
   <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.css')}}">
 
   <link rel="stylesheet" href="/css/app.css">
@@ -85,7 +85,7 @@
               <router-link to="/announces" class="nav-link" exact-active-class="active">
                 <i class="nav-icon fas fa-bullhorn text-maroon"></i>
                 <p>
-                  Announcements                  
+                  Announcements
                   <span v-if="hasNew.Announce" class="right badge badge-danger">New</span>
                 </p>
               </router-link>
@@ -191,7 +191,7 @@
 
   <script src="/js/app.js"></script>
   <!-- overlayScrollbars -->
-  <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
+  {{-- <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script> --}}
   <script src="{{ asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
 </body>
 

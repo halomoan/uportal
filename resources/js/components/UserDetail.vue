@@ -316,19 +316,15 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
+                  <button type="button" class="btn btn-default" @click.prevent="goBack">Cancel</button>
                   <button
                     type="button"
-                    class="btn btn-info"
+                    class="btn btn-info float-right"
                     @click.prevent="editMode ? editUser() : createUser()"
                   >
-                    <span v-show="editMode">Modify</span>
                     <span v-show="!editMode">Create</span>
+                    <span v-show="editMode">Modify</span>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-default float-right"
-                    @click.prevent="goBack"
-                  >Cancel</button>
                 </div>
               </div>
             </div>

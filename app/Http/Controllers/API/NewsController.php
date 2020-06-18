@@ -195,15 +195,14 @@ class NewsController extends Controller
                 if ($toUser) {
                     $users = User::find($toUser);
                     $news->users()->sync($users);
-                    
-                    Timeliner::getInstance()->News($news)->forUsers($users);
 
+                    Timeliner::getInstance()->News($news)->forUsers($users);
                 }
 
                 if ($toGroup) {
                     $groups = Group::find($toGroup);
                     $news->groups()->sync($groups);
-                    
+
                     Timeliner::getInstance()->News($news)->forGroups($groups);
                 }
             } else {
@@ -220,11 +219,7 @@ class NewsController extends Controller
                 'validTo' => 'required|date',
             ]);
 
-            //return $request['validFrom'];
             $validFrom = Carbon::parse($request['validFrom'], 'UTC');
-
-            //return $validFrom->isoFormat("YYYY-MM-DD HH:mm:ss");
-
 
             $validTo = Carbon::parse($request['validTo'], 'UTC');
             $news->update([
