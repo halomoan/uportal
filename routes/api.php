@@ -29,6 +29,7 @@ Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 
 Route::get('invoices', 'API\InvoiceController@index')->name('invoices.index');
+Route::get('invoices/{invoice}', 'API\InvoiceController@show')->name('invoices.show');
 
 Route::get('flag', 'API\FlagController@index')->name('flag.index');
 Route::get('dashboard', 'API\DashboardController@index')->name('dashboard.index');

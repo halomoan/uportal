@@ -3416,14 +3416,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   methods: {},
   mounted: function mounted() {
-    pdfobject__WEBPACK_IMPORTED_MODULE_0___default.a.embed("./img/HPR.pdf", "#pdf-content");
+    axios //   .get("api/invoices/1", { responseType: "arraybuffer" })
+    .get("api/invoices/1").then(function (response) {
+      console.log(response); // let blob = new Blob([response.data], { type: "application/pdf" });
+      // console.log(blob);
+
+      pdfobject__WEBPACK_IMPORTED_MODULE_0___default.a.embed(response.data, "#pdf-content");
+    })["catch"](function (err) {}); // pdf.embed("api/invoices/1", "#pdf-content");
   }
 });
 
@@ -85689,42 +85692,60 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _c("div", { staticClass: "content-header pb-1" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row mb-2" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-sm-6" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "d-flex flex-row-reverse",
+                  attrs: { to: "/invoices", "exact-active-class": "active" }
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-outline-primary btn-sm pull-right"
+                    },
+                    [_vm._v("Close")]
+                  )
+                ]
+              )
+            ],
+            1
+          )
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _vm._m(1)
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "content-header pb-1" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "row mb-2" }, [
-            _c("div", { staticClass: "col-sm-6" }, [
-              _c("h1", [_vm._v("Users")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-sm-6" }, [
-              _c("ol", { staticClass: "breadcrumb float-sm-right" }, [
-                _c("li", { staticClass: "breadcrumb-item" }, [
-                  _c("a", { attrs: { href: "#" } }, [_vm._v("Home")])
-                ]),
-                _vm._v(" "),
-                _c("li", { staticClass: "breadcrumb-item active" }, [
-                  _vm._v("Users")
-                ])
-              ])
-            ])
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "content" }, [
-        _c("div", { staticClass: "container-fluid" }, [
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-12 vh-100" }, [
-              _c("div", { attrs: { id: "pdf-content" } })
-            ])
+    return _c("div", { staticClass: "col-sm-6" }, [
+      _c("h1", [_vm._v("Invoice - Preview")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "content" }, [
+      _c("div", { staticClass: "container-fluid" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-12 vh-100" }, [
+            _c("div", { attrs: { id: "pdf-content" } })
           ])
         ])
       ])
@@ -106690,8 +106711,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

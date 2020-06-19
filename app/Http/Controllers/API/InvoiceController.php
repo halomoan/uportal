@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Invoice;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
@@ -66,7 +67,28 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        
+         $prefix = hash('md5', auth()->user()->email);
+         
+         foreach (glob(storage_path('app\\public\\inv\\' . $prefix . '*' )) as $filename) {
+            unlink($filename);
+        }         
+
+         $newFile = $prefix . hash('sha256', auth()->user()->password) . strtotime("tomorrow") . ".pdf";
+         
+
+         //Query Database based on $id
+         $fileName = 'STARHUB.pdf';
+
+         $sfilePath = storage_path('invoices\\' . $fileName);
+         $dfilePath = storage_path('app\\public\\inv\\' . $newFile );
+
+       
+        
+         copy($sfilePath,  $dfilePath);
+         return Storage::url('inv//' . $newFile);
+        
     }
 
     /**
