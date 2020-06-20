@@ -4109,6 +4109,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -86691,7 +86698,36 @@ var render = function() {
                                         return _vm.publishFor(news.id)
                                       }
                                     }
-                                  })
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: !news.assigned,
+                                          expression: "!news.assigned"
+                                        }
+                                      ],
+                                      staticClass: "text-red"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                        |\n                        "
+                                      ),
+                                      _c("i", {
+                                        staticClass: "fas fa-exclamation"
+                                      }),
+                                      _vm._v(
+                                        "\n                        Not Published Yet\n                        "
+                                      ),
+                                      _c("i", {
+                                        staticClass: "fas fa-exclamation"
+                                      })
+                                    ]
+                                  )
                                 ]),
                                 _vm._v(" "),
                                 _c(

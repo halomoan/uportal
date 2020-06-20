@@ -111,6 +111,13 @@
                           tooltip="Publish"
                           @click.prevent="publishFor(news.id)"
                         ></a>
+
+                        <span v-show="!news.assigned" class="text-red">
+                          |
+                          <i class="fas fa-exclamation"></i>
+                          Not Published Yet
+                          <i class="fas fa-exclamation"></i>
+                        </span>
                       </p>
                       <div class="callout elevation-2" v-bind:class="'callout-' + news.color">
                         <p class="text-sm font-italic text-gray">{{ news.validFrom | humanDate }}</p>
