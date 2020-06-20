@@ -4724,12 +4724,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({}),
       inprogress: false,
-      photo: "",
+      photo: null,
       editMode: true,
       company: "ABC"
     };
@@ -84013,7 +84014,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [
-        _c("i", { staticClass: "fas fa-bullhorn" }),
+        _c("i", { staticClass: "fas fa-bullhorn text-red" }),
         _vm._v("\n                News\n              ")
       ])
     ])
@@ -84101,7 +84102,7 @@ var render = function() {
                         },
                         [
                           _c("a", { staticClass: "btn btn-primary btn-sm" }, [
-                            _vm._v("Show Me")
+                            _vm._v(_vm._s(item.linktext))
                           ])
                         ]
                       )
@@ -87292,15 +87293,17 @@ var render = function() {
                 attrs: { src: _vm.getPhoto(), alt: "" }
               }),
               _vm._v(" "),
-              _c("img", {
-                staticClass: "mt-2 ml-2",
-                attrs: {
-                  width: "250px",
-                  height: "100px",
-                  src: "/img/yourcompanylogo.png",
-                  alt: ""
-                }
-              })
+              !_vm.photo
+                ? _c("img", {
+                    staticClass: "mt-2 ml-2",
+                    attrs: {
+                      width: "250px",
+                      height: "100px",
+                      src: "/img/yourcompanylogo.png",
+                      alt: ""
+                    }
+                  })
+                : _vm._e()
             ]),
             _vm._v(" "),
             _c(
@@ -105358,6 +105361,7 @@ var routes = [{
   path: "/dashboard",
   component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
 }, {
+  name: "announces",
   path: "/announces",
   component: __webpack_require__(/*! ./components/Announces.vue */ "./resources/js/components/Announces.vue")["default"]
 }, {

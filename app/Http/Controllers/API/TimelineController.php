@@ -38,7 +38,7 @@ class TimelineController extends Controller
                 $group->timelines()->select(DB::raw('timelines.*'))
                 ->offset($limit * $page)->limit(3)->get();
 
-            $result = $result->merge($gresult);            
+            $result = $result->merge($gresult);
         }
 
         $timelines = [];
@@ -47,13 +47,13 @@ class TimelineController extends Controller
             $date = Carbon::parse($item->created_at);
 
             $body = $item->body()->first();
-            
+
             $id = $item->id;
-            if ($item->news_id){
+            if ($item->news_id) {
                 $id = $item->news_id;
             }
             $id = $item->news_id;
-            
+
             $timeline = [
                 'id' => $id,
                 'date' => $date->format('D, d M. Y'),
@@ -63,6 +63,8 @@ class TimelineController extends Controller
                 'body' => ($body ? $body->body : ""),
                 'type' => $item->type,
                 'link' => $item->link ? $item->link : "",
+                'linktext' =>
+                $item->linktext ? $item->linktext : "Show Me",
                 'param1' => $item->param1
 
             ];

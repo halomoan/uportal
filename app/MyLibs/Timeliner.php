@@ -12,7 +12,7 @@ class Timeliner
     private static $_instance = null;
 
     protected  $timeline;
-    
+
 
     public static function getInstance()
     {
@@ -31,7 +31,7 @@ class Timeliner
             $timeline = Timeline::create([
                 'from' => '',
                 'title' => 'Annoucement',
-                'link' => 'announce',
+                'link' => 'announces',
                 'linktext' => 'Show Me',
                 'type' => 1,
                 'news_id' => $news->id
@@ -40,28 +40,30 @@ class Timeliner
 
 
         $text = "";
-        if (preg_match('/^.{1,180}\b/s', $news->title, $match)) {
-            $text = $match[0] . "...";
+        $text = strip_tags($news->description);
+        if (strlen($text) > 180) {
+            if (preg_match('/^.{1,180}\b/s', $text, $match)) {
+                $text = $match[0] . "...";
+            }
         }
 
 
         $body = new TLBody(['body' => $text]);
         $timeline->body()->save($body);
 
-        $this->timeline = $timeline;     
-        
+        $this->timeline = $timeline;
+
         return $this;
-        
     }
 
     public  function forUsers($users = null)
     {
-       
+
         if ($users) {
 
             //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
             foreach ($users as $user) {
-              
+
                 $user->timelines()->sync($this->timeline->id);
             }
         } else {
@@ -79,7 +81,7 @@ class Timeliner
             //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM group_timeline WHERE news_id = " . $this->news_id . " )");
 
             foreach ($groups as $group) {
-               
+
                 $group->timelines()->sync($this->timeline->id);
             }
         } else {

@@ -27,7 +27,7 @@
             <div class="card card-default">
               <div class="card-header">
                 <h3 class="card-title">
-                  <i class="fas fa-bullhorn"></i>
+                  <i class="fas fa-bullhorn text-red"></i>
                   News
                 </h3>
               </div>

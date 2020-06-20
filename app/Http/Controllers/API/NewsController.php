@@ -36,6 +36,9 @@ class NewsController extends Controller
 
         $role = auth()->user()->urole;
 
+        $news = [];
+        $userId = auth()->user()->id;
+        $groups = auth()->user()->groups()->select('id')->get();
         $search = \Request::get('q');
         $since = \Request::get('t');
         $perpage = \Request::get('up');
@@ -82,36 +85,33 @@ class NewsController extends Controller
             } else {
             }
         } else {
-            if (in_array($role, $this->AUTHORS)) {
-                return auth()->user()->mynews()
-                    ->whereRaw($where)
-                    ->orderBy('validFrom', 'desc')
-                    ->paginate($perpage);
-            } else {
+            // if (in_array($role, $this->AUTHORS)) {
+            //     return auth()->user()->mynews()
+            //         ->whereRaw($where)
+            //         ->orderBy('validFrom', 'desc')
+            //         ->paginate($perpage);
+            // } else {
 
 
-                $userId = auth()->user()->id;
-                $groups = auth()->user()->groups()->select('id')->get();
+            $news1 = News::whereHas('groups', function ($q) use ($groups) {
+                $q->whereIn('id', $groups);
+            });
 
-                $news1 = News::whereHas('groups', function ($q) use ($groups) {
-                    $q->whereIn('id', $groups);
-                });
-
-                $news = News::whereHas('users', function ($q) use ($userId) {
-                    $q->where('id', $userId);
-                })->union($news1)->orderBy('validFrom', 'desc')->limit(5)->get();
+            $news = News::whereHas('users', function ($q) use ($userId) {
+                $q->where('id', $userId);
+            })->union($news1)->orderBy('validFrom', 'desc')->limit(5)->get();
 
 
-                foreach ($news as $item) {
-                    DB::table('read_news')->insertOrIgnore([
-                        ['user_id' => $userId, 'news_id' => $item->id]
-                    ]);
-                }
-
-
-                $total = count($news);
-                return  new Paginator($news, $total, 5);
+            foreach ($news as $item) {
+                DB::table('read_news')->insertOrIgnore([
+                    ['user_id' => $userId, 'news_id' => $item->id]
+                ]);
             }
+
+            $total = count($news);
+            return  new Paginator($news, $total, 5);
+            //}
+
         }
     }
 
@@ -201,7 +201,7 @@ class NewsController extends Controller
                     Timeliner::getInstance()->News($news)->forUsers($users);
                 } else {
                     $news->users()->detach();
-                    Timeliner::getInstance()->News($news)->forUsers(null);                
+                    Timeliner::getInstance()->News($news)->forUsers(null);
                 }
 
                 if ($toGroup) {
@@ -261,8 +261,8 @@ class NewsController extends Controller
         $news->groups()->detach();
         $news->users()->detach();
 
-        DB::delete('DELETE FROM timelines WHERE news_id = ' . $news->id); 
-       
+        DB::delete('DELETE FROM timelines WHERE news_id = ' . $news->id);
+
         $news->delete();
 
         return ['message' => 'News Deleted'];

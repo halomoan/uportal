@@ -34,7 +34,7 @@
               v-if="item.link != ''"
             >
               <!-- <router-link :to="item.link" class="small-box-footer" v-if="item.link != ''"> -->
-              <a class="btn btn-primary btn-sm">Show Me</a>
+              <a class="btn btn-primary btn-sm">{{item.linktext}}</a>
             </router-link>
           </div>
         </div>

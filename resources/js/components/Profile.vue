@@ -8,6 +8,7 @@
             <div class="col-md-6">
               <img class="mt-2 ml-2" :src="getPhoto()" alt />
               <img
+                v-if="! photo"
                 class="mt-2 ml-2"
                 width="250px"
                 height="100px"
@@ -197,7 +198,7 @@ export default {
     return {
       form: new Form({}),
       inprogress: false,
-      photo: "",
+      photo: null,
       editMode: true,
       company: "ABC"
     };

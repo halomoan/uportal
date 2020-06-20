@@ -27,6 +27,7 @@ let routes = [
         component: require("./components/Dashboard.vue").default
     },
     {
+        name: "announces",
         path: "/announces",
         component: require("./components/Announces.vue").default
     },
