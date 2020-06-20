@@ -142,14 +142,14 @@
             </li>
             @endcan
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <router-link to="/profile" class="nav-link" exact-active-class="active">
                 <i class="nav-icon far fa-id-card text-yellow"></i>
                 <p>
                   Profile
                 </p>
               </router-link>
-            </li>
+            </li> --}}
 
             <li class="nav-item">
               <a class="nav-link" href="#" @click.prevent="logout">

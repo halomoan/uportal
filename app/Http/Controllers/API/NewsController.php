@@ -192,13 +192,16 @@ class NewsController extends Controller
 
         if ($setUserGroup) {
             if ($toUser || $toGroup) {
+
                 if ($toUser) {
+
                     $users = User::find($toUser);
                     $news->users()->sync($users);
 
                     Timeliner::getInstance()->News($news)->forUsers($users);
                 } else {
                     $news->users()->detach();
+                    Timeliner::getInstance()->News($news)->forUsers(null);                
                 }
 
                 if ($toGroup) {
@@ -208,10 +211,13 @@ class NewsController extends Controller
                     Timeliner::getInstance()->News($news)->forGroups($groups);
                 } else {
                     $news->groups()->detach();
+                    Timeliner::getInstance()->News($news)->forGroups(null);
                 }
             } else {
                 $news->groups()->detach();
                 $news->users()->detach();
+                Timeliner::getInstance()->News($news)->forUsers(null);
+                Timeliner::getInstance()->News($news)->forGroups(null);
             }
         } else {
             $this->validate($request, [
@@ -252,6 +258,11 @@ class NewsController extends Controller
 
         $news = News::findOrFail($id);
 
+        $news->groups()->detach();
+        $news->users()->detach();
+
+        DB::delete('DELETE FROM timelines WHERE news_id = ' . $news->id); 
+       
         $news->delete();
 
         return ['message' => 'News Deleted'];

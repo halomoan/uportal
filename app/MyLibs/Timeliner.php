@@ -11,8 +11,8 @@ class Timeliner
 {
     private static $_instance = null;
 
-    protected  $timeline_id;
-    protected  $news_id;
+    protected  $timeline;
+    
 
     public static function getInstance()
     {
@@ -48,21 +48,25 @@ class Timeliner
         $body = new TLBody(['body' => $text]);
         $timeline->body()->save($body);
 
-        $this->timeline_id = $timeline->id;
-        $this->news_id = $news->id;
-
+        $this->timeline = $timeline;     
+        
         return $this;
+        
     }
 
     public  function forUsers($users = null)
     {
+       
         if ($users) {
 
             //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
             foreach ($users as $user) {
-                //$user->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
-                $user->timelines()->sync($this->timeline_id);
+              
+                $user->timelines()->sync($this->timeline->id);
             }
+        } else {
+
+            $this->timeline->users()->detach();
         }
 
         return $this;
@@ -75,9 +79,11 @@ class Timeliner
             //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM group_timeline WHERE news_id = " . $this->news_id . " )");
 
             foreach ($groups as $group) {
-                //$group->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
-                $group->timelines()->sync($this->timeline_id);
+               
+                $group->timelines()->sync($this->timeline->id);
             }
+        } else {
+            $this->timeline->groups()->detach();
         }
 
         return $this;

@@ -12,12 +12,12 @@ class Timeline extends Model
         'from', 'title', 'type', 'link', 'linktext', 'param1', 'news_id'
     ];
 
-    public function user()
+    public function users()
     {
         return $this->belongsToMany(User::class);
     }
 
-    public function group()
+    public function groups()
     {
         return $this->belongsToMany(Group::class);
     }
