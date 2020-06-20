@@ -9,7 +9,7 @@ class Timeline extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'from', 'title', 'type', 'link', 'linktext', 'param1'
+        'from', 'title', 'type', 'link', 'linktext', 'param1', 'news_id'
     ];
 
     public function user()

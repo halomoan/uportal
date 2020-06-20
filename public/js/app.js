@@ -4717,6 +4717,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -87283,6 +87290,16 @@ var render = function() {
               _c("img", {
                 staticClass: "mt-2 ml-2",
                 attrs: { src: _vm.getPhoto(), alt: "" }
+              }),
+              _vm._v(" "),
+              _c("img", {
+                staticClass: "mt-2 ml-2",
+                attrs: {
+                  width: "250px",
+                  height: "100px",
+                  src: "/img/yourcompanylogo.png",
+                  alt: ""
+                }
               })
             ]),
             _vm._v(" "),
@@ -106711,8 +106728,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

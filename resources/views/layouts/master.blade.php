@@ -53,18 +53,22 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="image">
-            <img src="{{ asset('/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
-          </div>
-          <div class="info">
-            @guest
+        <router-link to="/profile" class="nav-link" exact-active-class="active">
+          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+              <img src="{{ asset('/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+              @guest
 
-            @else
-            <a href="#" class="d-block">{{ Auth::user()->name }}</a>
-            @endguest
+              @else
+
+              <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+
+              @endguest
+            </div>
           </div>
-        </div>
+        </router-link>
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">

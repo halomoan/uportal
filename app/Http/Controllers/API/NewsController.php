@@ -197,6 +197,8 @@ class NewsController extends Controller
                     $news->users()->sync($users);
 
                     Timeliner::getInstance()->News($news)->forUsers($users);
+                } else {
+                    $news->users()->detach();
                 }
 
                 if ($toGroup) {
@@ -204,6 +206,8 @@ class NewsController extends Controller
                     $news->groups()->sync($groups);
 
                     Timeliner::getInstance()->News($news)->forGroups($groups);
+                } else {
+                    $news->groups()->detach();
                 }
             } else {
                 $news->groups()->detach();

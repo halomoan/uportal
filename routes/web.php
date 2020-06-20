@@ -17,10 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 
-Route::get('/printInvoice', 'PrintController@index')->name('print');
+Route::get('/printInvoice', 'PrintController@index')->name('print')->middleware('verified');
 
-Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?');
+Route::get('{path}', 'HomeController@index')->where('path', '([A-z\d-\/_.]+)?')->middleware('verified');

@@ -15,14 +15,16 @@ class CreateTimelinesTable extends Migration
     {
         Schema::create('timelines', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->id();
+            $table->id();            
             $table->string('from')->nullable();
             $table->string('title');
             $table->string('link', 20)->nullable();
             $table->string('linktext', 20)->nullable();
             $table->string('param1', 20)->nullable();
             $table->unsignedTinyInteger('type');
+            $table->unsignedBigInteger('news_id')->nullable();
             $table->timestamp('created_at')->useCurrent();
+            $table->index('news_id');
         });
     }
 

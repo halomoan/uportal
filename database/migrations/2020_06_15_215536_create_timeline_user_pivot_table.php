@@ -17,10 +17,10 @@ class CreateTimelineUserPivotTable extends Migration
             $table->engine = 'InnoDB';
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('timeline_id');
-            $table->unsignedBigInteger('news_id')->nullable();
+            //$table->unsignedBigInteger('news_id')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
-            $table->index('news_id');
+            //$table->index('news_id');
 
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('cascade');

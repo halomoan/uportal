@@ -5,7 +5,7 @@ namespace App\MyLibs;
 use Illuminate\Support\Facades\DB;
 use \App\Timeline;
 use \App\TLBody;
-
+use Facade\FlareClient\Time\Time;
 
 class Timeliner
 {
@@ -14,7 +14,7 @@ class Timeliner
     protected  $timeline_id;
     protected  $news_id;
 
-    public static function getInstance ()
+    public static function getInstance()
     {
         if (self::$_instance === null) {
             self::$_instance = new self;
@@ -25,14 +25,18 @@ class Timeliner
 
     public  function News(\App\News $news)
     {
-               
-        $timeline = Timeline::create([
-            'from' => '',
-            'title' => 'Annoucement',
-            'link' => 'announce',
-            'linktext' => 'Show Me',
-            'type' => 1
-        ]);
+
+        $timeline = Timeline::where('news_id', '=', $news->id)->first();
+        if (!$timeline) {
+            $timeline = Timeline::create([
+                'from' => '',
+                'title' => 'Annoucement',
+                'link' => 'announce',
+                'linktext' => 'Show Me',
+                'type' => 1,
+                'news_id' => $news->id
+            ]);
+        }
 
 
         $text = "";
@@ -54,9 +58,10 @@ class Timeliner
     {
         if ($users) {
 
-            DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
+            //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
             foreach ($users as $user) {
-                $user->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
+                //$user->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
+                $user->timelines()->sync($this->timeline_id);
             }
         }
 
@@ -67,10 +72,11 @@ class Timeliner
     {
         if ($groups) {
 
-            DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM group_timeline WHERE news_id = " . $this->news_id . " )");
+            //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM group_timeline WHERE news_id = " . $this->news_id . " )");
 
             foreach ($groups as $group) {
-                $group->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
+                //$group->timelines()->attach($this->timeline_id, ['news_id' => $this->news_id]);
+                $group->timelines()->sync($this->timeline_id);
             }
         }
 
