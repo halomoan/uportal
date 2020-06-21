@@ -20,7 +20,7 @@ class NewsTableSeeder extends Seeder
         $userIDs = DB::table('users')->pluck('id');
         $color = ['warning', 'success', 'danger', 'info'];
 
-        for ($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 20; $i++) {
 
             News::create([
                 //'user_id' => $faker->randomElement($userIDs),

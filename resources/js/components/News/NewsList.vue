@@ -226,7 +226,8 @@ export default {
       if (this.$Role.isAdminOrUser()) {
         let uri =
           this.pgTable[this.tabIndex].uri +
-          "t=" +
+          "auth=true" +
+          "&t=" +
           this.selSince +
           "&page=" +
           page;
@@ -310,6 +311,7 @@ export default {
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri =
           "api/news?" +
+          "auth=true" +
           "&q=" +
           this.searchText +
           "&t=" +
@@ -374,6 +376,12 @@ export default {
                 toGroup
               })
               .then(resp => {
+                const data = this.pgTable[this.tabIndex].news;
+                data.map(news => {
+                  if (news.id === this.newsId) {
+                    news.assigned = true;
+                  }
+                });
                 Swal.fire({
                   icon: "success",
                   position: "top-end",
@@ -385,8 +393,8 @@ export default {
                 $("#publishModal").modal("hide");
               })
               .catch(error => {
-                let message = error.response.data.message;
-                if (message) {
+                if (error.response && error.response.data) {
+                  let message = error.response.data.message;
                   Swal.fire("Failed!", message, "warning");
                 } else {
                   Swal.fire("Failed!", "There is something wrong.", "warning");

@@ -18,8 +18,6 @@
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700" rel="stylesheet">
 
-
-
 </head>
 
 <body class="sidebar-mini control-sidebar-slide-open">
@@ -53,22 +51,24 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <router-link to="/profile" class="nav-link" exact-active-class="active">
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-              <img src="{{ asset('/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
-            </div>
-            <div class="info">
-              @guest
 
-              @else
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
-              <a href="#" class="d-block">{{ Auth::user()->name }}</a>
-
-              @endguest
-            </div>
+          <div class="image">
+            <img src="{{ asset('/img/user.png')}}" class="img-circle elevation-2" alt="User Image">
           </div>
-        </router-link>
+          <div class="info">
+            @guest
+
+            @else
+            <router-link to="/profile" exact-active-class="active">
+              <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+            </router-link>
+            @endguest
+          </div>
+
+        </div>
+
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">

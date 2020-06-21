@@ -27,7 +27,7 @@ class TimelineController extends Controller
 
         $result = auth()->user()->timelines()->select(DB::raw('timelines.*'))
             ->orderBy('created_at', 'desc')
-            ->offset($limit * $page)->limit(3)->get();
+            ->offset($limit * $page)->limit($limit)->get();
 
 
 
@@ -36,7 +36,7 @@ class TimelineController extends Controller
         foreach ($groups as $group) {
             $gresult =
                 $group->timelines()->select(DB::raw('timelines.*'))
-                ->offset($limit * $page)->limit(3)->get();
+                ->offset($limit * $page)->limit($limit)->get();
 
             $result = $result->merge($gresult);
         }

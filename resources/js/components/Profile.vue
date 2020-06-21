@@ -7,14 +7,6 @@
           <div class="row">
             <div class="col-md-6">
               <img class="mt-2 ml-2" :src="getPhoto()" alt />
-              <img
-                v-if="! photo"
-                class="mt-2 ml-2"
-                width="250px"
-                height="100px"
-                src="/img/yourcompanylogo.png"
-                alt
-              />
             </div>
             <div class="col-md-6 d-flex flex-column align-items-end pr-3">
               <h3 class="widget-user-username text-right text-blue" v-html="form.company"></h3>
@@ -198,7 +190,7 @@ export default {
     return {
       form: new Form({}),
       inprogress: false,
-      photo: null,
+      photo: false,
       editMode: true,
       company: "ABC"
     };
@@ -210,7 +202,11 @@ export default {
       if (isBase64.test(this.photo)) {
         return this.photo;
       } else {
-        return "/storage/" + this.photo;
+        if (this.photo) {
+          return "/storage/" + this.photo;
+        } else {
+          return "/img/yourcompanylogo.png";
+        }
       }
     },
     setFile(e) {

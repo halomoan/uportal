@@ -23,7 +23,11 @@ class Timeliner
         return self::$_instance;
     }
 
-    public  function News(\App\News $news)
+    public function Invoice(\App\Invoice $invoice)
+    {
+    }
+
+    public function News(\App\News $news)
     {
 
         $timeline = Timeline::where('news_id', '=', $news->id)->first();
@@ -64,7 +68,7 @@ class Timeliner
             //DB::delete("DELETE FROM timelines WHERE id IN ( SELECT timeline_id FROM timeline_user WHERE news_id = " . $this->news_id . " )");
             foreach ($users as $user) {
 
-                $user->timelines()->sync($this->timeline->id);
+                $user->timelines()->attach($this->timeline->id);
             }
         } else {
 
@@ -82,7 +86,7 @@ class Timeliner
 
             foreach ($groups as $group) {
 
-                $group->timelines()->sync($this->timeline->id);
+                $group->timelines()->attach($this->timeline->id);
             }
         } else {
             $this->timeline->groups()->detach();

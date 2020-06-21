@@ -4148,7 +4148,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.$Role.isAdminOrUser()) {
-        var uri = this.pgTable[this.tabIndex].uri + "t=" + this.selSince + "&page=" + page;
+        var uri = this.pgTable[this.tabIndex].uri + "auth=true" + "&t=" + this.selSince + "&page=" + page;
         axios.get(uri).then(function (_ref) {
           var data = _ref.data;
           _this.pgTable[_this.tabIndex].news = data.data;
@@ -4241,7 +4241,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this4 = this;
 
       if (this.searchText) {
-        this.pgTable[this.tabIndex].uri = "api/news?" + "&q=" + this.searchText + "&t=" + this.selSince + "&page=";
+        this.pgTable[this.tabIndex].uri = "api/news?" + "auth=true" + "&q=" + this.searchText + "&t=" + this.selSince + "&page=";
       } else {
         this.pgTable[this.tabIndex].uri = "api/news?" + "t=" + this.selSince + "&page=";
       }
@@ -4295,6 +4295,12 @@ __webpack_require__.r(__webpack_exports__);
               toUser: toUser,
               toGroup: toGroup
             }).then(function (resp) {
+              var data = _this5.pgTable[_this5.tabIndex].news;
+              data.map(function (news) {
+                if (news.id === _this5.newsId) {
+                  news.assigned = true;
+                }
+              });
               Swal.fire({
                 icon: "success",
                 position: "top-end",
@@ -4304,9 +4310,8 @@ __webpack_require__.r(__webpack_exports__);
               });
               $("#publishModal").modal("hide");
             })["catch"](function (error) {
-              var message = error.response.data.message;
-
-              if (message) {
+              if (error.response && error.response.data) {
+                var message = error.response.data.message;
                 Swal.fire("Failed!", message, "warning");
               } else {
                 Swal.fire("Failed!", "There is something wrong.", "warning");
@@ -4724,20 +4729,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       form: new Form({}),
       inprogress: false,
-      photo: null,
+      photo: false,
       editMode: true,
       company: "ABC"
     };
@@ -4750,7 +4747,11 @@ __webpack_require__.r(__webpack_exports__);
       if (isBase64.test(this.photo)) {
         return this.photo;
       } else {
-        return "/storage/" + this.photo;
+        if (this.photo) {
+          return "/storage/" + this.photo;
+        } else {
+          return "/img/yourcompanylogo.png";
+        }
       }
     },
     setFile: function setFile(e) {
@@ -87327,19 +87328,7 @@ var render = function() {
               _c("img", {
                 staticClass: "mt-2 ml-2",
                 attrs: { src: _vm.getPhoto(), alt: "" }
-              }),
-              _vm._v(" "),
-              !_vm.photo
-                ? _c("img", {
-                    staticClass: "mt-2 ml-2",
-                    attrs: {
-                      width: "250px",
-                      height: "100px",
-                      src: "/img/yourcompanylogo.png",
-                      alt: ""
-                    }
-                  })
-                : _vm._e()
+              })
             ]),
             _vm._v(" "),
             _c(

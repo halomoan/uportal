@@ -37,14 +37,18 @@ class NewsController extends Controller
         $role = auth()->user()->urole;
 
         $news = [];
+
         $userId = auth()->user()->id;
         $groups = auth()->user()->groups()->select('id')->get();
+        $isAuthor =
+            \Request::get('auth');
         $search = \Request::get('q');
         $since = \Request::get('t');
         $perpage = \Request::get('up');
+        $page = \Request::get('page') - 1;
 
         if (!$perpage) {
-            $perpage = 10;
+            $perpage = 5;
         }
 
         $where = "";
@@ -78,17 +82,17 @@ class NewsController extends Controller
 
         if ($search) {
 
-            if (in_array($role, $this->AUTHORS)) {
+            if ($isAuthor && in_array($role, $this->AUTHORS)) {
                 return auth()->user()->mynews()->where(function ($query) use ($search) {
                     $query->whereLike(['title'], $search);
                 })->whereRaw($where)->orderBy('validFrom', 'desc')->paginate($perpage);
             } else {
             }
         } else {
-            if (in_array($role, $this->AUTHORS)) {
+            if ($isAuthor && in_array($role, $this->AUTHORS)) {
                 $news =  auth()->user()->mynews()
                     ->whereRaw($where)
-                    ->orderBy('validFrom', 'desc')->get();
+                    ->orderBy('validFrom', 'desc')->offset($page * $perpage)->limit($perpage)->get();
 
                 foreach ($news as $item) {
 
@@ -96,8 +100,9 @@ class NewsController extends Controller
                     $assigned = $item->users()->count() + $item->groups()->count();
                     $item['assigned'] = ($assigned > 0);
                 }
-                $total = count($news);
-                return  new Paginator($news, $total, 5);
+                $total = auth()->user()->mynews()
+                    ->whereRaw($where)->count();
+                return  new Paginator($news, $total, $perpage);
             } else {
 
 
