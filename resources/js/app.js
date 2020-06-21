@@ -45,10 +45,10 @@ let routes = [
         path: "/viewPDF",
         component: require("./components/Invoices/viewPDF.vue").default
     },
-    {
-        path: "/printInvoice",
-        component: require("./components/Invoices/InvoiceDetail.vue").default
-    },
+    // {
+    //     path: "/printInvoice",
+    //     component: require("./components/Invoices/InvoiceDetail.vue").default
+    // },
     // {
     //     path: "/gentoken",
     //     component: require("./components/GenToken.vue").default
@@ -57,6 +57,10 @@ let routes = [
     {
         path: "/usergroup",
         component: require("./components/UserGroup.vue").default
+    },
+    {
+        path: "/import",
+        component: require("./components/Import/Import.vue").default
     },
     {
         path: "/news",

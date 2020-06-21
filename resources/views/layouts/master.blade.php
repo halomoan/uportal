@@ -132,6 +132,12 @@
                     <p>News</p>
                   </router-link>
                 </li>
+                <li class="nav-item">
+                  <router-link to="/import" class="nav-link">
+                    <i class="fas fa-cloud-upload-alt nav-icon"></i>
+                    <p>Import</p>
+                  </router-link>
+                </li>
                 {{-- <li class="nav-item">
                   <router-link to="/gentoken" class="nav-link">
                     <i class="fas fa-key nav-icon"></i>
