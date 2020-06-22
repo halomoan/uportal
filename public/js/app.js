@@ -2823,6 +2823,116 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -84998,33 +85108,354 @@ var staticRenderFns = [
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "card-body" }, [
-                  _c("div", { staticClass: "row margin" }, [
-                    _c("div", { staticClass: "progress w-100" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col-5" }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-5" }),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-2 d-flex justify-content-end" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            staticClass: "form-control",
+                            staticStyle: { width: "50%" },
+                            attrs: { tabindex: "-1", "aria-hidden": "true" }
+                          },
+                          [
+                            _c("option", { attrs: { selected: "selected" } }),
+                            _vm._v(" "),
+                            _c("option", { attrs: { selected: "" } }, [
+                              _vm._v("2020")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("2021")]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("2022")]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("2023")]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("2024")]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("2025")])
+                          ]
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row pt-3" }, [
+                    _c("div", { staticClass: "col-12" }, [
                       _c(
-                        "div",
-                        {
-                          staticClass: "progress-bar bg-success",
-                          staticStyle: { width: "25%" },
-                          attrs: {
-                            role: "progressbar",
-                            "aria-valuenow": "25",
-                            "aria-valuemin": "0",
-                            "aria-valuemax": "100"
-                          }
-                        },
-                        [_vm._v("25%")]
+                        "table",
+                        { staticClass: "table table-bordered text-center" },
+                        [
+                          _c("tbody", [
+                            _c("tr", [
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Jan-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Feb-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Mar-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Apr-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("May-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Jun-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("tr", [
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Jul-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Aug-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-primary",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Sep-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("235")]),
+                                _vm._v(" records\n                          "),
+                                _c("br"),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  { staticClass: "text-sm font-italic" },
+                                  [_vm._v("Last update: 25-May-2020")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-info",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Oct-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("0")]),
+                                _vm._v(" records\n                        ")
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-info",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Nov-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("0")]),
+                                _vm._v(" records\n                        ")
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass:
+                                      "btn btn-block bg-gradient-info",
+                                    attrs: { type: "button" }
+                                  },
+                                  [_vm._v("Dec-2020")]
+                                ),
+                                _vm._v(" "),
+                                _c("code", [_vm._v("0")]),
+                                _vm._v(" records\n                        ")
+                              ])
+                            ])
+                          ])
+                        ]
                       )
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row margin" }, [
-                    _c("button", { staticClass: "btn btn-primary" }, [
-                      _c("i", { staticClass: "fas fa-upload" }),
-                      _vm._v("\n                  Execute\n                ")
+                  ])
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-lg-12 col-12" }, [
+              _c("div", { staticClass: "card card-olive" }, [
+                _c("div", { staticClass: "card-header" }, [
+                  _c("h3", { staticClass: "card-title" }, [
+                    _vm._v("Import Users")
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "card-body" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col-6" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("div", { staticClass: "input-group" }, [
+                          _c("div", { staticClass: "custom-file" }, [
+                            _c("input", {
+                              staticClass: "custom-file-input",
+                              attrs: { type: "file", id: "exampleInputFile" }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "custom-file-label",
+                                attrs: { for: "exampleInputFile" }
+                              },
+                              [_vm._v("Choose file")]
+                            )
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        { staticClass: "btn btn-block bg-gradient-indigo" },
+                        [_vm._v("Upload Users")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-6" }, [
+                      _c(
+                        "button",
+                        { staticClass: "btn btn-block bg-gradient-fuchsia" },
+                        [_vm._v("Download Template")]
+                      )
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row margin" })
+                  ])
                 ])
               ])
             ])
@@ -107002,8 +107433,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

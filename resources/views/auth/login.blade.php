@@ -49,7 +49,7 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-block btn-success mt-2">{{ __('Login') }}</button>
+                                <button type="submit" class="btn btn-block bg-gradient-success mt-2">{{ __('Login') }}</button>
                             </form>
                         </div>
                     </div>
