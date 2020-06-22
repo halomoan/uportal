@@ -29,24 +29,53 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="row">
-                  <div class="col-5"></div>
-                  <div class="col-5"></div>
+                  <div class="col-6">
+                    <div class="form-group row">
+                      <label class="pr-3 pt-2" for="cocode">Company:</label>
+                      <select
+                        id="cocode"
+                        name="cocode"
+                        class="form-control"
+                        style="width: 60%;"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      >
+                        <option selected>1000 - UOL Group Limited</option>
+                        <option>1001 - Novena Square</option>
+                        <option>1002 - Odean Tower</option>
+                      </select>
+                    </div>
+                  </div>
 
-                  <div class="col-2 d-flex justify-content-end">
-                    <select
-                      class="form-control"
-                      style="width: 50%;"
-                      tabindex="-1"
-                      aria-hidden="true"
-                    >
-                      <option selected="selected"></option>
-                      <option selected>2020</option>
-                      <option>2021</option>
-                      <option>2022</option>
-                      <option>2023</option>
-                      <option>2024</option>
-                      <option>2025</option>
-                    </select>
+                  <div class="col-6">
+                    <!-- <button type="button" class="btn btn-outline btn-outline-primary">Add</button> -->
+                    <div class="form-group row">
+                      <label class="pl-3 pr-3 pt-2" for="year">Year:</label>
+
+                      <select
+                        id="year"
+                        name="year"
+                        class="form-control"
+                        style="width: 20%;"
+                        tabindex="-1"
+                        aria-hidden="true"
+                      >
+                        <option selected>2020</option>
+                        <option>2021</option>
+                        <option>2022</option>
+                        <option>2023</option>
+                        <option>2024</option>
+                        <option>2025</option>
+                      </select>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-outline-primary ml-2"
+                      >Add Year</button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-outline-danger ml-2"
+                      >Remove Year</button>
+                    </div>
                   </div>
                 </div>
                 <div class="row pt-3">
@@ -143,18 +172,19 @@
               <div class="card-body">
                 <div class="row">
                   <div class="col-6">
+                    <button class="btn btn-block bg-gradient-fuchsia">Download Template</button>
+                    <button class="btn btn-block bg-gradient-green mt-3">Manage Users</button>
+                  </div>
+                  <div class="col-6">
                     <div class="form-group">
-                      <div class="input-group">
+                      <div class="input-group input-group-sm">
                         <div class="custom-file">
-                          <input type="file" class="custom-file-input" id="exampleInputFile" />
-                          <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                          <input type="file" class="custom-file-input" id="userFile" />
+                          <label class="custom-file-label" for="userFile">Choose file</label>
                         </div>
                       </div>
                     </div>
                     <button class="btn btn-block bg-gradient-indigo">Upload Users</button>
-                  </div>
-                  <div class="col-6">
-                    <button class="btn btn-block bg-gradient-fuchsia">Download Template</button>
                   </div>
                 </div>
               </div>

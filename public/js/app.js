@@ -2933,6 +2933,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -85109,24 +85139,66 @@ var staticRenderFns = [
                 _vm._v(" "),
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "row" }, [
-                    _c("div", { staticClass: "col-5" }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-5" }),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col-2 d-flex justify-content-end" },
-                      [
+                    _c("div", { staticClass: "col-6" }, [
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "pr-3 pt-2",
+                            attrs: { for: "cocode" }
+                          },
+                          [_vm._v("Company:")]
+                        ),
+                        _vm._v(" "),
                         _c(
                           "select",
                           {
                             staticClass: "form-control",
-                            staticStyle: { width: "50%" },
-                            attrs: { tabindex: "-1", "aria-hidden": "true" }
+                            staticStyle: { width: "60%" },
+                            attrs: {
+                              id: "cocode",
+                              name: "cocode",
+                              tabindex: "-1",
+                              "aria-hidden": "true"
+                            }
                           },
                           [
-                            _c("option", { attrs: { selected: "selected" } }),
+                            _c("option", { attrs: { selected: "" } }, [
+                              _vm._v("1000 - UOL Group Limited")
+                            ]),
                             _vm._v(" "),
+                            _c("option", [_vm._v("1001 - Novena Square")]),
+                            _vm._v(" "),
+                            _c("option", [_vm._v("1002 - Odean Tower")])
+                          ]
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-6" }, [
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "pl-3 pr-3 pt-2",
+                            attrs: { for: "year" }
+                          },
+                          [_vm._v("Year:")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "select",
+                          {
+                            staticClass: "form-control",
+                            staticStyle: { width: "20%" },
+                            attrs: {
+                              id: "year",
+                              name: "year",
+                              tabindex: "-1",
+                              "aria-hidden": "true"
+                            }
+                          },
+                          [
                             _c("option", { attrs: { selected: "" } }, [
                               _vm._v("2020")
                             ]),
@@ -85141,9 +85213,29 @@ var staticRenderFns = [
                             _vm._v(" "),
                             _c("option", [_vm._v("2025")])
                           ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-outline btn-outline-primary ml-2",
+                            attrs: { type: "button" }
+                          },
+                          [_vm._v("Add Year")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass:
+                              "btn btn-outline btn-outline-danger ml-2",
+                            attrs: { type: "button" }
+                          },
+                          [_vm._v("Remove Year")]
                         )
-                      ]
-                    )
+                      ])
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "row pt-3" }, [
@@ -85421,38 +85513,48 @@ var staticRenderFns = [
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "row" }, [
                     _c("div", { staticClass: "col-6" }, [
+                      _c(
+                        "button",
+                        { staticClass: "btn btn-block bg-gradient-fuchsia" },
+                        [_vm._v("Download Template")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        { staticClass: "btn btn-block bg-gradient-green mt-3" },
+                        [_vm._v("Manage Users")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-6" }, [
                       _c("div", { staticClass: "form-group" }, [
-                        _c("div", { staticClass: "input-group" }, [
-                          _c("div", { staticClass: "custom-file" }, [
-                            _c("input", {
-                              staticClass: "custom-file-input",
-                              attrs: { type: "file", id: "exampleInputFile" }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "label",
-                              {
-                                staticClass: "custom-file-label",
-                                attrs: { for: "exampleInputFile" }
-                              },
-                              [_vm._v("Choose file")]
-                            )
-                          ])
-                        ])
+                        _c(
+                          "div",
+                          { staticClass: "input-group input-group-sm" },
+                          [
+                            _c("div", { staticClass: "custom-file" }, [
+                              _c("input", {
+                                staticClass: "custom-file-input",
+                                attrs: { type: "file", id: "userFile" }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "custom-file-label",
+                                  attrs: { for: "userFile" }
+                                },
+                                [_vm._v("Choose file")]
+                              )
+                            ])
+                          ]
+                        )
                       ]),
                       _vm._v(" "),
                       _c(
                         "button",
                         { staticClass: "btn btn-block bg-gradient-indigo" },
                         [_vm._v("Upload Users")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-6" }, [
-                      _c(
-                        "button",
-                        { staticClass: "btn btn-block bg-gradient-fuchsia" },
-                        [_vm._v("Download Template")]
                       )
                     ])
                   ])
@@ -107433,8 +107535,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -13,3 +13,12 @@ php artisan make:seeder TimelinesTableSeeder
 php artisan db:seed --class=UsersTableSeeder
 
 
+InvoiceH
+ID
+CoCode
+Month
+Year
+TotRecord
+ByUser
+Created_at
+Changed_at
