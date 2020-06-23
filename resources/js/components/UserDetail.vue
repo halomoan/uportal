@@ -387,11 +387,11 @@ export default {
           this.$Progress.fail();
           this.inprogress = false;
           let message = e.response.data.message;
-          let errors = e.response.data.errors;
+          const errors = e.response.data.errors;
 
-          for (let error in errors) {
+          for (const error in errors) {
             if (error === "groups") {
-              for (let msg in errors[error]) {
+              for (const msg in errors[error]) {
                 message = errors[error][msg];
               }
             }

@@ -104,6 +104,12 @@ Vue.filter("upText", function(text) {
     return text.toUpperCase();
 });
 
+Vue.filter("MMM", function(month) {
+    return moment()
+        .month(month - 1)
+        .format("MMM");
+});
+
 Vue.filter("humanDate", function(date) {
     return moment(date).format("MMM Do YYYY");
 });

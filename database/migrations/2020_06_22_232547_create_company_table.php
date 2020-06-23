@@ -16,6 +16,7 @@ class CreateCompanyTable extends Migration
         Schema::create('company', function (Blueprint $table) {
             $table->char('CoCode', 4);
             $table->string('Name');
+            $table->boolean('Disabled');
             $table->primary('CoCode');
         });
     }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$Role.isAdmin()">
     <div class="content-header pb-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -22,143 +22,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12 col-12">
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Import Invoices</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="form-group row">
-                      <label class="pr-3 pt-2" for="cocode">Company:</label>
-                      <select
-                        id="cocode"
-                        name="cocode"
-                        class="form-control"
-                        style="width: 60%;"
-                        tabindex="-1"
-                        aria-hidden="true"
-                      >
-                        <option selected>1000 - UOL Group Limited</option>
-                        <option>1001 - Novena Square</option>
-                        <option>1002 - Odean Tower</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="col-6">
-                    <!-- <button type="button" class="btn btn-outline btn-outline-primary">Add</button> -->
-                    <div class="form-group row">
-                      <label class="pl-3 pr-3 pt-2" for="year">Year:</label>
-
-                      <select
-                        id="year"
-                        name="year"
-                        class="form-control"
-                        style="width: 20%;"
-                        tabindex="-1"
-                        aria-hidden="true"
-                      >
-                        <option selected>2020</option>
-                        <option>2021</option>
-                        <option>2022</option>
-                        <option>2023</option>
-                        <option>2024</option>
-                        <option>2025</option>
-                      </select>
-                      <button
-                        type="button"
-                        class="btn btn-outline btn-outline-primary ml-2"
-                      >Add Year</button>
-                      <button
-                        type="button"
-                        class="btn btn-outline btn-outline-danger ml-2"
-                      >Remove Year</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row pt-3">
-                  <div class="col-12">
-                    <table class="table table-bordered text-center">
-                      <tbody>
-                        <tr>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Jan-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Feb-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Mar-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Apr-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">May-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Jun-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Jul-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Aug-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-primary">Sep-2020</button>
-                            <code>235</code> records
-                            <br />
-                            <span class="text-sm font-italic">Last update: 25-May-2020</span>
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-info">Oct-2020</button>
-                            <code>0</code> records
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-info">Nov-2020</button>
-                            <code>0</code> records
-                          </td>
-                          <td>
-                            <button type="button" class="btn btn-block bg-gradient-info">Dec-2020</button>
-                            <code>0</code> records
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- /.card-body -->
-            </div>
+            <InvoiceCard></InvoiceCard>
           </div>
         </div>
         <!-- ./row -->
@@ -189,15 +53,33 @@
                 </div>
               </div>
               <!-- /.card-body -->
+              <div class="overlay" v-if="inprogress">
+                <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                <div class="text-bold pl-2">Loading...</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <!-- ./content -->
   </div>
 </template>
 
 <script>
-export default {};
+import InvoiceCard from "./InvoiceCard";
+
+export default {
+  components: {
+    InvoiceCard
+  },
+  data() {
+    return {
+      inprogress: false
+    };
+  },
+  methods: {},
+  mounted() {}
+};
 </script>
