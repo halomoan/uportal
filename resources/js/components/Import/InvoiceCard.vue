@@ -28,9 +28,8 @@
           </div>
         </div>
 
-        <div class="col-6 d-flex justify-content-end">
-          <!-- <button type="button" class="btn btn-outline btn-outline-primary">Add</button> -->
-          <div class="form-group row">
+        <div class="col-6">
+          <div class="form-group d-flex justify-content-end">
             <label class="pl-3 pr-3 pt-2" for="year">Year:</label>
 
             <select
@@ -53,7 +52,11 @@
               class="btn btn-outline btn-outline-primary ml-2"
               @click="createYear"
             >Add Year</button>
-            <button type="button" class="btn btn-outline btn-outline-danger ml-2">Remove Year</button>
+            <button
+              type="button"
+              class="btn btn-outline btn-outline-danger ml-2"
+              @click="deleteYear"
+            >Remove Year</button>
           </div>
         </div>
       </div>
@@ -66,7 +69,8 @@
                   <button
                     type="button"
                     class="btn btn-block"
-                    v-bind:class="{ 'bg-gradient-primary' : item.Status === 'U','bg-gradient-secondary' : item.Status != 'U'}"
+                    @click="importInvoice(item.Month)"
+                    v-bind:class="{ 'bg-gradient-primary' : item.TotRecord > 0,'bg-gradient-secondary' : item.TotRecord == 0 }"
                   >{{ item.Month | MMM }}-{{ item.Year }}</button>
                   <code>{{ item.TotRecord}}</code> records
                   <br />
@@ -78,9 +82,10 @@
                   <button
                     type="button"
                     class="btn btn-block"
+                    @click="importInvoice(item.Month)"
                     v-bind:class="{ 'bg-gradient-primary' : item.Status === 'U','bg-gradient-secondary' : item.Status != 'U'}"
                   >{{ item.Month | MMM }}-{{item.Year}}</button>
-                  <code>{{ item.TotRecord}}</code> records
+                  <code>{{ item.TotRecord}}x</code> records
                   <br />
                   <span class="text-sm font-italic">Last update: {{ item.updated_at | humanDate }}</span>
                 </td>
@@ -147,6 +152,9 @@ export default {
     createYear() {
       Swal.mixin({
         input: "text",
+        inputAttributes: {
+          maxlength: 4
+        },
         //confirmButtonText: "Next &rarr;",
         confirmButtonText: "Create",
         showCancelButton: true,
@@ -201,7 +209,61 @@ export default {
           }
         });
     },
-    deleteYear() {}
+    deleteYear() {
+      if (!this.year) {
+        return;
+      }
+      // console.log(this.items.some(item => item.TotRecord > 0));
+      // return;
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are going to delete invoices in year: " + this.year,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          this.inprogress = true;
+          axios
+            .delete("api/impinvoice/" + this.year + "," + this.company)
+            .then(resp => {
+              this.inprogress = false;
+            })
+            .catch(err => {
+              this.inprogress = false;
+              let message = err.response.data.message;
+              const errors = err.response.data.errors;
+
+              for (const error in errors) {
+                for (const msg in errors[error]) {
+                  message = errors[error][msg];
+                }
+              }
+
+              if (message) {
+                Swal.fire("Failed!", message, "warning");
+              } else {
+                Swal.fire("Failed!", "There is something wrong.", "warning");
+              }
+            });
+        }
+      });
+    },
+
+    importInvoice(idx) {
+      const item = this.items[idx - 1];
+      let name = null;
+      for (let i = 0; i < this.companies.length; i++) {
+        if (this.companies[i].CoCode === this.company) {
+          name = this.companies[i].Name;
+          i = 1000;
+        }
+      }
+      this.$router.push({ name: "importInv", params: { name, item } });
+    }
   },
   mounted() {
     this.getCompanies();

@@ -53,14 +53,27 @@ let routes = [
     //     path: "/gentoken",
     //     component: require("./components/GenToken.vue").default
     // },
-    { path: "/users", component: require("./components/Users.vue").default },
+    {
+        path: "/users",
+        component: require("./components/Users/Users.vue").default
+    },
     {
         path: "/usergroup",
-        component: require("./components/UserGroup.vue").default
+        component: require("./components/Users/UserGroup.vue").default
+    },
+    {
+        path: "/userd",
+        component: require("./components/Users/UserDetail.vue").default
     },
     {
         path: "/import",
         component: require("./components/Import/Import.vue").default
+    },
+    {
+        name: "importInv",
+        path: "/importInv",
+        component: require("./components/Import/ImportInvoices.vue").default,
+        props: true
     },
     {
         path: "/news",
@@ -74,10 +87,7 @@ let routes = [
         path: "/profile",
         component: require("./components/Profile.vue").default
     },
-    {
-        path: "/userd",
-        component: require("./components/UserDetail.vue").default
-    },
+
     {
         path: "*",
         component: require("./components/NotFound.vue").default

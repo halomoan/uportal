@@ -4,14 +4,19 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Import</h1>
+            <h1>Import Invoice</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
-                <a href="#">Home</a>
+                <router-link to="/home">Home</router-link>
               </li>
-              <li class="breadcrumb-item active">Import</li>
+
+              <li class="breadcrumb-item">
+                <router-link to="/import">Import</router-link>
+              </li>
+
+              <li class="breadcrumb-item active">Import Invoice</li>
             </ol>
           </div>
         </div>
@@ -23,17 +28,25 @@
         <div class="row">
           <div class="col-lg-12 col-12">
             <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Import Invoices</h3>
-              </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <div class="row">
-                  <div class="col-12">
-                    <button class="btn bg-gradient-primary">
-                      <i class="fas fa-upload"></i>
-                      Execute
-                    </button>
+                  <div class="col-6">
+                    <h4 class="m-0">{{item.CoCode}} - {{ name }}</h4>
+
+                    <h5 class="m-0">{{item.Month | MMM }} - {{ item.Year }}</h5>
+                  </div>
+                  <div class="col-6">
+                    <div class="d-flex justify-content-end">
+                      <button class="btn bg-gradient-primary btn-sm">
+                        <i class="fas fa-upload"></i>
+                        Execute
+                      </button>
+                      <button class="btn bg-gradient-primary btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                        Back
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div class="row pt-2">
@@ -79,5 +92,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: { name: String, item: Object },
+  data() {
+    return {};
+  },
+  methods: {},
+  mounted() {
+    console.log(this.item, this.name);
+  }
+};
 </script>
