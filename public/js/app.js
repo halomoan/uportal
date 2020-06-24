@@ -2972,14 +2972,12 @@ __webpack_require__.r(__webpack_exports__);
     doImport: function doImport() {
       var _this = this;
 
-      console.log(this.item);
       var month = this.item.Month;
       var year = this.item.Year;
       var cocode = this.item.CoCode;
       this.inprogress = true;
       this.$Progress.start();
       axios.put("api/impinvoice/" + month + "," + year + "," + cocode).then(function (resp) {
-        console.log(resp);
         _this.inprogress = false;
 
         _this.$Progress.finish();
@@ -3755,72 +3753,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     year: String
@@ -3853,41 +3785,54 @@ __webpack_require__.r(__webpack_exports__);
         perpage: 10,
         records: 0
       }],
-      searchText: ""
+      searchText: "",
+      years: []
     };
   },
-  computed: {
-    years: {
-      get: function get() {
-        var date = new Date();
-        var year = date.getFullYear();
-        return [year + "", year - 1 + "", year - 2 + "", year - 3 + ""];
-      },
-      set: function set() {}
-    }
-  },
+  //   computed: {
+  //     years: {
+  //       get: function() {
+  //         const date = new Date();
+  //         const year = date.getFullYear();
+  //         return [year + "", year - 1 + "", year - 2 + "", year - 3 + ""];
+  //       },
+  //       set: function() {}
+  //     }
+  //   },
   methods: {
     setActive: function setActive(tab) {
       this.tabIndex = tab > -1 ? tab : 0;
-      this.getTableData(1);
+      this.getYears();
+    },
+    getYears: function getYears() {
+      var _this = this;
+
+      if (this.$Role.isAdminOrUser()) {
+        var uri = "api/invoices?years=true";
+        axios.get(uri).then(function (resp) {
+          _this.years = resp.data;
+
+          _this.getTableData(1);
+        });
+      }
     },
     getTableData: function getTableData(page) {
-      var _this = this;
+      var _this2 = this;
 
       if (this.$Role.isAdminOrUser()) {
         var uri = this.pgTable[this.tabIndex].uri + page + "&y=" + this.years[this.tabIndex];
         axios.all([axios.get("/api/invoices?n=true"), axios.get(uri)]).then(axios.spread(function (hasNew, data) {
           if (hasNew.data === 1) {
-            _this.$parent.newFlag("INVOICES", true);
+            _this2.$parent.newFlag("INVOICES", true);
           } else {
-            _this.$parent.newFlag("INVOICES", false);
+            _this2.$parent.newFlag("INVOICES", false);
           }
 
           var invoiceData = data.data;
-          _this.pgTable[_this.tabIndex].invoices = invoiceData.data;
-          _this.pgTable[_this.tabIndex].records = invoiceData.total;
-          _this.pgTable[_this.tabIndex].page = invoiceData.current_page;
-          _this.pgTable[_this.tabIndex].perpage = invoiceData.per_page;
+          _this2.pgTable[_this2.tabIndex].invoices = invoiceData.data;
+          _this2.pgTable[_this2.tabIndex].records = invoiceData.total;
+          _this2.pgTable[_this2.tabIndex].page = invoiceData.current_page;
+          _this2.pgTable[_this2.tabIndex].perpage = invoiceData.per_page;
         }));
       }
     },
@@ -3902,7 +3847,7 @@ __webpack_require__.r(__webpack_exports__);
     //   this.$parent.newFlag("INVOICES", result);
     // },
     searchTable: function searchTable() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri = "api/invoices?" + "y=" + this.years[this.tabIndex] + "&q=" + this.searchText + "&page=";
@@ -3914,27 +3859,27 @@ __webpack_require__.r(__webpack_exports__);
       axios.get(this.pgTable[this.tabIndex].uri).then(function (_ref) {
         var data = _ref.data;
         //this.invoices[this.tabIndex] = data.data;
-        _this2.pgTable[_this2.tabIndex].invoices = data.data;
-        _this2.pgTable[_this2.tabIndex].records = data.total;
-        _this2.pgTable[_this2.tabIndex].page = data.current_page;
-        _this2.pgTable[_this2.tabIndex].perpage = data.per_page;
+        _this3.pgTable[_this3.tabIndex].invoices = data.data;
+        _this3.pgTable[_this3.tabIndex].records = data.total;
+        _this3.pgTable[_this3.tabIndex].page = data.current_page;
+        _this3.pgTable[_this3.tabIndex].perpage = data.per_page;
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {
         Toast.fire({
           icon: "error",
           title: "Something is wrong. Failed to search."
         });
 
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     Fire.$on("GLOBAL_SEARCH", function () {
-      _this3.searchText = _this3.$parent.searchText;
+      _this4.searchText = _this4.$parent.searchText;
     });
 
     if (this.year) {
@@ -85927,8 +85872,8 @@ var render = function() {
                       {
                         staticClass: "btn btn-block",
                         class: {
-                          "bg-gradient-primary": item.TotRecord > 0,
-                          "bg-gradient-secondary": item.TotRecord == 0
+                          "bg-gradient-primary": item.TotOfRec > 0,
+                          "bg-gradient-secondary": item.TotOfRec == 0
                         },
                         attrs: { type: "button" },
                         on: {
@@ -85946,7 +85891,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c("code", [_vm._v(_vm._s(item.TotRecord))]),
+                    _c("code", [_vm._v(_vm._s(item.TotOfRec))]),
                     _vm._v(" records\n                "),
                     _c("br"),
                     _vm._v(" "),
@@ -85989,7 +85934,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c("code", [_vm._v(_vm._s(item.TotRecord) + "x")]),
+                    _c("code", [_vm._v(_vm._s(item.TotOfRec) + "x")]),
                     _vm._v(" records\n                "),
                     _c("br"),
                     _vm._v(" "),
@@ -86585,13 +86530,11 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                                " +
-                                                          _vm._s(
-                                                            _vm._f("humanDate")(
-                                                              invoice.inv_date
-                                                            )
-                                                          ) +
-                                                          "\n                                                            "
+                                                        _vm._s(
+                                                          _vm._f("humanDate")(
+                                                            invoice.invdate
+                                                          )
+                                                        )
                                                       )
                                                     ]
                                                   ),
@@ -86616,7 +86559,7 @@ var render = function() {
                                                         [
                                                           _vm._v(
                                                             _vm._s(
-                                                              invoice.inv_no
+                                                              invoice.invno
                                                             )
                                                           )
                                                         ]
@@ -86646,9 +86589,11 @@ var render = function() {
                                                         },
                                                         [
                                                           _vm._v(
-                                                            _vm._s(
-                                                              invoice.title
-                                                            )
+                                                            "\n                                  " +
+                                                              _vm._s(
+                                                                invoice.desc
+                                                              ) +
+                                                              "\n                                "
                                                           )
                                                         ]
                                                       )
@@ -86668,7 +86613,7 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                                " +
+                                                        "\n                                " +
                                                           _vm._s(
                                                             _vm._f("currency")(
                                                               invoice.amount,
@@ -86676,7 +86621,7 @@ var render = function() {
                                                               2
                                                             )
                                                           ) +
-                                                          "\n                                                            "
+                                                          "\n                              "
                                                       )
                                                     ]
                                                   ),
@@ -86693,13 +86638,13 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                                " +
+                                                        "\n                                " +
                                                           _vm._s(
                                                             _vm._f("upText")(
                                                               invoice.filename
                                                             )
                                                           ) +
-                                                          "\n                                                            "
+                                                          "\n                              "
                                                       )
                                                     ]
                                                   ),
@@ -86763,7 +86708,7 @@ var render = function() {
                                               )
                                             },
                                             expression:
-                                              "\n                                                            pgTable[\n                                                                tabIndex\n                                                            ].page\n                                                        "
+                                              "\n                                                              pgTable[\n                                                                  tabIndex\n                                                              ].page\n                                                          "
                                           }
                                         })
                                       ],
@@ -86824,29 +86769,13 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Date")]),
         _vm._v(" "),
-        _c("th", [
-          _vm._v(
-            "\n                                                                Invoice No\n                                                            "
-          )
-        ]),
+        _c("th", [_vm._v("Invoice No")]),
         _vm._v(" "),
-        _c("th", [
-          _vm._v(
-            "\n                                                                Description\n                                                            "
-          )
-        ]),
+        _c("th", [_vm._v("Description")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [
-          _vm._v(
-            "\n                                                                Amount\n                                                            "
-          )
-        ]),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Amount")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [
-          _vm._v(
-            "\n                                                                Filename\n                                                            "
-          )
-        ]),
+        _c("th", { staticClass: "text-right" }, [_vm._v("Filename")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-right" })
       ])
@@ -108142,8 +108071,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Invoice;
 use Illuminate\Support\Facades\Storage;
+
 
 class InvoiceController extends Controller
 {
@@ -28,12 +28,17 @@ class InvoiceController extends Controller
     {
         $search = \Request::get('q');
         $year = \Request::get('y');
+        $years = \Request::get('years');
         $new = \Request::get('n');
+
+        if ($years) {
+            return auth()->user()->invoices()->select('year')->groupBy('year')->limit(3)->pluck('year');
+        }
 
         if ($search) {
 
             return auth()->user()->invoices()->where(function ($query) use ($search) {
-                $query->whereLike(['inv_no', 'title', 'filename'], $search);
+                $query->whereLike(['invno', 'desc', 'filename'], $search);
             })->paginate(10);
         } elseif ($new) {
             return (auth()->user()->invoices()
@@ -42,7 +47,7 @@ class InvoiceController extends Controller
         } else {
             return auth()->user()->invoices()
                 ->where('year', $year)
-                ->orderBy('inv_date', 'desc')
+                ->orderBy('invdate', 'desc')
                 ->orderBy('unread', 'desc')
                 ->paginate(10);
         }
@@ -67,28 +72,34 @@ class InvoiceController extends Controller
      */
     public function show($id)
     {
-        
-        
-         $prefix = hash('md5', auth()->user()->email);
-         
-         foreach (glob(storage_path('app\\public\\inv\\' . $prefix . '*' )) as $filename) {
+
+
+        $prefix = hash('md5', auth()->user()->email);
+
+        foreach (glob(storage_path('app\\public\\inv\\' . $prefix . '*')) as $filename) {
             unlink($filename);
-        }         
+        }
 
-         $newFile = $prefix . hash('sha256', auth()->user()->password) . strtotime("tomorrow") . ".pdf";
-         
+        $newFile = $prefix . hash('sha1', auth()->user()->password) . strtotime("tomorrow") . ".pdf";
 
-         //Query Database based on $id
-         $fileName = 'STARHUB.pdf';
 
-         $sfilePath = storage_path('invoices\\' . $fileName);
-         $dfilePath = storage_path('app\\public\\inv\\' . $newFile );
+        //Query Database based on $id
+        $invfile = auth()->user()->invoices()->select('filename')->find($id)->first();
+        $invdir = auth()->user()->invoices()->find($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
 
-       
-        
-         copy($sfilePath,  $dfilePath);
-         return Storage::url('inv//' . $newFile);
-        
+
+        $fileName = $invfile['filename'];
+        $dir = $invdir['CoCode'] . '\\' . $invdir['year'] . $invdir['month'] . '\\';
+
+
+        $sfilePath = storage_path('invoices\\' . $dir . $fileName);
+        if (file_exists($sfilePath)) {
+            //Remember to create INV folder in the Public folder
+            $dfilePath = storage_path('app\\public\\inv\\' . $newFile);
+
+            copy($sfilePath,  $dfilePath);
+            return Storage::url('inv//' . $newFile);
+        }
     }
 
     /**

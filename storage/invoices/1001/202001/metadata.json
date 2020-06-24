@@ -5,8 +5,8 @@
     "Items": [
         {
             "CustNo": "1",
-            "CustName": "Mr Handy",
-            "Email": "handy@gmail.com",
+            "CustName": "Mr Ansel Cronin",
+            "Email": "eschuppe@hotmail.com",
             "InvNo": "A1",
             "InvDate": "2020-01-15",
             "Desc": "Rental Invoice For Jan 2020",
@@ -15,8 +15,8 @@
         },
         {
             "CustNo": "2",
-            "CustName": "Mr Handy",
-            "Email": "handy@gmail.com",
+            "CustName": "Mr Ansel Cronin",
+            "Email": "eschuppe@hotmail.com",
             "InvNo": "A2",
             "InvDate": "2020-01-15",
             "Desc": "Rental Invoice For Jan 2020",
@@ -25,8 +25,8 @@
         },
         {
             "CustNo": "3",
-            "CustName": "Mr Handy",
-            "Email": "handy@gmail.com",
+            "CustName": "Mr GoDaddy",
+            "Email": "halomoan@uportal.test",
             "InvNo": "A3",
             "InvDate": "2020-01-15",
             "Desc": "Rental Invoice For Jan 2020",
@@ -35,8 +35,8 @@
         },
         {
             "CustNo": "4",
-            "CustName": "Mr Handy",
-            "Email": "handy@gmail.com",
+            "CustName": "Mr Abun",
+            "Email": "halomoan@upoxrtal.test",
             "InvNo": "A4",
             "InvDate": "2020-01-16",
             "Desc": "Rental Invoice For Jan 2020",

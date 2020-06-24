@@ -106,7 +106,6 @@ export default {
       this.$router.push({ path: "/import" });
     },
     doImport() {
-      console.log(this.item);
       const month = this.item.Month;
       const year = this.item.Year;
       const cocode = this.item.CoCode;
@@ -116,7 +115,6 @@ export default {
       axios
         .put("api/impinvoice/" + month + "," + year + "," + cocode)
         .then(resp => {
-          console.log(resp);
           this.inprogress = false;
           this.$Progress.finish();
         })

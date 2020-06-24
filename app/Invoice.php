@@ -8,7 +8,7 @@ class Invoice extends Model
 {
 
     protected $fillable = [
-        'user_id','invoiceh_id','invno', 'invdate', 'desc', 'amount','filename', 'unread','published'
+        'user_id', 'invoiceh_id', 'invno', 'invdate', 'year', 'desc', 'amount', 'filename', 'unread', 'published'
     ];
 
     protected $hidden = [
@@ -18,5 +18,10 @@ class Invoice extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function invoiceh()
+    {
+        return $this->belongsTo(InvoiceH::class);
     }
 }

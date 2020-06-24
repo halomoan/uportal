@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\TLType;
+use App\Company;
 
 class ConfigurationTableSeeder extends Seeder
 {
@@ -27,5 +28,11 @@ class ConfigurationTableSeeder extends Seeder
             'id' => 3,
             'name' => 'Announcement'
         ]);
+
+        //Company Configuration
+        Company::truncate();
+        Company::create(['CoCode' => '1001', 'Name' => 'UOL Group Limited']);
+        Company::create(['CoCode' => '1002', 'Name' => 'UOL Property Investments Pte. Ltd.']);
+        Company::create(['CoCode' => '1003', 'Name' => 'Novena Square Development Pte. Ltd.']);
     }
 }
