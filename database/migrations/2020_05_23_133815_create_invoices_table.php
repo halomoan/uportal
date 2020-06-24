@@ -14,15 +14,18 @@ class CreateInvoicesTable extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
+            
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('inv_no');
-            $table->string('inv_date');
+            $table->unsignedBigInteger('invoiceh_id');
+            $table->string('invno');
+            $table->string('invdate');
             $table->string('year');
-            $table->string('title')->nullable();
-            $table->unsignedBigInteger('amount')->default(0);
+            $table->string('desc')->nullable();
+            $table->double('amount', 15, 2)->default(0.00);
             $table->string('filename');
             $table->boolean('unread')->default(0);
+            $table->boolean('published')->default(0);
             $table->timestamps();
 
             $table->index('user_id');

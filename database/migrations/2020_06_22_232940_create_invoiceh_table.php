@@ -14,14 +14,14 @@ class CreateInvoicehTable extends Migration
     public function up()
     {
         Schema::create('InvoiceH', function (Blueprint $table) {
-
+            $table->engine = 'InnoDB';
             $table->id();
             $table->char('CoCode', 4);
             $table->char('Year', 4);
-            $table->tinyInteger('Month');
+            $table->char('Month',2);
             $table->unsignedInteger('TotRecord');
             $table->string('ByUser', '50')->nullable();
-            $table->char('Status', 1)->nullable();
+            $table->char('Status', 3)->nullable();
             $table->timestamps();
 
             $table->index(['CoCode', 'Year']);

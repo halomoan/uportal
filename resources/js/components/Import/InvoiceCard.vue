@@ -254,15 +254,15 @@ export default {
     },
 
     importInvoice(idx) {
-      const item = this.items[idx - 1];
-      let name = null;
+      const payload = this.items[idx - 1];
+      let text = null;
       for (let i = 0; i < this.companies.length; i++) {
         if (this.companies[i].CoCode === this.company) {
-          name = this.companies[i].Name;
+          text = this.companies[i].Name;
           i = 1000;
         }
       }
-      this.$router.push({ name: "importInv", params: { name, item } });
+      this.$router.push({ name: "importInv", params: { text, payload } });
     }
   },
   mounted() {

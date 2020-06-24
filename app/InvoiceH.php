@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class InvoiceH extends Model
 {
-    protected $table = 'invoiceh';
+    protected $table = 'InvoiceH';
     protected $hidden = [
         'ByUser', 'created_at'
     ];

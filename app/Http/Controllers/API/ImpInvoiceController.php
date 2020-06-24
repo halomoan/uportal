@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\InvoiceH;
+use App\InvoiceL;
+use App\Invoice;
+use App\User;
 
 class ImpInvoiceController extends Controller
 {
@@ -72,7 +75,7 @@ class ImpInvoiceController extends Controller
 
             InvoiceH::create([
                 'CoCode' => $cocode,
-                'Month' => $month,
+                'Month' => sprintf("%02d", $month),
                 'Year' => $year,
                 'TotRecord' => 0
             ]);
@@ -99,7 +102,97 @@ class ImpInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->authorize('isAdmin');
+
+        list($month, $year, $cocode) = explode(',', $id);
+        if ($month && $year && $cocode) {
+            $dir = storage_path('invoices\\' . $cocode . '\\' . $year . $month . '\\');
+
+            if (is_dir($dir)) {
+                $metafile = $dir . 'metadata.json';
+                if (file_exists($metafile)) {
+                    $metacontent = file_get_contents($metafile);
+                    $metadata = json_decode($metacontent, true);                    
+
+                
+                    if( ! isset( $metadata['CoCode'] ) || ! isset( $metadata['Month'] ) || ! isset( $metadata['Year'] ) ) {
+                                              
+                        $this->retStatus('Invalid Metadata', 'Metadata Format Is Invalid');   
+                    };
+
+                    if ( $cocode != $metadata['CoCode'] || $month != $metadata['Month'] || $year != $metadata['Year']){                      
+                        $this->retStatus('Invalid Metadata', 'Metadata Is For Wrong Entity/Period');   
+                    }
+
+                    // Get InvoiceH id
+                    $invoiceh = InvoiceH::where('CoCode', '=', $cocode)
+                        ->where('year','=',$year)
+                        ->where('month','=',$month)
+                        ->first();
+
+                    if (! isset($invoiceh) ) {
+                        if ( $cocode != $metadata['CoCode'] || $month != $metadata['Month'] || $year != $metadata['Year']){
+                            
+                            $this->retStatus('Invalid Header', 'Cannot Find The Header For The Entity/Period');   
+                            
+                        }
+                    }
+
+                    //Loop Metadata
+                    if(array_key_exists('Items', $metadata)) {
+                        foreach ($metadata['Items'] as $key => $value) {
+                            $CustNo = $value['CustNo'];
+                            $CustName = $value['CustName'];
+                            $Email= $value['Email'];
+                            $InvNo = $value['InvNo'];
+                            $InvDate = $value['InvDate'];
+                            $Desc = $value['Desc'];
+                            $Amount = $value['Amount'];
+                            $Filename = $value['Filename'];
+
+                            if (file_exists($dir . $Filename)){
+                                $user = User::where('email', '=', $Email)->first();
+
+                                if (isset($user)){
+                                    $invoice = [
+                                        'user_id' => $user->id,
+                                        'invoiceh_id' => $invoiceh->id,
+                                        'invno' => $InvNo,
+                                        'invdate' => $InvDate,
+                                        'year' => $year,
+                                        'desc' => $Desc,
+                                        'amount' => $Amount,
+                                        'filename' => $Filename,
+                                        'unread' => 1,
+                                        'published' => 0
+    
+                                    ];
+
+                                    Invoice::create($invoice);
+                                } else{
+                                    $this->logImport($invoiceh->id,"Can't Find Email : ". $Email );
+                                }
+    
+                            } else{
+                                $this->logImport($invoiceh->id,"Can't Find File : ". $Filename );
+                            }
+
+                        
+                        }
+                    } else {
+                        // No Items in the Metadata
+                        $this->retStatus('Invalid Metadata', 'Metadata Has No Items');                    
+                    }
+                   
+                } else {
+                    // Metadata Not Found                  
+                    $this->retStatus('Invalid Metadata', 'Metadata Not Found');
+                }
+            } else {
+                // Directory Not Found                
+                $this->retStatus('Invalid Path', 'Path Not Found');
+            }
+        }
     }
 
     /**
@@ -119,5 +212,19 @@ class ImpInvoiceController extends Controller
             return InvoiceH::where('CoCode', '=', $cocode)
                 ->where('year', '=', $year)->delete();
         }
+    }
+
+
+    private function logImport($id, $text){
+        InvoiceL::create([
+            'invoiceh_id' => $id,
+            'text' => $text
+        ]);
+    }
+
+    private function retStatus($text,$subtext){
+        $errors['msg'] = [$subtext];
+        $message = ['message' => $text];
+        return response()->json($message, 422);
     }
 }

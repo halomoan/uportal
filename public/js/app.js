@@ -2953,15 +2953,73 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    name: String,
-    item: Object
+    text: String,
+    payload: Object
   },
   data: function data() {
-    return {};
+    return {
+      inprogress: false,
+      item: {},
+      name: ""
+    };
   },
-  methods: {},
-  mounted: function mounted() {
-    console.log(this.item, this.name);
+  methods: {
+    goBack: function goBack() {
+      this.$router.push({
+        path: "/import"
+      });
+    },
+    doImport: function doImport() {
+      var _this = this;
+
+      console.log(this.item);
+      var month = this.item.Month;
+      var year = this.item.Year;
+      var cocode = this.item.CoCode;
+      this.inprogress = true;
+      this.$Progress.start();
+      axios.put("api/impinvoice/" + month + "," + year + "," + cocode).then(function (resp) {
+        console.log(resp);
+        _this.inprogress = false;
+
+        _this.$Progress.finish();
+      })["catch"](function (err) {
+        _this.inprogress = false;
+        var message = err.response.data.message;
+        var errors = err.response.data.errors;
+
+        for (var error in errors) {
+          for (var msg in errors[error]) {
+            message = errors[error][msg];
+          }
+        }
+
+        _this.$Progress.fail();
+
+        if (message) {
+          Swal.fire("Failed!", message, "warning");
+        } else {
+          Swal.fire("Failed!", "There is something wrong.", "warning");
+        }
+      });
+    }
+  },
+  beforeMount: function beforeMount() {
+    this.item = this.payload;
+    this.name = this.text;
+
+    if (!this.item) {
+      this.item = {
+        id: 1,
+        CoCode: "1001",
+        Month: "01",
+        Year: "2020"
+      };
+
+      if (!this.text) {
+        this.name = "UOL Group Limited";
+      }
+    }
   }
 });
 
@@ -3243,12 +3301,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     importInvoice: function importInvoice(idx) {
-      var item = this.items[idx - 1];
-      var name = null;
+      var payload = this.items[idx - 1];
+      var text = null;
 
       for (var i = 0; i < this.companies.length; i++) {
         if (this.companies[i].CoCode === this.company) {
-          name = this.companies[i].Name;
+          text = this.companies[i].Name;
           i = 1000;
         }
       }
@@ -3256,8 +3314,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.$router.push({
         name: "importInv",
         params: {
-          name: name,
-          item: item
+          text: text,
+          payload: payload
         }
       });
     }
@@ -85590,7 +85648,9 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col-6" }, [
                     _c("h4", { staticClass: "m-0" }, [
-                      _vm._v(_vm._s(_vm.item.CoCode) + " - " + _vm._s(_vm.name))
+                      _vm._v(
+                        _vm._s(_vm.name) + " (" + _vm._s(_vm.item.CoCode) + ")"
+                      )
                     ]),
                     _vm._v(" "),
                     _c("h5", { staticClass: "m-0" }, [
@@ -85602,12 +85662,42 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(1)
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("div", { staticClass: "d-flex justify-content-end" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn bg-gradient-green btn-sm mr-2",
+                          on: { click: _vm.goBack }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-chevron-left" }),
+                          _vm._v(
+                            "\n                      Back\n                    "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn bg-gradient-primary btn-sm",
+                          on: { click: _vm.doImport }
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-file-import" }),
+                          _vm._v(
+                            "\n                      Execute\n                    "
+                          )
+                        ]
+                      )
+                    ])
+                  ])
                 ]),
                 _vm._v(" "),
-                _vm._m(2),
+                _vm._m(1),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(2)
               ])
             ])
           ])
@@ -85629,43 +85719,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-6" }, [
-      _c("div", { staticClass: "d-flex justify-content-end" }, [
-        _c("button", { staticClass: "btn bg-gradient-primary btn-sm" }, [
-          _c("i", { staticClass: "fas fa-upload" }),
-          _vm._v("\n                      Execute\n                    ")
-        ]),
-        _vm._v(" "),
-        _c("button", { staticClass: "btn bg-gradient-primary btn-sm" }, [
-          _c("i", { staticClass: "fas fa-chevron-left" }),
-          _vm._v("\n                      Back\n                    ")
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row pt-2" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c("div", { staticClass: "progress w-100" }, [
-          _c(
-            "div",
-            {
-              staticClass: "progress-bar bg-success",
-              staticStyle: { width: "25%" },
-              attrs: {
-                role: "progressbar",
-                "aria-valuenow": "25",
-                "aria-valuemin": "0",
-                "aria-valuemax": "100"
-              }
-            },
-            [_vm._v("25%")]
-          )
-        ])
-      ])
+      _c("div", { staticClass: "col-12" })
     ])
   },
   function() {
@@ -85681,13 +85736,13 @@ var staticRenderFns = [
               _vm._v(" "),
               _c("th", [_vm._v("Invoice No")]),
               _vm._v(" "),
+              _c("th", [_vm._v("Customer")]),
+              _vm._v(" "),
               _c("th", [_vm._v("Description")]),
               _vm._v(" "),
               _c("th", { staticClass: "text-right" }, [_vm._v("Amount")]),
               _vm._v(" "),
-              _c("th", { staticClass: "text-right" }, [_vm._v("Filename")]),
-              _vm._v(" "),
-              _c("th", { staticClass: "text-right" })
+              _c("th", { staticClass: "text-right" }, [_vm._v("Status")])
             ])
           ]),
           _vm._v(" "),
@@ -108087,8 +108142,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

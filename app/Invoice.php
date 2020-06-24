@@ -8,7 +8,7 @@ class Invoice extends Model
 {
 
     protected $fillable = [
-        'inv_no', 'inv_date', 'title', 'filename', 'unread'
+        'user_id','invoiceh_id','invno', 'invdate', 'desc', 'amount','filename', 'unread','published'
     ];
 
     protected $hidden = [
