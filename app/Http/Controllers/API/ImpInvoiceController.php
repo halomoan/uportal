@@ -40,7 +40,7 @@ class ImpInvoiceController extends Controller
         }
 
         if ($year && $cocode) {
-            //return InvoiceH::select('id', 'Year', 'Month', 'TotRecord', 'Status', 'updated_at')->where('CoCode', '=', $cocode)
+            //return InvoiceH::select('id', 'Year', 'Month', 'TotRec', 'Status', 'updated_at')->where('CoCode', '=', $cocode)
             return InvoiceH::where('CoCode', '=', $cocode)
                 ->where('Year', '=', $year)->get();
         }
@@ -77,7 +77,9 @@ class ImpInvoiceController extends Controller
                 'CoCode' => $cocode,
                 'Month' => sprintf("%02d", $month),
                 'Year' => $year,
-                'TotRecord' => 0
+                'NoOfRec' => 0,
+                'TotRec' => 0,
+
             ]);
         }
     }
@@ -132,6 +134,8 @@ class ImpInvoiceController extends Controller
 
                     Invoice::where('invoiceh_id', '=', $invoiceh->id)
                         ->delete();
+                    InvoiceL::where('invoiceh_id', '=', $invoiceh->id)
+                        ->delete();
 
                     if (!isset($invoiceh)) {
                         if ($cocode != $metadata['CoCode'] || $month != $metadata['Month'] || $year != $metadata['Year']) {
@@ -185,7 +189,7 @@ class ImpInvoiceController extends Controller
 
                         InvoiceH::where('CoCode', '=', $cocode)
                             ->where('year', '=', $year)
-                            ->where('month', '=', $month)->update(['NoOfRec' => $counter, 'TotOfRec' => count($metadata['Items'])]);
+                            ->where('month', '=', $month)->update(['NoOfRec' => $counter, 'TotRec' => count($metadata['Items'])]);
                     } else {
                         // No Items in the Metadata
                         $this->retStatus('Invalid Metadata', 'Metadata Has No Items');

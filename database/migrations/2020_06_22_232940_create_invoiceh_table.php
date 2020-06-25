@@ -19,8 +19,8 @@ class CreateInvoicehTable extends Migration
             $table->char('CoCode', 4);
             $table->char('Year', 4);
             $table->char('Month', 2);
-            $table->unsignedInteger('NoOfRec');
-            $table->unsignedInteger('TotOfRec');
+            $table->unsignedInteger('NoOfRec')->default(0);
+            $table->unsignedInteger('TotRec')->default(0);
             $table->string('ByUser', '50')->nullable();
             $table->char('Status', 3)->nullable();
             $table->timestamps();

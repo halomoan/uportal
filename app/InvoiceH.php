@@ -10,7 +10,7 @@ class InvoiceH extends Model
     protected $hidden = [
         'ByUser', 'created_at'
     ];
-    protected $fillable = ['CoCode', 'Month', 'Year', 'TotRecord', 'ByUser', 'Status'];
+    protected $fillable = ['CoCode', 'Month', 'Year', 'NoOfRec', 'TotRec', 'ByUser', 'Status'];
 
     public function invoices()
     {

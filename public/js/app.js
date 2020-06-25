@@ -85872,8 +85872,8 @@ var render = function() {
                       {
                         staticClass: "btn btn-block",
                         class: {
-                          "bg-gradient-primary": item.TotOfRec > 0,
-                          "bg-gradient-secondary": item.TotOfRec == 0
+                          "bg-gradient-primary": item.TotRec > 0,
+                          "bg-gradient-secondary": item.TotRec == 0
                         },
                         attrs: { type: "button" },
                         on: {
@@ -85891,7 +85891,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c("code", [_vm._v(_vm._s(item.TotOfRec))]),
+                    _c("code", [_vm._v(_vm._s(item.TotRec))]),
                     _vm._v(" records\n                "),
                     _c("br"),
                     _vm._v(" "),
@@ -85915,8 +85915,8 @@ var render = function() {
                       {
                         staticClass: "btn btn-block",
                         class: {
-                          "bg-gradient-primary": item.Status === "U",
-                          "bg-gradient-secondary": item.Status != "U"
+                          "bg-gradient-primary": item.TotRec > 0,
+                          "bg-gradient-secondary": item.TotRec == 0
                         },
                         attrs: { type: "button" },
                         on: {
@@ -85934,7 +85934,7 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c("code", [_vm._v(_vm._s(item.TotOfRec) + "x")]),
+                    _c("code", [_vm._v(_vm._s(item.TotRec))]),
                     _vm._v(" records\n                "),
                     _c("br"),
                     _vm._v(" "),
