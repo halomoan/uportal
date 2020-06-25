@@ -52,7 +52,7 @@
                 <!-- /.card-header -->
                 <div class="card-body table-responsive p-0">
                   <table class="table table-hover text-nowrap">
-                    <thead>
+                    <thead class="thead-dark">
                       <tr>
                         <th>ID</th>
                         <th>Name</th>

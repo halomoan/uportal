@@ -18,6 +18,9 @@ Vue.component(AlertError.name, AlertError);
 
 Vue.component("pagination", require("vue-pagination-2"));
 
+import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
+Vue.component("overlay-scrollbars", OverlayScrollbarsComponent);
+
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
@@ -42,8 +45,10 @@ let routes = [
         component: require("./components/Invoices/InvoiceDetail.vue").default
     },
     {
+        name: "viewPDF",
         path: "/viewPDF",
-        component: require("./components/Invoices/viewPDF.vue").default
+        component: require("./components/Invoices/viewPDF.vue").default,
+        props: true
     },
     // {
     //     path: "/printInvoice",
@@ -89,6 +94,7 @@ let routes = [
     },
 
     {
+        name: "notfound",
         path: "*",
         component: require("./components/NotFound.vue").default
     }

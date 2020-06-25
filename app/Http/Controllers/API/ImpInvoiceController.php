@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\InvoiceH;
 use App\InvoiceL;
 use App\Invoice;
@@ -30,19 +31,49 @@ class ImpInvoiceController extends Controller
      */
     public function index()
     {
+        $log = \Request::get('log');
+        $invoiceh = \Request::get('invoiceh');
         $years = \Request::get('years');
         $year = \Request::get('year');
         $cocode = \Request::get('cocode');
+
+
+        $perpage = \Request::get('up');       
+
+        if (!$perpage) {
+            $perpage = 10;
+        }
+
 
         if ($years && $cocode) {
             return InvoiceH::select('year')->where('CoCode', '=', $cocode)
                 ->groupBy('year')->get();
         }
 
-        if ($year && $cocode) {
-            //return InvoiceH::select('id', 'Year', 'Month', 'TotRec', 'Status', 'updated_at')->where('CoCode', '=', $cocode)
+        if ($year && $cocode) {            
             return InvoiceH::where('CoCode', '=', $cocode)
                 ->where('Year', '=', $year)->get();
+        }
+
+        if ($invoiceh){
+
+            // $sql = "SELECT b.id,b.invno,b.invdate,b.desc,b.amount,b.filename,b.published,c.name,c.email FROM invoiceh as a INNER JOIN invoices as b ON a.id = b.invoiceh_id ";
+            // $sql .= "INNER JOIN users AS C ON b.user_id = c.id WHERE a.id = :id";
+            // $result = DB::select($sql,['id' => $invoiceh]);
+            // $total = count($result);
+            // return  new Paginator($result, $total, $perpage);
+
+            return DB::table('invoiceh as a')
+                ->join('invoices as b','a.id', '=','b.invoiceh_id')
+                ->join('users as c','c.id','=','b.user_id')
+                ->where('a.id','=',$invoiceh)
+                ->select('b.id','b.invno','b.invdate','b.desc','b.amount','b.filename','b.unread','b.published','c.name','c.email')                
+                ->paginate($perpage);           
+
+        }
+
+        if ($log){
+            return InvoiceL::where('invoiceh_id' , '=', $log)->get();
         }
     }
 

@@ -139,11 +139,7 @@
 
                                 <td
                                   class="text-right"
-                                  v-bind:class="{
-                                                                        'text-bold':
-                                                                            invoice.unread,
-                                                                        'text-black-50': !invoice.unread
-                                                                    }"
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
                                 >
                                   {{
                                   invoice.filename
@@ -151,7 +147,9 @@
                                   }}
                                 </td>
                                 <td>
-                                  <router-link to="/viewPDF">
+                                  <router-link
+                                    :to="{ name: 'viewPDF', params: { id:  invoice.id }}"
+                                  >
                                     <i class="far fa-file-pdf text-red"></i>
                                   </router-link>
                                 </td>
@@ -164,24 +162,10 @@
                         <div class="col-12">
                           <div class="d-flex justify-content-end text-right">
                             <pagination
-                              :records="
-                                                                pgTable[
-                                                                    tabIndex
-                                                                ].records
-                                                            "
-                              @paginate="
-                                                                getTableData
-                                                            "
-                              v-model="
-                                                                pgTable[
-                                                                    tabIndex
-                                                                ].page
-                                                            "
-                              :per-page="
-                                                                pgTable[
-                                                                    tabIndex
-                                                                ].perpage
-                                                            "
+                              :records="pgTable[tabIndex].records"
+                              @paginate="getTableData"
+                              v-model="pgTable[tabIndex].page"
+                              :per-page="pgTable[tabIndex].perpage"
                             ></pagination>
                           </div>
                         </div>
@@ -326,7 +310,6 @@ export default {
       axios
         .get(this.pgTable[this.tabIndex].uri)
         .then(({ data }) => {
-          //this.invoices[this.tabIndex] = data.data;
           this.pgTable[this.tabIndex].invoices = data.data;
           this.pgTable[this.tabIndex].records = data.total;
           this.pgTable[this.tabIndex].page = data.current_page;

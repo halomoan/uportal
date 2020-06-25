@@ -5,7 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Invoice;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -32,21 +33,23 @@ class InvoiceController extends Controller
         $new = \Request::get('n');
 
         if ($years) {
-            return auth()->user()->invoices()->select('year')->groupBy('year')->limit(3)->pluck('year');
+            return auth('api')->user()->invoices()->select('year')->groupBy('year')->limit(3)->pluck('year');
         }
 
         if ($search) {
 
-            return auth()->user()->invoices()->where(function ($query) use ($search) {
+            return auth('api')->user()->invoices()->where(function ($query) use ($search) {
                 $query->whereLike(['invno', 'desc', 'filename'], $search);
-            })->paginate(10);
+            })->where('published','=',1)->paginate(10);
         } elseif ($new) {
-            return (auth()->user()->invoices()
+            return (auth('api')->user()->invoices()
                 ->where('unread', true)
+                ->where('published','=',1)
                 ->count() > 0);
         } else {
-            return auth()->user()->invoices()
+            return auth('api')->user()->invoices()
                 ->where('year', $year)
+                ->where('published','=',1)
                 ->orderBy('invdate', 'desc')
                 ->orderBy('unread', 'desc')
                 ->paginate(10);
@@ -73,20 +76,40 @@ class InvoiceController extends Controller
     public function show($id)
     {
 
+        $user = auth('api')->user();
 
-        $prefix = hash('md5', auth()->user()->email);
+
+
+        $prefix = hash('md5', $user->email);
 
         foreach (glob(storage_path('app\\public\\inv\\' . $prefix . '*')) as $filename) {
             unlink($filename);
         }
 
-        $newFile = $prefix . hash('sha1', auth()->user()->password) . strtotime("tomorrow") . ".pdf";
+        $newFile = $prefix . hash('sha1', $user->password) . strtotime("tomorrow") . ".pdf";
 
+
+        // \DB::listen(function($sql) {
+        //     var_dump($sql);
+        // });
 
         //Query Database based on $id
-        $invfile = auth()->user()->invoices()->select('filename')->find($id)->first();
-        $invdir = auth()->user()->invoices()->find($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
+        $invfile = "";
+        if ($user->urole === 'admin' ){
+            $invfile = Invoice::select('filename')->findOrFail($id)->first();
+        } else {
+            $invfile = $user->invoices()->select('filename')->findOrFail($id)->first();
+        }        
+        
 
+        $invdir = "";  
+        if ($user->urole === 'admin' ){
+            $invdir = Invoice::findOrFail($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
+        } else {
+            
+            $invdir =  $user->invoices()->findOrFail($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
+        }        
+                  
 
         $fileName = $invfile['filename'];
         $dir = $invdir['CoCode'] . '\\' . $invdir['year'] . $invdir['month'] . '\\';

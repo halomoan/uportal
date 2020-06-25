@@ -7,9 +7,9 @@
             <h1>Invoice - Preview</h1>
           </div>
           <div class="col-sm-6">
-            <router-link to="/invoices" class="d-flex flex-row-reverse" exact-active-class="active">
-              <button class="btn btn-outline-primary btn-sm pull-right">Close</button>
-            </router-link>
+            <div class="d-flex flex-row-reverse">
+              <a class="btn btn-outline-warning btn-sm pull-right" @click="$router.go(-1)">Close</a>
+            </div>
           </div>
         </div>
       </div>
@@ -32,19 +32,16 @@
 import pdf from "pdfobject";
 
 export default {
+  props: { id: Number },
   methods: {},
   mounted() {
     axios
-      //   .get("api/invoices/1", { responseType: "arraybuffer" })
-      .get("api/invoices/1")
+
+      .get("api/invoices/" + this.id)
       .then(response => {
-        console.log(response);
-        // let blob = new Blob([response.data], { type: "application/pdf" });
-        // console.log(blob);
         pdf.embed(response.data, "#pdf-content");
       })
       .catch(err => {});
-    // pdf.embed("api/invoices/1", "#pdf-content");
   }
 };
 </script>

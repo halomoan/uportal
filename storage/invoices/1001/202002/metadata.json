@@ -1,0 +1,16 @@
+{
+    "CoCode": "1001",
+    "Month": "01",
+    "Year": "2020",
+    "Items": [
+        {
+            "CustNo": "1",
+            "CustName": "Mr Barney Cartwright",
+            "Email": "brandyn.crooks@ledner.net",
+            "InvNo": "A1",
+            "InvDate": "2020-01-15",
+            "Desc": "Rental Invoice For Jan 2020",
+            "Amount": 900.0,
+            "Filename": "1.pdf"
+        }    ]
+}

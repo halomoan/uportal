@@ -72,7 +72,12 @@
                     @click="importInvoice(item.Month)"
                     v-bind:class="{ 'bg-gradient-primary' : item.TotRec > 0,'bg-gradient-secondary' : item.TotRec == 0 }"
                   >{{ item.Month | MMM }}-{{ item.Year }}</button>
-                  <code>{{ item.TotRec}}</code> records
+                  <span
+                    class="text-red"
+                    v-if="item.TotRec != item.NoOfRec"
+                  >{{ item.NoOfRec }} / {{ item.TotRec}}</span>
+                  <span v-if="item.TotRec == item.NoOfRec">{{ item.TotRec}}</span>
+                  records
                   <br />
                   <span class="text-sm font-italic">Last update: {{ item.updated_at | humanDate }}</span>
                 </td>
@@ -85,7 +90,12 @@
                     @click="importInvoice(item.Month)"
                     v-bind:class="{ 'bg-gradient-primary' : item.TotRec > 0,'bg-gradient-secondary' : item.TotRec == 0 }"
                   >{{ item.Month | MMM }}-{{item.Year}}</button>
-                  <code>{{ item.TotRec}}</code> records
+                  <span
+                    class="text-red"
+                    v-if="item.TotRec != item.NoOfRec"
+                  >{{ item.NoOfRec }} / {{ item.TotRec}}</span>
+                  <span v-if="item.TotRec == item.NoOfRec">{{ item.TotRec}}</span>
+                  records
                   <br />
                   <span class="text-sm font-italic">Last update: {{ item.updated_at | humanDate }}</span>
                 </td>
