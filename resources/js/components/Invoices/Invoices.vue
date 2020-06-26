@@ -296,7 +296,7 @@ export default {
     searchTable() {
       if (this.searchText) {
         this.pgTable[this.tabIndex].uri =
-          "api/invoices?" +
+          "api/invoice?" +
           "y=" +
           this.years[this.tabIndex] +
           "&q=" +
@@ -304,7 +304,7 @@ export default {
           "&page=";
       } else {
         this.pgTable[this.tabIndex].uri =
-          "api/invoices?" + "y=" + this.years[this.tabIndex] + "&page=";
+          "api/invoice?" + "y=" + this.years[this.tabIndex] + "&page=1";
       }
       this.$Progress.start();
       axios

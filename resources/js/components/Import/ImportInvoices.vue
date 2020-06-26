@@ -42,13 +42,17 @@
                         <i class="fas fa-chevron-left"></i>
                         Back
                       </button>
+                      <button class="btn bg-gradient-info btn-sm mr-2" @click="doFilter">
+                        <i class="fas fa-filter"></i>
+                        Filter
+                      </button>
                       <button class="btn bg-gradient-green btn-sm mr-2" @click="doPublish">
                         <i class="fas fa-sign-out-alt"></i>
                         Publish
                       </button>
                       <button class="btn bg-gradient-warning btn-sm mr-2" @click="showLog">
                         <i class="fas fa-list"></i>
-                        View Log
+                        Log
                       </button>
                       <button class="btn bg-gradient-primary btn-sm" @click="doImport">
                         <i class="fas fa-file-import"></i>
@@ -60,7 +64,11 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="d-flex justify-content-end text-right">
-                      <i class="fas fa-filter mr-3 pb-2 text-orange" @click="showFilter"></i>
+                      <i
+                        class="fas fa-filter mr-3 pb-2 text-orange"
+                        v-show="filter.show"
+                        @click="doFilter"
+                      ></i>
                       <pagination
                         :records="pgTable.records"
                         @paginate="showInvoice"
@@ -74,6 +82,7 @@
                           <th>Invoice Date</th>
                           <th>Invoice No</th>
                           <th>Customer</th>
+                          <th>Email</th>
                           <th>Description</th>
                           <th class="text-right">Amount</th>
                           <th class="text-center">PDF</th>
@@ -85,6 +94,7 @@
                         <tr v-for="invoice in pgTable.invoices" :key="invoice.id">
                           <td>{{invoice.invdate | humanDate}}</td>
                           <td>{{invoice.invno}}</td>
+                          <td>{{invoice.name}}</td>
                           <td>{{invoice.email}}</td>
                           <td>{{invoice.desc}}</td>
                           <td class="text-right">{{invoice.amount | currency}}</td>
@@ -178,7 +188,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Filter</h5>
+            <h5 class="modal-title">Advanced Filter</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -194,7 +204,7 @@
                     type="date"
                     class="form-control"
                     v-model="filter.invdate"
-                    id="invdate"
+                    name="invdate"
                     placeholder="Select A Date"
                   />
                 </div>
@@ -207,7 +217,7 @@
                     type="text"
                     class="form-control"
                     v-model="filter.invno"
-                    id="invno"
+                    name="invno"
                     placeholder="Invoice No"
                   />
                 </div>
@@ -220,33 +230,81 @@
                     type="text"
                     class="form-control"
                     v-model="filter.custname"
-                    id="custname"
+                    name="custname"
                     placeholder="Customer Name"
                   />
                 </div>
               </div>
-              <div class="d-flex justify-content-end">
-                <div class="form-check mr-3">
+              <div class="form-group row">
+                <label for="email" class="col-sm-3 col-form-label">Email</label>
+
+                <div class="col-sm-9">
                   <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value
-                    id="published"
-                    v-model="filter.published"
+                    type="email"
+                    class="form-control"
+                    v-model="filter.email"
+                    name="email"
+                    placeholder="Customer Email"
                   />
-                  <label class="form-check-label" for="published">Published</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value
-                    id="unread"
-                    v-model="filter.unread"
-                  />
-                  <label class="form-check-label" for="unread">Unread</label>
                 </div>
               </div>
+
+              <fieldset class="form-group">
+                <div class="row">
+                  <label class="col-form-label col-sm-3 pt-0">Published</label>
+                  <div class="col-sm-9">
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="published1"
+                        value="1"
+                        v-model="filter.published"
+                        checked
+                      />
+                      <label class="form-check-label" for="published1">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="published2"
+                        v-model="filter.published"
+                        value="0"
+                      />
+                      <label class="form-check-label" for="published2">No</label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="form-group">
+                <div class="row">
+                  <label class="col-form-label col-sm-3 pt-0">Unread</label>
+                  <div class="col-sm-9">
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="unread1"
+                        value="1"
+                        v-model="filter.unread"
+                        checked
+                      />
+                      <label class="form-check-label" for="unread1">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="unread2"
+                        v-model="filter.unread"
+                        value="0"
+                      />
+                      <label class="form-check-label" for="unread2">No</label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
             </form>
           </div>
           <!-- ./modal-body -->
@@ -279,9 +337,11 @@ export default {
         invoice: false
       },
       filter: {
+        show: null,
         invdate: null,
         invno: null,
         custname: null,
+        email: null,
         published: null,
         unread: null
       },
@@ -316,8 +376,9 @@ export default {
         this.inprogress.log = false;
       });
     },
-    showFilter() {
+    doFilter() {
       $("#filterModal").modal("toggle");
+      this.filter.show = true;
     },
     showInvoice(page) {
       this.inprogress.invoice = true;
@@ -327,26 +388,14 @@ export default {
         ? "&qinvdate=" + this.filter.invdate
         : "";
       filter += this.filter.invno ? "&qinvno=" + this.filter.invno : "";
-      filter += this.filter.custname ? "&qinvdate=" + this.filter.custname : "";
+      filter += this.filter.custname ? "&qname=" + this.filter.custname : "";
+      filter += this.filter.email ? "&qemail=" + this.filter.email : "";
       filter +=
         this.filter.published != null
-          ? "&qpublished=" + (this.filter.published ? "1" : "0")
+          ? "&qpublished=" + this.filter.published
           : "";
       filter +=
-        this.filter.unread != null
-          ? "&qunread=" + (this.filter.unread ? "1" : "0")
-          : "";
-      // const filter =
-      //   "&qinvdate=" +
-      //   this.filter.invdate +
-      //   "&qinvno=" +
-      //   this.filter.invno +
-      //   "&qcustname=" +
-      //   this.filter.custname +
-      //   "&published=" +
-      //   this.filter.published +
-      //   "&unread=" +
-      //   this.filter.unread;
+        this.filter.unread != null ? "&qunread=" + this.filter.unread : "";
 
       axios
         .get(this.pgTable.uri + this.item.id + filter + "&page=" + page)
@@ -500,23 +549,26 @@ export default {
       const year = this.item.Year;
       const cocode = this.item.CoCode;
 
-      this.inprogress = true;
+      this.inprogress.invoice = true;
       this.$Progress.start();
       axios
         .put("api/impinvoice/" + month + "," + year + "," + cocode)
         .then(resp => {
-          this.inprogress = false;
+          this.inprogress.invoice = false;
           this.$Progress.finish();
           this.showInvoice(1);
         })
         .catch(err => {
-          this.inprogress = false;
-          let message = err.response.data.message;
-          const errors = err.response.data.errors;
+          this.inprogress.invoice = false;
+          let message = false;
+          if (err && err.response && err.response.data) {
+            message = err.response.data.message;
+            const errors = err.response.data.errors;
 
-          for (const error in errors) {
-            for (const msg in errors[error]) {
-              message = errors[error][msg];
+            for (const error in errors) {
+              for (const msg in errors[error]) {
+                message = errors[error][msg];
+              }
             }
           }
           this.$Progress.fail();

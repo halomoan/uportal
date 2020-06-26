@@ -32,23 +32,27 @@ class InvoiceController extends Controller
         $year = \Request::get('y');
         $years = \Request::get('years');
         $new = \Request::get('n');
+        $user = auth('api')->user();
 
         if ($years) {
-            return auth('api')->user()->invoices()->select('year')->groupBy('year')->limit(3)->pluck('year');
+            return $user->invoices()->select('year')->groupBy('year')->limit(3)->pluck('year');
         }
 
         if ($search) {
 
-            return auth('api')->user()->invoices()->where(function ($query) use ($search) {
+            return $user->invoices()->where(function ($query) use ($search) {
                 $query->whereLike(['invno', 'desc', 'filename'], $search);
             })->where('published', '=', 1)->paginate(10);
         } elseif ($new) {
-            return (auth('api')->user()->invoices()
+            // \DB::listen(function ($sql) {
+            //     var_dump($sql);
+            // });
+            return ($user->invoices()
                 ->where('unread', true)
                 ->where('published', '=', 1)
                 ->count() > 0);
         } else {
-            return auth('api')->user()->invoices()
+            return $user->invoices()
                 ->where('year', $year)
                 ->where('published', '=', 1)
                 ->orderBy('invdate', 'desc')
@@ -90,7 +94,7 @@ class InvoiceController extends Controller
         $newFile = $prefix . hash('sha1', $user->password) . strtotime("tomorrow") . ".pdf";
 
 
-        // \DB::listen(function($sql) {
+        // \DB::listen(function ($sql) {
         //     var_dump($sql);
         // });
 

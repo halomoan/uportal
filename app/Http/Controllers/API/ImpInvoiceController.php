@@ -41,7 +41,8 @@ class ImpInvoiceController extends Controller
         $cocode = \Request::get('cocode');
         $qinvdate = \Request::get('qinvdate');
         $qinvno = \Request::get('qinvno');
-        $qcustname = \Request::get('qcustname');
+        $qname = \Request::get('qname');
+        $qemail = \Request::get('qemail');
         $qpublished = \Request::get('qpublished');
         $qunread = \Request::get('qunread');
 
@@ -75,33 +76,38 @@ class ImpInvoiceController extends Controller
             $and = "";
             $filter = "(";
 
-            if (isset($qinvdate)){
+            if (isset($qinvdate)) {
                 $filter .=  " $and b.invdate = '$qinvdate'";
                 $and = "AND";
             }
-            if (isset($qinvno)){
+            if (isset($qinvno)) {
                 $filter .= " $and b.invno like '%$qinvno%'";
                 $and = "AND";
             }
-            if (isset($qcustname)){
-                $filter .= " $and b.invdate like'%$qcustname%'";
+            if (isset($qname)) {
+                $filter .= " $and c.name like '%$qname%'";
                 $and = "AND";
             }
 
-            if (isset($qpublished)){
-                $filter .= " $and b.published =$qpublished";
+            if (isset($qemail)) {
+                $filter .= " $and c.email like '%$qemail%'";
                 $and = "AND";
             }
 
-            if (isset($qunread)){
-                $filter .= " $and b.unread =$qunread";
+            if (isset($qpublished)) {
+                $filter .= " $and b.published = '$qpublished'";
+                $and = "AND";
+            }
+
+            if (isset($qunrea)) {
+                $filter .= " $and b.unread = '$qunread'";
                 $and = "AND";
             }
 
             if ($and) {
                 $where .= " AND $filter)";
-            }    
-            // \DB::listen(function($sql) {
+            }
+            // \DB::listen(function ($sql) {
             //     var_dump($sql);
             // });
 

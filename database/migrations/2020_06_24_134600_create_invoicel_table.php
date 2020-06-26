@@ -16,14 +16,13 @@ class CreateInvoiceLTable extends Migration
         Schema::create('InvoiceL', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->unsignedBigInteger('invoiceh_id');
-            $table->string('text');            
+            $table->string('text');
             $table->timestamp('created_at')->useCurrent();
 
             $table->index('invoiceh_id');
 
             $table->foreign('invoiceh_id')->references('id')->on('InvoiceH')
-            ->onDelete('cascade');
-            
+                ->onDelete('cascade');
         });
     }
 

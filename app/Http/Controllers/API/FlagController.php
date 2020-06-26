@@ -83,8 +83,9 @@ class FlagController extends Controller
 
     protected function getInvoiceFlag()
     {
-        $invoices = auth()->user()->invoices()
-            ->where('unread', true)->get();
+        $invoices = auth('api')->user()->invoices()
+            ->where('published', '=', 1)
+            ->where('unread', 1)->get();
 
         $flag = ['name' => 'INVOICES', 'value' => ($invoices->count() > 0)];
 
@@ -93,7 +94,7 @@ class FlagController extends Controller
 
     protected function getAnnounceFlag()
     {
-        $userId = auth()->user()->id;
+        $userId = auth('api')->user()->id;
 
         $groups = DB::table('group_user')->where('user_id', $userId)->select('group_id as id')->get()->toArray();
         $groupsId = array_column($groups, 'id');

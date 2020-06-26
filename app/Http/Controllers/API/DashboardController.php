@@ -92,19 +92,20 @@ class DashboardController extends Controller
     protected function lastVisit()
     {
 
-        return Carbon::parse(auth()->user()->previous_visit)->diffForHumans();
+        return Carbon::parse(auth('api')->user()->previous_visit)->diffForHumans();
     }
 
     protected function noOfNewInvoices()
     {
-        return auth()->user()->invoices()
-            ->where('unread', true)
+        return auth('api')->user()->invoices()
+            ->where('unread', 1)
+            ->where('published', '=', 1)
             ->count();
     }
     protected function noOfNewAnnounce()
     {
 
-        $userId = auth()->user()->id;
+        $userId = auth('api')->user()->id;
 
         $groups = DB::table('group_user')->where('user_id', $userId)->select('group_id as id')->get()->toArray();
         $groupsId = array_column($groups, 'id');
@@ -147,11 +148,11 @@ class DashboardController extends Controller
             $Date3->format("m")
         ];
 
-        $invoices = auth()->user()->invoices()
-            ->select(DB::RAW('MONTH(inv_date) as month'), 'amount')
+        $invoices = auth('api')->user()->invoices()
+            ->select(DB::RAW('MONTH(invdate) as month'), 'amount')
             ->where('year', $Date1->format('Y'))
-            ->whereIn(DB::raw('MONTH(inv_date)'), $months)
-            ->orderBy('inv_date', 'desc')
+            ->whereIn(DB::raw('MONTH(invdate)'), $months)
+            ->orderBy('invdate', 'desc')
             ->get();
 
         $data = [0, 0, 0];
@@ -196,10 +197,10 @@ class DashboardController extends Controller
         ];
 
         $invoices = auth()->user()->invoices()
-            ->select(DB::RAW('YEAR(inv_date) as year'), DB::RAW('MONTH(inv_date) as month'), 'amount')
-            ->whereIn(DB::raw('YEAR(inv_date)'), $years)
-            ->where(DB::raw('MONTH(inv_date)'), $Date1->format('m'))
-            ->orderBy('inv_date', 'desc')
+            ->select(DB::RAW('YEAR(invdate) as year'), DB::RAW('MONTH(invdate) as month'), 'amount')
+            ->whereIn(DB::raw('YEAR(invdate)'), $years)
+            ->where(DB::raw('MONTH(invdate)'), $Date1->format('m'))
+            ->orderBy('invdate', 'desc')
             ->get();
 
         $data = [0, 0];

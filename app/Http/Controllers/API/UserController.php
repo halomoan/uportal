@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\User;
 use App\Group;
@@ -31,6 +33,40 @@ class UserController extends Controller
     {
         $this->authorize('isAdmin');
 
+
+        $qname = \Request::get('qname');
+        $qcompany = \Request::get('qcompany');
+        $qemail = \Request::get('qemail');
+        $qgroup = \Request::get('qgroup');
+
+        //$group = explode(",", $qgroup);
+
+
+        $and = "";
+        $where = "";
+        $filter = "";
+
+        if (isset($qname)) {
+            $filter .=  " $and a.name like '%$qname%'";
+            $and = "AND";
+        }
+        if (isset($qcompany)) {
+            $filter .= " $and a.company like '%$qcompany%'";
+            $and = "AND";
+        }
+        if (isset($qemail)) {
+            $filter .= " $and a.email like '%$qemail%'";
+            $and = "AND";
+        }
+
+        if (isset($qgroup)) {
+            $filter .= " $and b.id in ($qgroup)";
+            $and = "AND";
+        }
+        if ($and) {
+            $where = $filter;
+        }
+
         if ($search = \Request::get('q')) {
 
             return User::where(function ($query) use ($search) {
@@ -40,8 +76,46 @@ class UserController extends Controller
         } else {
 
             if (\Request::get('page')) {
-                return User::latest()->paginate(10);
-            }else{
+
+                if ($where) {
+                    // \DB::listen(function ($sql) {
+                    //     var_dump($sql);
+                    // });
+
+                    return DB::table('users as a')
+                        ->select('a.*', 'b.name as group')
+                        ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
+                        ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
+                        ->whereRaw($where)
+                        ->orderBy('a.created_at', 'desc')
+                        ->paginate(10);
+                } else {
+                    return DB::table('users as a')
+                        ->select('a.*', 'b.name as group')
+                        ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
+                        ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
+                        ->orderBy('a.created_at', 'desc')
+                        ->paginate(10);
+                    //return User::latest()->paginate(10);
+                }
+            } else {
+                // if ($where) {
+                //     return DB::table('users as a')
+                //         ->select('a.*')
+                //         ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
+                //         ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
+                //         ->whereRaw($where)
+                //         ->orderBy('a.name', 'asc')
+                //         ->get();
+                // } else {
+                //     return DB::table('users as a')
+                //         ->select('a.*', 'b.name as group')
+                //         ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
+                //         ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
+                //         ->orderBy('a.name', 'asc')
+                //         ->get();
+
+                // }
                 return User::orderBy('name')->get();
             }
         }
@@ -129,11 +203,11 @@ class UserController extends Controller
         $user->update($request->all());
 
         if ($request['groups']) {
-            $groups = Group::find($request['groups']);            
+            $groups = Group::find($request['groups']);
             $user->groups()->sync($groups);
         }
 
-        return ['message' => 'Success'];        
+        return ['message' => 'Success'];
     }
 
     /**

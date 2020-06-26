@@ -28,16 +28,22 @@
               <div class="card">
                 <div class="card-header">
                   <a href="#" @click.prevent="addNewUser">
-                    <i class="fa fa-user-plus"></i>
+                    <i class="fa fa-user-plus" title="Add New User"></i>
                   </a>
+
                   <div class="card-tools">
                     <div class="input-group input-group-sm" style="width: 250px;">
+                      <i
+                        class="fas fa-filter pt-2 pr-2"
+                        :class="filter.show ? 'text-orange': 'text-gray'"
+                        @click="doFilter"
+                      ></i>
                       <input
                         v-model="searchText"
                         type="text"
                         name="table_search"
                         class="form-control float-right"
-                        placeholder="Search"
+                        placeholder="Search Name Or Email"
                         @keyup.enter="searchTable"
                       />
 
@@ -58,6 +64,7 @@
                         <th>Name</th>
                         <th>Company</th>
                         <th>Email</th>
+                        <th>Group</th>
                         <th>Role</th>
                         <th>Registered At</th>
                         <th>Action</th>
@@ -69,6 +76,7 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.company }}</td>
                         <td>{{ user.email }}</td>
+                        <td>{{ user.group }}</td>
                         <td>{{ user.urole | upText }}</td>
                         <td>
                           {{
@@ -77,20 +85,12 @@
                           }}
                         </td>
                         <td>
-                          <a
-                            href
-                            class="fa fa-edit"
-                            @click.prevent="
-                                                            editUser(user.id)
-                                                        "
-                          ></a>
+                          <a href class="fa fa-edit" @click.prevent="editUser(user.id)"></a>
                           /
                           <a
                             href
                             class="fa fa-trash text-red"
-                            @click.prevent="
-                                                            deleteUser(user.id)
-                                                        "
+                            @click.prevent="deleteUser(user.id)"
                           ></a>
                         </td>
                       </tr>
@@ -141,6 +141,97 @@
           </div>
         </div>
       </div>
+      <!-- ./ AddNew Modal -->
+      <!-- Filter Modal -->
+      <div class="modal" tabindex="-1" role="dialog" id="filterModal">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="overlay-wrapper">
+              <div class="modal-header">
+                <h5 class="modal-title">Advanced Filter</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <form>
+                  <div class="form-group row">
+                    <label for="name" class="col-sm-3 col-form-label">Name</label>
+
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="filter.name"
+                        name="name"
+                        placeholder="Name"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="company" class="col-sm-3 col-form-label">Company</label>
+                    <div class="col-sm-9">
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="filter.company"
+                        name="company"
+                        placeholder="Company"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="email" class="col-sm-3 col-form-label">Email</label>
+
+                    <div class="col-sm-9">
+                      <input
+                        type="email"
+                        class="form-control"
+                        v-model="filter.email"
+                        name="email"
+                        placeholder="Email"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-8">
+                        <label for="group">Group</label>
+                        <span class="text-sm font-italic">Shift+Click for multi selection</span>
+                      </div>
+                      <div class="col-4 d-flex justify-content-end">
+                        <a href class="text-sm text-blue" @click.prevent="clearGroup">Clear</a>
+                      </div>
+                    </div>
+
+                    <select multiple class="form-control" id="group" v-model="filter.group">
+                      <option v-for="group in groups" :key="group.id">{{ group.name }}</option>
+                    </select>
+                  </div>
+                  <span>Selected Group: {{this.filter.group}}</span>
+                </form>
+              </div>
+              <!-- ./modal-body -->
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-dismiss="modal"
+                  @click="getTableData(1)"
+                >Submit</button>
+                <button type="button" class="btn btn-secondary" @click="clearFilter">Clear Filter</button>
+              </div>
+            </div>
+            <div class v-if="inprogress.filter">
+              <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+              <div class="text-bold pl-2">Loading...</div>
+            </div>
+          </div>
+          <!-- ./overlay-wrapper -->
+        </div>
+      </div>
+      <!-- ./Filter Modal -->
     </div>
     <div v-if="!$Role.isAdmin()">
       <not-found></not-found>
@@ -151,9 +242,12 @@
 export default {
   data() {
     return {
+      inprogress: {
+        filter: false
+      },
       users: {},
       pgUsers: {
-        uri: "api/user?page=",
+        uri: "api/user?",
         page: 1,
         perpage: 10,
         records: 0,
@@ -164,18 +258,48 @@ export default {
           }
         }
       },
-      searchText: ""
+      searchText: "",
+      filter: {
+        show: null,
+        name: null,
+        company: null,
+        email: null,
+        group: []
+      },
+      groups: []
     };
   },
   methods: {
     getTableData(page) {
       if (this.$Role.isAdmin()) {
-        axios.get(this.pgUsers.uri + page).then(({ data }) => {
-          this.users = data.data;
-          this.pgUsers.records = data.total;
-          this.pgUsers.page = data.current_page;
-          this.pgUsers.perpage = data.per_page;
-        });
+        let filter = "";
+
+        filter += this.filter.name ? "&qname=" + this.filter.name : "";
+        filter += this.filter.company ? "&company=" + this.filter.company : "";
+        filter += this.filter.email ? "&qemail=" + this.filter.email : "";
+
+        if (this.filter.group.length > 0) {
+          let ids = "";
+          for (var i = 0; i < this.filter.group.length; i++) {
+            let group = _.find(this.groups, item => {
+              if (item.name === this.filter.group[i]) {
+                return item;
+              }
+            });
+            ids += group.id + ",";
+          }
+
+          filter += "&qgroup=" + ids.substring(0, ids.length - 1);
+        }
+
+        axios
+          .get(this.pgUsers.uri + filter + "&page=" + page)
+          .then(({ data }) => {
+            this.users = data.data;
+            this.pgUsers.records = data.total;
+            this.pgUsers.page = data.current_page;
+            this.pgUsers.perpage = data.per_page;
+          });
       }
     },
 
@@ -228,7 +352,7 @@ export default {
         if (this.searchText) {
           this.pgUsers.uri = "api/user?q=" + this.searchText + "&page=";
         } else {
-          this.pgUsers.uri = "api/user?page=";
+          this.pgUsers.uri = "api/user?page=1";
         }
         this.$Progress.start();
         axios
@@ -248,8 +372,35 @@ export default {
             this.$Progress.fail();
           });
       }
+    },
+    doFilter() {
+      axios
+        .get("api/group")
+        .then(resp => {
+          if (resp.data) {
+            this.groups = resp.data;
+          }
+        })
+        .catch(err => {});
+
+      $("#filterModal").modal("toggle");
+      this.filter.show = true;
+    },
+    clearGroup() {
+      this.filter.group = [];
+    },
+    clearFilter() {
+      $("#filterModal").modal("toggle");
+      for (var key in this.filter) {
+        if (key === "group") {
+          this.filter[key] = [];
+        } else {
+          this.filter[key] = null;
+        }
+      }
     }
   },
+
   mounted() {
     Fire.$on("GLOBAL_SEARCH", () => {
       this.searchText = this.$parent.searchText;
