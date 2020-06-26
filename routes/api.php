@@ -24,13 +24,14 @@ Route::apiResources(['group' => 'API\GroupController']);
 
 Route::apiResources(['news' => 'API\NewsController']);
 Route::apiResources(['impinvoice' => 'API\ImpInvoiceController']);
+Route::apiResources(['invoice' => 'API\InvoiceController']);
 
 
 Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 
-Route::get('invoices', 'API\InvoiceController@index')->name('invoices.index');
-Route::get('invoices/{invoice}', 'API\InvoiceController@show')->name('invoices.show');
+// Route::get('invoice', 'API\InvoiceController@index')->name('invoice.index');
+// Route::get('invoice/{invoice}', 'API\InvoiceController@show')->name('invoice.show');
 
 Route::get('company', 'API\CompanyController@index')->name('company.index');
 

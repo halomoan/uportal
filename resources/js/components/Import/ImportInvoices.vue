@@ -175,7 +175,6 @@
 
 <script>
 export default {
-  props: { text: String, payload: Object },
   data() {
     return {
       inprogress: {
@@ -248,14 +247,21 @@ export default {
         //Send request to the server
         if (result.value) {
           axios
-            .put("api/user/" + id)
+            .put("api/invoice/" + id, {
+              published: !published
+            })
             .then(result => {
               if (result.status === 200) {
-                Swal.fire(
-                  "Publish Status Updated!",
-                  "The Invoices Has Been Published.",
-                  "success"
-                );
+                let result = _.find(this.pgTable.invoices, function(invoice) {
+                  if (invoice.id === id) {
+                    return true;
+                  }
+                });
+
+                if (result) {
+                  result.published = !published;
+                }
+                Swal.fire("Publish Status Updated!", "Update", "success");
               }
             })
             .catch(error => {
@@ -284,14 +290,22 @@ export default {
         //Send request to the server
         if (result.value) {
           axios
-            .put("api/user/" + id)
+            .put("api/invoice/" + id, {
+              unread: !unread
+            })
             .then(result => {
               if (result.status === 200) {
-                Swal.fire(
-                  "Read Status Updated!",
-                  "The Invoices Has Been Published.",
-                  "success"
-                );
+                let result = _.find(this.pgTable.invoices, function(invoice) {
+                  if (invoice.id === id) {
+                    return true;
+                  }
+                });
+
+                if (result) {
+                  result.unread = !unread;
+                }
+
+                Swal.fire("Read Status Updated!", "Update", "success");
               }
             })
             .catch(error => {
@@ -318,7 +332,9 @@ export default {
         //Send request to the server
         if (result.value) {
           axios
-            .put("api/user/" + id)
+            .put("api/impinvoice/" + this.item.id, {
+              publish: true
+            })
             .then(result => {
               if (result.status === 200) {
                 Swal.fire(
@@ -374,11 +390,16 @@ export default {
     }
   },
   beforeMount() {
-    if (this.payload && this.text) {
-      this.item = this.payload;
-      this.name = this.text;
-    } else {
-      this.$router.go(-1);
+    if (localStorage.company) {
+      this.name = localStorage.company;
+    }
+
+    if (localStorage.getItem("invoiceh")) {
+      try {
+        this.item = JSON.parse(localStorage.getItem("invoiceh"));
+      } catch (e) {
+        localStorage.removeItem("invoiceh");
+      }
     }
   },
   mounted() {

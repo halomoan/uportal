@@ -38,7 +38,7 @@ class ImpInvoiceController extends Controller
         $cocode = \Request::get('cocode');
 
 
-        $perpage = \Request::get('up');       
+        $perpage = \Request::get('up');
 
         if (!$perpage) {
             $perpage = 10;
@@ -50,12 +50,12 @@ class ImpInvoiceController extends Controller
                 ->groupBy('year')->get();
         }
 
-        if ($year && $cocode) {            
+        if ($year && $cocode) {
             return InvoiceH::where('CoCode', '=', $cocode)
                 ->where('Year', '=', $year)->get();
         }
 
-        if ($invoiceh){
+        if ($invoiceh) {
 
             // $sql = "SELECT b.id,b.invno,b.invdate,b.desc,b.amount,b.filename,b.published,c.name,c.email FROM invoiceh as a INNER JOIN invoices as b ON a.id = b.invoiceh_id ";
             // $sql .= "INNER JOIN users AS C ON b.user_id = c.id WHERE a.id = :id";
@@ -64,16 +64,15 @@ class ImpInvoiceController extends Controller
             // return  new Paginator($result, $total, $perpage);
 
             return DB::table('invoiceh as a')
-                ->join('invoices as b','a.id', '=','b.invoiceh_id')
-                ->join('users as c','c.id','=','b.user_id')
-                ->where('a.id','=',$invoiceh)
-                ->select('b.id','b.invno','b.invdate','b.desc','b.amount','b.filename','b.unread','b.published','c.name','c.email')                
-                ->paginate($perpage);           
-
+                ->join('invoices as b', 'a.id', '=', 'b.invoiceh_id')
+                ->join('users as c', 'c.id', '=', 'b.user_id')
+                ->where('a.id', '=', $invoiceh)
+                ->select('b.id', 'b.invno', 'b.invdate', 'b.desc', 'b.amount', 'b.filename', 'b.unread', 'b.published', 'c.name', 'c.email')
+                ->paginate($perpage);
         }
 
-        if ($log){
-            return InvoiceL::where('invoiceh_id' , '=', $log)->get();
+        if ($log) {
+            return InvoiceL::where('invoiceh_id', '=', $log)->get();
         }
     }
 
@@ -137,7 +136,19 @@ class ImpInvoiceController extends Controller
     {
         $this->authorize('isAdmin');
 
+        $publish = \Request::get('publish');
+
+
+        if ($publish) {
+
+            Invoice::where('invoiceh_id', '=', $id)
+                ->update(['published' => true]);
+
+            return;
+        }
+
         list($month, $year, $cocode) = explode(',', $id);
+
         if ($month && $year && $cocode) {
             $dir = storage_path('invoices\\' . $cocode . '\\' . $year . $month . '\\');
 
@@ -153,8 +164,13 @@ class ImpInvoiceController extends Controller
                         $this->retStatus('Invalid Metadata', 'Metadata Format Is Invalid');
                     };
 
+                    //return ['msg' => $month !=  $metadata['Month']];
+
                     if ($cocode != $metadata['CoCode'] || $month != $metadata['Month'] || $year != $metadata['Year']) {
-                        $this->retStatus('Invalid Metadata', 'Metadata Is For Wrong Entity/Period');
+
+                        $errors['msg'] = ['Metadata Is For Wrong Entity/Period'];
+                        $message = ['message' => 'Invalid Metadata', 'errors' => $errors];
+                        return response()->json($message, 422);
                     }
 
                     // Get InvoiceH id
@@ -171,7 +187,9 @@ class ImpInvoiceController extends Controller
                     if (!isset($invoiceh)) {
                         if ($cocode != $metadata['CoCode'] || $month != $metadata['Month'] || $year != $metadata['Year']) {
 
-                            $this->retStatus('Invalid Header', 'Cannot Find The Header For The Entity/Period');
+                            $errors['msg'] = ['Cannot Find The Header For The Entity/Period'];
+                            $message = ['message' => 'Invalid Header', 'errors' => $errors];
+                            return response()->json($message, 422);
                         }
                     }
 
@@ -222,17 +240,25 @@ class ImpInvoiceController extends Controller
                             ->where('year', '=', $year)
                             ->where('month', '=', $month)->update(['NoOfRec' => $counter, 'TotRec' => count($metadata['Items'])]);
                     } else {
-                        // No Items in the Metadata
-                        $this->retStatus('Invalid Metadata', 'Metadata Has No Items');
+                        // No Items in the Metadata                        
+                        $errors['msg'] = ['Metadata Has No Items'];
+                        $message = ['message' => 'Invalid Metadata', 'errors' => $errors];
+                        return response()->json($message, 422);
                     }
                 } else {
-                    // Metadata Not Found                  
-                    $this->retStatus('Invalid Metadata', 'Metadata Not Found');
+                    // Metadata Not Found                                      
+                    $errors['msg'] = ['Metadata Not Found'];
+                    $message = ['message' => 'Invalid Metadata', 'errors' => $errors];
+                    return response()->json($message, 422);
                 }
             } else {
-                // Directory Not Found                
-                $this->retStatus('Invalid Path', 'Path Not Found');
+                // Directory Not Found                                
+                $errors['msg'] = ['Path Not Found'];
+                $message = ['message' => 'Invalid Path', 'errors' => $errors];
+                return response()->json($message, 422);
             }
+
+            return;
         }
     }
 
@@ -267,7 +293,7 @@ class ImpInvoiceController extends Controller
     private function retStatus($text, $subtext)
     {
         $errors['msg'] = [$subtext];
-        $message = ['message' => $text];
+        $message = ['message' => $text, 'errors' => $errors];
         return response()->json($message, 422);
     }
 }

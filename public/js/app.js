@@ -3034,10 +3034,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    text: String,
-    payload: Object
-  },
   data: function data() {
     return {
       inprogress: {
@@ -3095,6 +3091,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toggleItemPublish: function toggleItemPublish(id, published) {
+      var _this3 = this;
+
       var text = published ? "Change To Hide From Customer" : "Let Customer Able To See";
       Swal.fire({
         title: "Toggle Invoice Publish Status",
@@ -3107,9 +3105,21 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         //Send request to the server
         if (result.value) {
-          axios.put("api/user/" + id).then(function (result) {
+          axios.put("api/invoice/" + id, {
+            published: !published
+          }).then(function (result) {
             if (result.status === 200) {
-              Swal.fire("Publish Status Updated!", "The Invoices Has Been Published.", "success");
+              var _result = _.find(_this3.pgTable.invoices, function (invoice) {
+                if (invoice.id === id) {
+                  return true;
+                }
+              });
+
+              if (_result) {
+                _result.published = !published;
+              }
+
+              Swal.fire("Publish Status Updated!", "Update", "success");
             }
           })["catch"](function (error) {
             var message = error.response.data.message;
@@ -3124,6 +3134,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toggleItemRead: function toggleItemRead(id, unread) {
+      var _this4 = this;
+
       var text = unread ? "Unread To Read ?" : "Read To Unread ?";
       Swal.fire({
         title: "Toggle Invoice Read Status",
@@ -3136,9 +3148,21 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         //Send request to the server
         if (result.value) {
-          axios.put("api/user/" + id).then(function (result) {
+          axios.put("api/invoice/" + id, {
+            unread: !unread
+          }).then(function (result) {
             if (result.status === 200) {
-              Swal.fire("Read Status Updated!", "The Invoices Has Been Published.", "success");
+              var _result2 = _.find(_this4.pgTable.invoices, function (invoice) {
+                if (invoice.id === id) {
+                  return true;
+                }
+              });
+
+              if (_result2) {
+                _result2.unread = !unread;
+              }
+
+              Swal.fire("Read Status Updated!", "Update", "success");
             }
           })["catch"](function (error) {
             var message = error.response.data.message;
@@ -3153,6 +3177,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     doPublish: function doPublish() {
+      var _this5 = this;
+
       Swal.fire({
         title: "Publish Invoices",
         text: "Are You Going To Publish The Invoices?",
@@ -3164,7 +3190,9 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         //Send request to the server
         if (result.value) {
-          axios.put("api/user/" + id).then(function (result) {
+          axios.put("api/impinvoice/" + _this5.item.id, {
+            publish: true
+          }).then(function (result) {
             if (result.status === 200) {
               Swal.fire("Published!", "The Invoices Has Been Published.", "success");
             }
@@ -3181,7 +3209,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     doImport: function doImport() {
-      var _this3 = this;
+      var _this6 = this;
 
       var month = this.item.Month;
       var year = this.item.Year;
@@ -3189,13 +3217,13 @@ __webpack_require__.r(__webpack_exports__);
       this.inprogress = true;
       this.$Progress.start();
       axios.put("api/impinvoice/" + month + "," + year + "," + cocode).then(function (resp) {
-        _this3.inprogress = false;
+        _this6.inprogress = false;
 
-        _this3.$Progress.finish();
+        _this6.$Progress.finish();
 
-        _this3.showInvoice(1);
+        _this6.showInvoice(1);
       })["catch"](function (err) {
-        _this3.inprogress = false;
+        _this6.inprogress = false;
         var message = err.response.data.message;
         var errors = err.response.data.errors;
 
@@ -3205,7 +3233,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
 
-        _this3.$Progress.fail();
+        _this6.$Progress.fail();
 
         if (message) {
           Swal.fire("Failed!", message, "warning");
@@ -3216,11 +3244,16 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   beforeMount: function beforeMount() {
-    if (this.payload && this.text) {
-      this.item = this.payload;
-      this.name = this.text;
-    } else {
-      this.$router.go(-1);
+    if (localStorage.company) {
+      this.name = localStorage.company;
+    }
+
+    if (localStorage.getItem("invoiceh")) {
+      try {
+        this.item = JSON.parse(localStorage.getItem("invoiceh"));
+      } catch (e) {
+        localStorage.removeItem("invoiceh");
+      }
     }
   },
   mounted: function mounted() {
@@ -3251,6 +3284,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+//
 //
 //
 //
@@ -3516,7 +3550,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     importInvoice: function importInvoice(idx) {
-      var payload = this.items[idx - 1];
       var text = null;
 
       for (var i = 0; i < this.companies.length; i++) {
@@ -3526,12 +3559,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }
 
+      localStorage.company = text;
+      var payload = JSON.stringify(this.items[idx - 1]);
+      localStorage.setItem("invoiceh", payload);
       this.$router.push({
-        name: "importInv",
-        params: {
-          text: text,
-          payload: payload
-        }
+        name: "importInv"
       });
     }
   },
@@ -3963,25 +3995,25 @@ __webpack_require__.r(__webpack_exports__);
       tabIndex: 0,
       pgTable: [{
         invoices: {},
-        uri: "api/invoices?page=",
+        uri: "api/invoice?page=",
         page: 1,
         perpage: 10,
         records: 0
       }, {
         invoices: {},
-        uri: "api/invoices?page=",
+        uri: "api/invoice?page=",
         page: 1,
         perpage: 10,
         records: 0
       }, {
         invoices: {},
-        uri: "api/invoices?page=",
+        uri: "api/invoice?page=",
         page: 1,
         perpage: 10,
         records: 0
       }, {
         invoices: {},
-        uri: "api/invoices?page=",
+        uri: "api/invoice?page=",
         page: 1,
         perpage: 10,
         records: 0
@@ -4009,7 +4041,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.$Role.isAdminOrUser()) {
-        var uri = "api/invoices?years=true";
+        var uri = "api/invoice?years=true";
         axios.get(uri).then(function (resp) {
           _this.years = resp.data;
 
@@ -4022,7 +4054,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.$Role.isAdminOrUser()) {
         var uri = this.pgTable[this.tabIndex].uri + page + "&y=" + this.years[this.tabIndex];
-        axios.all([axios.get("/api/invoices?n=true"), axios.get(uri)]).then(axios.spread(function (hasNew, data) {
+        axios.all([axios.get("/api/invoice?n=true"), axios.get(uri)]).then(axios.spread(function (hasNew, data) {
           if (hasNew.data === 1) {
             _this2.$parent.newFlag("INVOICES", true);
           } else {
@@ -4141,7 +4173,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {},
   mounted: function mounted() {
-    axios.get("api/invoices/" + this.id).then(function (response) {
+    axios.get("api/invoice/" + this.id).then(function (response) {
       pdfobject__WEBPACK_IMPORTED_MODULE_0___default.a.embed(response.data, "#pdf-content");
     })["catch"](function (err) {});
   }
@@ -93312,7 +93344,23 @@ var render = function() {
                 0
               )
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.items.length < 1,
+                  expression: "items.length < 1"
+                }
+              ],
+              staticClass: "text-center"
+            },
+            [_vm._v("- Empty -")]
+          )
         ])
       ])
     ]),
@@ -94215,7 +94263,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-12 vh-100" }, [
+          _c("div", { staticClass: "col-12 min-vh-100" }, [
             _c("div", { attrs: { id: "pdf-content" } })
           ])
         ])
@@ -113883,8 +113931,7 @@ var routes = [{
 }, {
   name: "importInv",
   path: "/importInv",
-  component: __webpack_require__(/*! ./components/Import/ImportInvoices.vue */ "./resources/js/components/Import/ImportInvoices.vue")["default"],
-  props: true
+  component: __webpack_require__(/*! ./components/Import/ImportInvoices.vue */ "./resources/js/components/Import/ImportInvoices.vue")["default"]
 }, {
   path: "/news",
   component: __webpack_require__(/*! ./components/News/NewsList.vue */ "./resources/js/components/News/NewsList.vue")["default"]
@@ -115437,8 +115484,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -77,8 +77,7 @@ let routes = [
     {
         name: "importInv",
         path: "/importInv",
-        component: require("./components/Import/ImportInvoices.vue").default,
-        props: true
+        component: require("./components/Import/ImportInvoices.vue").default
     },
     {
         path: "/news",

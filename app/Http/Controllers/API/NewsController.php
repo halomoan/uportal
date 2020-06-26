@@ -34,12 +34,13 @@ class NewsController extends Controller
     public function index()
     {
 
-        $role = auth()->user()->urole;
+        $user = auth('api')->user();
+        $role = $user->urole;
 
         $news = [];
 
-        $userId = auth()->user()->id;
-        $groups = auth()->user()->groups()->select('id')->get();
+        $userId = $user->id;
+        $groups = $user->groups()->select('id')->get();
         $isAuthor =
             \Request::get('auth');
         $search = \Request::get('q');
@@ -83,14 +84,14 @@ class NewsController extends Controller
         if ($search) {
 
             if ($isAuthor && in_array($role, $this->AUTHORS)) {
-                return auth()->user()->mynews()->where(function ($query) use ($search) {
+                return $user->mynews()->where(function ($query) use ($search) {
                     $query->whereLike(['title'], $search);
                 })->whereRaw($where)->orderBy('validFrom', 'desc')->paginate($perpage);
             } else {
             }
         } else {
             if ($isAuthor && in_array($role, $this->AUTHORS)) {
-                $news =  auth()->user()->mynews()
+                $news =  $user->mynews()
                     ->whereRaw($where)
                     ->orderBy('validFrom', 'desc')->offset($page * $perpage)->limit($perpage)->get();
 
@@ -100,7 +101,7 @@ class NewsController extends Controller
                     $assigned = $item->users()->count() + $item->groups()->count();
                     $item['assigned'] = ($assigned > 0);
                 }
-                $total = auth()->user()->mynews()
+                $total = $user->mynews()
                     ->whereRaw($where)->count();
                 return  new Paginator($news, $total, $perpage);
             } else {

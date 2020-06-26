@@ -14,7 +14,7 @@ class CreateInvoicesTable extends Migration
     public function up()
     {
         Schema::create('invoices', function (Blueprint $table) {
-            
+            $table->engine = 'InnoDB';
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('invoiceh_id');
@@ -29,6 +29,12 @@ class CreateInvoicesTable extends Migration
             $table->timestamps();
 
             $table->index('user_id');
+            $table->index('invoiceh_id');
+        });
+
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->foreign('invoiceh_id')->references('id')->on('InvoiceH')
+                ->onDelete('cascade');
         });
     }
 

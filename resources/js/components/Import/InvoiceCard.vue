@@ -102,6 +102,7 @@
               </tr>
             </tbody>
           </table>
+          <div v-show="items.length < 1" class="text-center">- Empty -</div>
         </div>
       </div>
     </div>
@@ -264,7 +265,6 @@ export default {
     },
 
     importInvoice(idx) {
-      const payload = this.items[idx - 1];
       let text = null;
       for (let i = 0; i < this.companies.length; i++) {
         if (this.companies[i].CoCode === this.company) {
@@ -272,7 +272,13 @@ export default {
           i = 1000;
         }
       }
-      this.$router.push({ name: "importInv", params: { text, payload } });
+
+      localStorage.company = text;
+
+      const payload = JSON.stringify(this.items[idx - 1]);
+      localStorage.setItem("invoiceh", payload);
+
+      this.$router.push({ name: "importInv" });
     }
   },
   mounted() {

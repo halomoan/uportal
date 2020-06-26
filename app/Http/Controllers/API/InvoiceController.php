@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\InvoiceH;
 use App\Invoice;
 use Illuminate\Support\Facades\DB;
 
@@ -40,16 +41,16 @@ class InvoiceController extends Controller
 
             return auth('api')->user()->invoices()->where(function ($query) use ($search) {
                 $query->whereLike(['invno', 'desc', 'filename'], $search);
-            })->where('published','=',1)->paginate(10);
+            })->where('published', '=', 1)->paginate(10);
         } elseif ($new) {
             return (auth('api')->user()->invoices()
                 ->where('unread', true)
-                ->where('published','=',1)
+                ->where('published', '=', 1)
                 ->count() > 0);
         } else {
             return auth('api')->user()->invoices()
                 ->where('year', $year)
-                ->where('published','=',1)
+                ->where('published', '=', 1)
                 ->orderBy('invdate', 'desc')
                 ->orderBy('unread', 'desc')
                 ->paginate(10);
@@ -94,25 +95,23 @@ class InvoiceController extends Controller
         // });
 
         //Query Database based on $id
-        $invfile = "";
-        if ($user->urole === 'admin' ){
-            $invfile = Invoice::select('filename')->findOrFail($id)->first();
+        $invoice = null;
+        if ($user->urole === 'admin') {
+            $invoice = Invoice::select('id', 'filename', 'invoiceh_id')->where('id', '=', $id)->first();
         } else {
-            $invfile = $user->invoices()->select('filename')->findOrFail($id)->first();
-        }        
-        
+            $invoice = Invoice::select('id', 'filename', 'invoiceh_id')->where('id', '=', $id)->where('user_id', '=', $user->id)->first();
+            DB::table('invoices')->where('id', '=', $id)->update(['unread' => false]);
+        }
 
-        $invdir = "";  
-        if ($user->urole === 'admin' ){
-            $invdir = Invoice::findOrFail($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
-        } else {
-            
-            $invdir =  $user->invoices()->findOrFail($id)->invoiceh()->select('CoCode', 'month', 'year')->first();
-        }        
-                  
+        if ($invoice === null) {
+            return;
+        }
 
-        $fileName = $invfile['filename'];
-        $dir = $invdir['CoCode'] . '\\' . $invdir['year'] . $invdir['month'] . '\\';
+        $invoiceh = InvoiceH::select('CoCode', 'month', 'year')->where('id', '=', $invoice['invoiceh_id'])->first();
+
+        $fileName = $invoice['filename'];
+
+        $dir = $invoiceh['CoCode'] . '\\' . $invoiceh['year'] . $invoiceh['month'] . '\\';
 
 
         $sfilePath = storage_path('invoices\\' . $dir . $fileName);
@@ -134,7 +133,20 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->authorize('isAdmin');
+
+        $unread = \Request::get('unread');
+        $published = \Request::get('published');
+
+        if (isset($unread)) {
+
+            return Invoice::where('id', '=', $id)->update(['unread' => $unread]);
+        }
+
+        if (isset($published)) {
+
+            return Invoice::where('id', '=', $id)->update(['published' => $published]);
+        }
     }
 
     /**

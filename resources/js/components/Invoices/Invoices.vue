@@ -197,28 +197,28 @@ export default {
       pgTable: [
         {
           invoices: {},
-          uri: "api/invoices?page=",
+          uri: "api/invoice?page=",
           page: 1,
           perpage: 10,
           records: 0
         },
         {
           invoices: {},
-          uri: "api/invoices?page=",
+          uri: "api/invoice?page=",
           page: 1,
           perpage: 10,
           records: 0
         },
         {
           invoices: {},
-          uri: "api/invoices?page=",
+          uri: "api/invoice?page=",
           page: 1,
           perpage: 10,
           records: 0
         },
         {
           invoices: {},
-          uri: "api/invoices?page=",
+          uri: "api/invoice?page=",
           page: 1,
           perpage: 10,
           records: 0
@@ -247,7 +247,7 @@ export default {
 
     getYears() {
       if (this.$Role.isAdminOrUser()) {
-        const uri = "api/invoices?years=true";
+        const uri = "api/invoice?years=true";
         axios.get(uri).then(resp => {
           this.years = resp.data;
           this.getTableData(1);
@@ -263,7 +263,7 @@ export default {
           "&y=" +
           this.years[this.tabIndex];
 
-        axios.all([axios.get("/api/invoices?n=true"), axios.get(uri)]).then(
+        axios.all([axios.get("/api/invoice?n=true"), axios.get(uri)]).then(
           axios.spread((hasNew, data) => {
             if (hasNew.data === 1) {
               this.$parent.newFlag("INVOICES", true);

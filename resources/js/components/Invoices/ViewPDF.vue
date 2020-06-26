@@ -18,7 +18,7 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12 vh-100">
+          <div class="col-12 min-vh-100">
             <div id="pdf-content"></div>
           </div>
         </div>
@@ -37,7 +37,7 @@ export default {
   mounted() {
     axios
 
-      .get("api/invoices/" + this.id)
+      .get("api/invoice/" + this.id)
       .then(response => {
         pdf.embed(response.data, "#pdf-content");
       })
