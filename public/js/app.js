@@ -3033,12 +3033,116 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       inprogress: {
         log: false,
         invoice: false
+      },
+      filter: {
+        invdate: null,
+        invno: null,
+        custname: null,
+        published: null,
+        unread: null
       },
       pgTable: {
         invoices: [],
@@ -3075,12 +3179,31 @@ __webpack_require__.r(__webpack_exports__);
         _this.inprogress.log = false;
       });
     },
+    showFilter: function showFilter() {
+      $("#filterModal").modal("toggle");
+    },
     showInvoice: function showInvoice(page) {
       var _this2 = this;
 
       this.inprogress.invoice = true;
       this.pgTable.invoices = [];
-      axios.get(this.pgTable.uri + this.item.id + "&page=" + page).then(function (resp) {
+      var filter = this.filter.invdate ? "&qinvdate=" + this.filter.invdate : "";
+      filter += this.filter.invno ? "&qinvno=" + this.filter.invno : "";
+      filter += this.filter.custname ? "&qinvdate=" + this.filter.custname : "";
+      filter += this.filter.published != null ? "&qpublished=" + (this.filter.published ? "1" : "0") : "";
+      filter += this.filter.unread != null ? "&qunread=" + (this.filter.unread ? "1" : "0") : ""; // const filter =
+      //   "&qinvdate=" +
+      //   this.filter.invdate +
+      //   "&qinvno=" +
+      //   this.filter.invno +
+      //   "&qcustname=" +
+      //   this.filter.custname +
+      //   "&published=" +
+      //   this.filter.published +
+      //   "&unread=" +
+      //   this.filter.unread;
+
+      axios.get(this.pgTable.uri + this.item.id + filter + "&page=" + page).then(function (resp) {
         var invoiceData = resp.data;
         _this2.pgTable.invoices = invoiceData;
         _this2.pgTable.invoices = invoiceData.data;
@@ -3175,6 +3298,13 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
       });
+    },
+    clearFilter: function clearFilter() {
+      for (var key in this.filter) {
+        this.filter[key] = null;
+      }
+
+      this.showInvoice(1);
     },
     doPublish: function doPublish() {
       var _this5 = this;
@@ -92779,6 +92909,11 @@ var render = function() {
                       "div",
                       { staticClass: "d-flex justify-content-end text-right" },
                       [
+                        _c("i", {
+                          staticClass: "fas fa-filter mr-3 pb-2 text-orange",
+                          on: { click: _vm.showFilter }
+                        }),
+                        _vm._v(" "),
                         _c("pagination", {
                           attrs: {
                             records: _vm.pgTable.records,
@@ -92999,6 +93134,295 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal",
+        attrs: { tabindex: "-1", role: "dialog", id: "filterModal" }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("form", [
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-3 col-form-label",
+                        attrs: { for: "invdate" }
+                      },
+                      [_vm._v("Inv. Date")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-9" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.filter.invdate,
+                            expression: "filter.invdate"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "date",
+                          id: "invdate",
+                          placeholder: "Select A Date"
+                        },
+                        domProps: { value: _vm.filter.invdate },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.filter, "invdate", $event.target.value)
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-3 col-form-label",
+                        attrs: { for: "invno" }
+                      },
+                      [_vm._v("Inv. No")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-9" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.filter.invno,
+                            expression: "filter.invno"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "invno",
+                          placeholder: "Invoice No"
+                        },
+                        domProps: { value: _vm.filter.invno },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.filter, "invno", $event.target.value)
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-3 col-form-label",
+                        attrs: { for: "custname" }
+                      },
+                      [_vm._v("Cust. Name")]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-sm-9" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.filter.custname,
+                            expression: "filter.custname"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "custname",
+                          placeholder: "Customer Name"
+                        },
+                        domProps: { value: _vm.filter.custname },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.filter,
+                              "custname",
+                              $event.target.value
+                            )
+                          }
+                        }
+                      })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "d-flex justify-content-end" }, [
+                    _c("div", { staticClass: "form-check mr-3" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.filter.published,
+                            expression: "filter.published"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { type: "checkbox", value: "", id: "published" },
+                        domProps: {
+                          checked: Array.isArray(_vm.filter.published)
+                            ? _vm._i(_vm.filter.published, "") > -1
+                            : _vm.filter.published
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.filter.published,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  _vm.$set(
+                                    _vm.filter,
+                                    "published",
+                                    $$a.concat([$$v])
+                                  )
+                              } else {
+                                $$i > -1 &&
+                                  _vm.$set(
+                                    _vm.filter,
+                                    "published",
+                                    $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                  )
+                              }
+                            } else {
+                              _vm.$set(_vm.filter, "published", $$c)
+                            }
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-check-label",
+                          attrs: { for: "published" }
+                        },
+                        [_vm._v("Published")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-check" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.filter.unread,
+                            expression: "filter.unread"
+                          }
+                        ],
+                        staticClass: "form-check-input",
+                        attrs: { type: "checkbox", value: "", id: "unread" },
+                        domProps: {
+                          checked: Array.isArray(_vm.filter.unread)
+                            ? _vm._i(_vm.filter.unread, "") > -1
+                            : _vm.filter.unread
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.filter.unread,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = "",
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 &&
+                                  _vm.$set(
+                                    _vm.filter,
+                                    "unread",
+                                    $$a.concat([$$v])
+                                  )
+                              } else {
+                                $$i > -1 &&
+                                  _vm.$set(
+                                    _vm.filter,
+                                    "unread",
+                                    $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                  )
+                              }
+                            } else {
+                              _vm.$set(_vm.filter, "unread", $$c)
+                            }
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-check-label",
+                          attrs: { for: "unread" }
+                        },
+                        [_vm._v("Unread")]
+                      )
+                    ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: {
+                      click: function($event) {
+                        return _vm.showInvoice(1)
+                      }
+                    }
+                  },
+                  [_vm._v("Submit")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: { click: _vm.clearFilter }
+                  },
+                  [_vm._v("Clear Filter")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -93068,6 +93492,27 @@ var staticRenderFns = [
           attrs: { type: "button", "data-dismiss": "modal" }
         },
         [_vm._v("Close")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Filter")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
   }
@@ -115484,8 +115929,8 @@ function currency(value, currency, decimals) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\DEV\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\wamp64\www\uportal\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\wamp64\www\uportal\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

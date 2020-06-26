@@ -60,6 +60,7 @@
                 <div class="row">
                   <div class="col-12">
                     <div class="d-flex justify-content-end text-right">
+                      <i class="fas fa-filter mr-3 pb-2 text-orange" @click="showFilter"></i>
                       <pagination
                         :records="pgTable.records"
                         @paginate="showInvoice"
@@ -121,6 +122,8 @@
       </div>
     </div>
     <!-- ./content -->
+
+    <!-- Log Modal -->
     <div class="modal" tabindex="-1" role="dialog" id="logModal">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -170,6 +173,100 @@
         </div>
       </div>
     </div>
+    <!-- Filter Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="filterModal">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Filter</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form>
+              <div class="form-group row">
+                <label for="invdate" class="col-sm-3 col-form-label">Inv. Date</label>
+
+                <div class="col-sm-9">
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="filter.invdate"
+                    id="invdate"
+                    placeholder="Select A Date"
+                  />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="invno" class="col-sm-3 col-form-label">Inv. No</label>
+
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="filter.invno"
+                    id="invno"
+                    placeholder="Invoice No"
+                  />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="custname" class="col-sm-3 col-form-label">Cust. Name</label>
+
+                <div class="col-sm-9">
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="filter.custname"
+                    id="custname"
+                    placeholder="Customer Name"
+                  />
+                </div>
+              </div>
+              <div class="d-flex justify-content-end">
+                <div class="form-check mr-3">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value
+                    id="published"
+                    v-model="filter.published"
+                  />
+                  <label class="form-check-label" for="published">Published</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value
+                    id="unread"
+                    v-model="filter.unread"
+                  />
+                  <label class="form-check-label" for="unread">Unread</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- ./modal-body -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              @click="showInvoice(1)"
+            >Submit</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              @click="clearFilter"
+            >Clear Filter</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -180,6 +277,13 @@ export default {
       inprogress: {
         log: false,
         invoice: false
+      },
+      filter: {
+        invdate: null,
+        invno: null,
+        custname: null,
+        published: null,
+        unread: null
       },
       pgTable: {
         invoices: [],
@@ -212,11 +316,40 @@ export default {
         this.inprogress.log = false;
       });
     },
+    showFilter() {
+      $("#filterModal").modal("toggle");
+    },
     showInvoice(page) {
       this.inprogress.invoice = true;
       this.pgTable.invoices = [];
+
+      let filter = this.filter.invdate
+        ? "&qinvdate=" + this.filter.invdate
+        : "";
+      filter += this.filter.invno ? "&qinvno=" + this.filter.invno : "";
+      filter += this.filter.custname ? "&qinvdate=" + this.filter.custname : "";
+      filter +=
+        this.filter.published != null
+          ? "&qpublished=" + (this.filter.published ? "1" : "0")
+          : "";
+      filter +=
+        this.filter.unread != null
+          ? "&qunread=" + (this.filter.unread ? "1" : "0")
+          : "";
+      // const filter =
+      //   "&qinvdate=" +
+      //   this.filter.invdate +
+      //   "&qinvno=" +
+      //   this.filter.invno +
+      //   "&qcustname=" +
+      //   this.filter.custname +
+      //   "&published=" +
+      //   this.filter.published +
+      //   "&unread=" +
+      //   this.filter.unread;
+
       axios
-        .get(this.pgTable.uri + this.item.id + "&page=" + page)
+        .get(this.pgTable.uri + this.item.id + filter + "&page=" + page)
         .then(resp => {
           const invoiceData = resp.data;
 
@@ -319,6 +452,13 @@ export default {
         }
       });
     },
+    clearFilter() {
+      for (var key in this.filter) {
+        this.filter[key] = null;
+      }
+      this.showInvoice(1);
+    },
+
     doPublish() {
       Swal.fire({
         title: "Publish Invoices",

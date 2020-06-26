@@ -31,12 +31,19 @@ class ImpInvoiceController extends Controller
      */
     public function index()
     {
+
+        $this->authorize('isAdmin');
+
         $log = \Request::get('log');
         $invoiceh = \Request::get('invoiceh');
         $years = \Request::get('years');
         $year = \Request::get('year');
         $cocode = \Request::get('cocode');
-
+        $qinvdate = \Request::get('qinvdate');
+        $qinvno = \Request::get('qinvno');
+        $qcustname = \Request::get('qcustname');
+        $qpublished = \Request::get('qpublished');
+        $qunread = \Request::get('qunread');
 
         $perpage = \Request::get('up');
 
@@ -63,10 +70,46 @@ class ImpInvoiceController extends Controller
             // $total = count($result);
             // return  new Paginator($result, $total, $perpage);
 
+            $where = "a.id = $invoiceh";
+
+            $and = "";
+            $filter = "(";
+
+            if (isset($qinvdate)){
+                $filter .=  " $and b.invdate = '$qinvdate'";
+                $and = "AND";
+            }
+            if (isset($qinvno)){
+                $filter .= " $and b.invno like '%$qinvno%'";
+                $and = "AND";
+            }
+            if (isset($qcustname)){
+                $filter .= " $and b.invdate like'%$qcustname%'";
+                $and = "AND";
+            }
+
+            if (isset($qpublished)){
+                $filter .= " $and b.published =$qpublished";
+                $and = "AND";
+            }
+
+            if (isset($qunread)){
+                $filter .= " $and b.unread =$qunread";
+                $and = "AND";
+            }
+
+            if ($and) {
+                $where .= " AND $filter)";
+            }    
+            // \DB::listen(function($sql) {
+            //     var_dump($sql);
+            // });
+
             return DB::table('invoiceh as a')
                 ->join('invoices as b', 'a.id', '=', 'b.invoiceh_id')
                 ->join('users as c', 'c.id', '=', 'b.user_id')
-                ->where('a.id', '=', $invoiceh)
+                //->where('a.id', '=', $invoiceh)
+                ->whereRaw($where)
                 ->select('b.id', 'b.invno', 'b.invdate', 'b.desc', 'b.amount', 'b.filename', 'b.unread', 'b.published', 'c.name', 'c.email')
                 ->paginate($perpage);
         }
@@ -84,6 +127,8 @@ class ImpInvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('isAdmin');
+
         $this->validate($request, [
             'year' => 'required|string|max:4',
             'cocode' => 'required|integer',
