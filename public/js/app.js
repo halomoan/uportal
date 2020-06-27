@@ -3780,7 +3780,131 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      file: null,
+      inprogress: false
+    };
+  },
+  methods: {
+    gotoUsers: function gotoUsers() {
+      this.$router.push({
+        path: "/users"
+      });
+    },
+    getTemplate: function getTemplate() {
+      axios({
+        url: "api/getfile/users",
+        method: "GET"
+      }).then(function (resp) {
+        var fileURL = window.URL.createObjectURL(new Blob([resp.data]));
+        var fileLink = document.createElement("a");
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "users.csv");
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      });
+    },
+    setFile: function setFile(e) {
+      this.file = e.target.files[0];
+
+      if (this.file) {
+        var name = this.file["name"];
+        var ext = name.substring(name.lastIndexOf(".") + 1);
+
+        if (ext === "csv") {
+          $("#lblUserFile").html(name);
+        } else {
+          Swal.fire("Wrong File Extension!", "Please select a .csv file");
+          $("#lblUserFile").html("Choose File");
+        }
+      } else {
+        $("#lblUserFile").html("Choose File");
+      }
+    },
+    uploadFile: function uploadFile(mode) {
+      var _this = this;
+
+      if (!this.file) {
+        Swal.fire("No File Selected!", "Please select a file");
+        return;
+      }
+
+      if (mode === "clear") {
+        Swal.fire({
+          title: "Are you sure to clear prior data and re-upload?",
+          text: "Please Enter YES to confirm",
+          input: "text",
+          inputAttributes: {
+            autocapitalize: true
+          },
+          showCancelButton: true,
+          confirmButtonText: "Confirm"
+        }).then(function (result) {
+          if (result.value) {
+            if (result.value === "YES") {
+              var formData = new FormData();
+              formData.append("fmode", "clear");
+              formData.append("file", _this.file);
+              formData.append("fcat", "users");
+
+              _this._uploadFile(formData);
+            } else {
+              Swal.fire("You've Enter Otherwise.", "We Canceled This Process");
+            }
+          }
+        });
+      } else {
+        Swal.fire({
+          title: "Confirm",
+          text: "Please Confirm To Upload",
+          showCancelButton: true,
+          confirmButtonText: "Confirm"
+        }).then(function (result) {
+          if (result.value) {
+            var formData = new FormData();
+            formData.append("fmode", "append");
+            formData.append("file", _this.file);
+            formData.append("fcat", "users");
+
+            _this._uploadFile(formData);
+          }
+        });
+      }
+    },
+    _uploadFile: function _uploadFile(formData) {
+      axios.post("api/putfile", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }).then(function () {
+        console.log("SUCCESS!!");
+      })["catch"](function () {
+        console.log("FAILURE!!");
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -4006,16 +4130,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -5819,58 +5933,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -94153,7 +94215,84 @@ var render = function() {
   return _c("div", { staticClass: "card card-olive" }, [
     _vm._m(0),
     _vm._v(" "),
-    _vm._m(1),
+    _c("div", { staticClass: "card-body" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-6" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-block bg-gradient-fuchsia",
+              on: { click: _vm.getTemplate }
+            },
+            [_vm._v("Download Template")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-block bg-gradient-green mt-3",
+              on: { click: _vm.gotoUsers }
+            },
+            [_vm._v("Manage Users")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-6" }, [
+          _c("div", { staticClass: "form-group" }, [
+            _c("div", { staticClass: "input-group input-group-sm" }, [
+              _c("div", { staticClass: "custom-file" }, [
+                _c("input", {
+                  staticClass: "custom-file-input",
+                  attrs: { type: "file", id: "userFile", accept: ".csv" },
+                  on: { change: _vm.setFile }
+                }),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  {
+                    staticClass: "custom-file-label",
+                    attrs: { id: "lblUserFile", for: "userFile" }
+                  },
+                  [_vm._v("Choose file")]
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-6" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-block bg-gradient-primary",
+                  on: {
+                    click: function($event) {
+                      return _vm.uploadFile("clear")
+                    }
+                  }
+                },
+                [_vm._v("Clear And Upload Users")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-6" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-block bg-gradient-navy",
+                  on: {
+                    click: function($event) {
+                      return _vm.uploadFile("append")
+                    }
+                  }
+                },
+                [_vm._v("Upload Users And Append")]
+              )
+            ])
+          ])
+        ])
+      ])
+    ]),
     _vm._v(" "),
     _vm.inprogress
       ? _c("div", { staticClass: "overlay" }, [
@@ -94171,52 +94310,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [_vm._v("Import Users")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-6" }, [
-          _c("button", { staticClass: "btn btn-block bg-gradient-fuchsia" }, [
-            _vm._v("Download Template")
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            { staticClass: "btn btn-block bg-gradient-green mt-3" },
-            [_vm._v("Manage Users")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-6" }, [
-          _c("div", { staticClass: "form-group" }, [
-            _c("div", { staticClass: "input-group input-group-sm" }, [
-              _c("div", { staticClass: "custom-file" }, [
-                _c("input", {
-                  staticClass: "custom-file-input",
-                  attrs: { type: "file", id: "userFile" }
-                }),
-                _vm._v(" "),
-                _c(
-                  "label",
-                  {
-                    staticClass: "custom-file-label",
-                    attrs: { for: "userFile" }
-                  },
-                  [_vm._v("Choose file")]
-                )
-              ])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("button", { staticClass: "btn btn-block bg-gradient-indigo" }, [
-            _vm._v("Upload Users")
-          ])
-        ])
-      ])
     ])
   }
 ]
@@ -94928,6 +95021,25 @@ var render = function() {
                                           0
                                         )
                                       ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value:
+                                              _vm.pgTable[index].invoices
+                                                .length < 1,
+                                            expression:
+                                              "pgTable[index].invoices.length < 1"
+                                          }
+                                        ],
+                                        staticClass: "text-center"
+                                      },
+                                      [_vm._v("- Empty -")]
                                     )
                                   ])
                                 ]),
@@ -97409,8 +97521,7 @@ var render = function() {
                                           name: "model",
                                           rawName: "v-model",
                                           value: _vm.form.company,
-                                          expression:
-                                            "\n                                                              form.company\n                                                          "
+                                          expression: "form.company"
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -97534,8 +97645,7 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.form.password,
-                                            expression:
-                                              "\n                                                                  form.password\n                                                              "
+                                            expression: "form.password"
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -97601,8 +97711,7 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.form.repassword,
-                                            expression:
-                                              "\n                                                                  form.repassword\n                                                              "
+                                            expression: "form.repassword"
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -97777,8 +97886,7 @@ var render = function() {
                                               name: "model",
                                               rawName: "v-model",
                                               value: _vm.form.billaddr,
-                                              expression:
-                                                "\n                                                                  form.billaddr\n                                                              "
+                                              expression: "form.billaddr"
                                             }
                                           ],
                                           staticClass: "form-control",
@@ -97850,8 +97958,7 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.groups.checkAvailGroup,
-                                            expression:
-                                              "\n                                                                  groups.checkAvailGroup\n                                                              "
+                                            expression: "groups.checkAvailGroup"
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -97969,8 +98076,7 @@ var render = function() {
                                             name: "model",
                                             rawName: "v-model",
                                             value: _vm.groups.checkUserGroup,
-                                            expression:
-                                              "\n                                                                  groups.checkUserGroup\n                                                              "
+                                            expression: "groups.checkUserGroup"
                                           }
                                         ],
                                         staticClass: "form-control",
@@ -116598,15 +116704,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************************!*\
   !*** ./resources/js/components/Users/Users.vue ***!
   \*************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Users_vue_vue_type_template_id_4243cd86___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Users.vue?vue&type=template&id=4243cd86& */ "./resources/js/components/Users/Users.vue?vue&type=template&id=4243cd86&");
 /* harmony import */ var _Users_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Users.vue?vue&type=script&lang=js& */ "./resources/js/components/Users/Users.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Users_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Users_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -116636,7 +116741,7 @@ component.options.__file = "resources/js/components/Users/Users.vue"
 /*!**************************************************************************!*\
   !*** ./resources/js/components/Users/Users.vue?vue&type=script&lang=js& ***!
   \**************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

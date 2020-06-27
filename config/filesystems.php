@@ -51,13 +51,18 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
+        ],
+        'adminfolder' => [
+            'driver' => 'local',
+            'root' => storage_path('admfolder'),
         ],
         'invoices' => [
             'driver' => 'local',
-            'root' => storage_path('invoices'),            
+            'root' => storage_path('invoices'),
         ],
+
 
         's3' => [
             'driver' => 's3',

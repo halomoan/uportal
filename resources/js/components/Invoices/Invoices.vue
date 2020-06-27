@@ -73,10 +73,7 @@
                       :id="'year-' + index"
                       role="tabpanel"
                       :aria-labelledby="'year' + index"
-                      v-bind:class="{
-                                                active: tabIndex === index,
-                                                show: tabIndex === index
-                                            }"
+                      v-bind:class="{active: tabIndex === index,show: tabIndex === index}"
                     >
                       <div class="row">
                         <div class="col-12">
@@ -92,14 +89,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr
-                                v-for="invoice in pgTable[
-                                                                    index
-                                                                ].invoices"
-                                :key="
-                                                                    invoice.id
-                                                                "
-                              >
+                              <tr v-for="invoice in pgTable[index].invoices" :key="invoice.id">
                                 <td
                                   v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
                                 >{{ invoice.invdate | humanDate}}</td>
@@ -109,11 +99,7 @@
                                   <router-link to="/invoiced">{{ invoice.invno }}</router-link>
                                 </td>
                                 <td
-                                  v-bind:class="{
-                                                                        'text-bold':
-                                                                            invoice.unread,
-                                                                        'text-black-50': !invoice.unread
-                                                                    }"
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
                                 >
                                   <span
                                     class="d-inline-block text-truncate"
@@ -156,6 +142,10 @@
                               </tr>
                             </tbody>
                           </table>
+                          <div
+                            class="text-center"
+                            v-show="pgTable[index].invoices.length < 1"
+                          >- Empty -</div>
                         </div>
                       </div>
                       <div class="row">

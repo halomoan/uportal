@@ -59,11 +59,7 @@
                               type="text"
                               class="form-control"
                               autocomplete="off"
-                              :class="{
-                                                                'is-invalid': form.errors.has(
-                                                                    'name'
-                                                                )
-                                                            }"
+                              :class="{'is-invalid': form.errors.has('name')}"
                               id="name"
                               v-model="form.name"
                               name="name"
@@ -80,15 +76,9 @@
                               type="text"
                               class="form-control"
                               autocomplete="off"
-                              :class="{
-                                                                'is-invalid': form.errors.has(
-                                                                    'company'
-                                                                )
-                                                            }"
+                              :class="{'is-invalid': form.errors.has('company')}"
                               id="company"
-                              v-model="
-                                                                form.company
-                                                            "
+                              v-model="form.company"
                               name="company"
                               placeholder="company"
                               required
@@ -103,11 +93,7 @@
                               type="email"
                               class="form-control"
                               autocomplete="off"
-                              :class="{
-                                                                'is-invalid': form.errors.has(
-                                                                    'email'
-                                                                )
-                                                            }"
+                              :class="{'is-invalid': form.errors.has('email')}"
                               id="email"
                               v-model="form.email"
                               name="email"
@@ -125,15 +111,9 @@
                                 type="password"
                                 class="form-control"
                                 id="password"
-                                :class="{
-                                                                    'is-invalid': form.errors.has(
-                                                                        'password'
-                                                                    )
-                                                                }"
+                                :class="{'is-invalid': form.errors.has('password')}"
                                 name="password"
-                                v-model="
-                                                                    form.password
-                                                                "
+                                v-model="form.password"
                                 placeholder="Password"
                                 required
                               />
@@ -150,15 +130,9 @@
                                 type="password"
                                 class="form-control"
                                 id="repassword"
-                                :class="{
-                                                                    'is-invalid': form.errors.has(
-                                                                        'repassword'
-                                                                    )
-                                                                }"
+                                :class="{'is-invalid': form.errors.has('repassword')}"
                                 name="repassword"
-                                v-model="
-                                                                    form.repassword
-                                                                "
+                                v-model="form.repassword"
                                 placeholder="Re-type Password"
                                 required
                               />
@@ -174,11 +148,7 @@
                               v-model="form.urole"
                               id="type"
                               class="form-control"
-                              :class="{
-                                                                'is-invalid': form.errors.has(
-                                                                    'type'
-                                                                )
-                                                            }"
+                              :class="{'is-invalid': form.errors.has('type')}"
                             >
                               <option value>Select User Role</option>
                               <option value="admin">Admin</option>
@@ -201,15 +171,9 @@
                               <textarea
                                 rows="5"
                                 class="form-control"
-                                :class="{
-                                                                    'is-invalid': form.errors.has(
-                                                                        'billaddr'
-                                                                    )
-                                                                }"
+                                :class="{'is-invalid': form.errors.has('billaddr')}"
                                 id="billaddr"
-                                v-model="
-                                                                    form.billaddr
-                                                                "
+                                v-model="form.billaddr"
                                 name="billaddr"
                                 placeholder="billaddr"
                               />
@@ -228,23 +192,16 @@
                                 Group:
                               </label>
                               <select
-                                v-model="
-                                                                    groups.checkAvailGroup
-                                                                "
+                                v-model="groups.checkAvailGroup"
                                 multiple
                                 class="form-control"
                                 id="unassigned"
                                 size="10"
                               >
                                 <option
-                                  v-for="(group,
-                                                                    index) in groups.availGroup"
-                                  :key="
-                                                                        group.id
-                                                                    "
-                                  :value="
-                                                                        index
-                                                                    "
+                                  v-for="(group,index) in groups.availGroup"
+                                  :key="group.id"
+                                  :value="index"
                                 >
                                   {{
                                   group.name
@@ -259,16 +216,12 @@
                             <button
                               type="button"
                               class="btn btn-info mb-2"
-                              @click.prevent="
-                                                                addUserGroup
-                                                            "
+                              @click.prevent="addUserGroup"
                             >&gt;</button>
                             <button
                               type="button"
                               class="btn btn-default"
-                              @click.prevent="
-                                                                removeUserGroup
-                                                            "
+                              @click.prevent="removeUserGroup"
                             >&lt;</button>
                           </div>
                           <div class="col-5">
@@ -278,21 +231,16 @@
                                 Group:
                               </label>
                               <select
-                                v-model="
-                                                                    groups.checkUserGroup
-                                                                "
+                                v-model="groups.checkUserGroup"
                                 multiple
                                 class="form-control"
                                 id="usergroup"
                                 size="10"
                               >
                                 <option
-                                  v-for="(group,
-                                                                    index) in groups.userGroup"
+                                  v-for="(group,index) in groups.userGroup"
                                   :key="index"
-                                  :value="
-                                                                        index
-                                                                    "
+                                  :value="index"
                                 >
                                   {{
                                   group.name

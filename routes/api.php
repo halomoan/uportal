@@ -33,6 +33,9 @@ Route::post('profile', 'API\ProfileController@store')->name('profile.store');
 
 Route::get('company', 'API\CompanyController@index')->name('company.index');
 
+Route::get('getfile/{id}', 'API\FileController@show')->name('getfile.show');
+Route::post('putfile', 'API\FileController@store')->name('putfile.store');
+
 Route::get('flag', 'API\FlagController@index')->name('flag.index');
 Route::get('dashboard', 'API\DashboardController@index')->name('dashboard.index');
 Route::get('timeline', 'API\TimelineController@index')->name('timeline.index');

@@ -210,7 +210,7 @@ export default {
       }
     },
     setFile(e) {
-      let file = e.target.files[0];
+      const file = e.target.files[0];
       if (file) {
         $("#lblPhoto").html(file["name"]);
       } else {
@@ -218,9 +218,9 @@ export default {
         this.form.photo = null;
         return;
       }
-      let reader = new FileReader();
+      const reader = new FileReader();
 
-      let limit = 1024 * 1024 * 2;
+      const limit = 1024 * 1024 * 2;
       if (file["size"] > limit) {
         Swal.fire({
           type: "error",
