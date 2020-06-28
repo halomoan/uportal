@@ -35,6 +35,7 @@ Route::get('company', 'API\CompanyController@index')->name('company.index');
 
 Route::get('getfile/{id}', 'API\FileController@show')->name('getfile.show');
 Route::post('putfile', 'API\FileController@store')->name('putfile.store');
+Route::get('file', 'API\FileController@index')->name('file.index');
 
 Route::get('flag', 'API\FlagController@index')->name('flag.index');
 Route::get('dashboard', 'API\DashboardController@index')->name('dashboard.index');

@@ -3799,17 +3799,101 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       file: null,
-      inprogress: false
+      inprogress: {
+        main: false,
+        log: false
+      },
+      logs: []
     };
   },
   methods: {
     gotoUsers: function gotoUsers() {
       this.$router.push({
         path: "/users"
+      });
+    },
+    showLog: function showLog() {
+      var _this = this;
+
+      $("#logModal").modal("toggle");
+      this.inprogress.log = true;
+      this.logs = [];
+      axios.get("api/file?logger=users").then(function (resp) {
+        _this.logs = resp.data;
+        _this.inprogress.log = false;
       });
     },
     getTemplate: function getTemplate() {
@@ -3843,7 +3927,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     uploadFile: function uploadFile(mode) {
-      var _this = this;
+      var _this2 = this;
 
       if (!this.file) {
         Swal.fire("No File Selected!", "Please select a file");
@@ -3865,18 +3949,18 @@ __webpack_require__.r(__webpack_exports__);
             if (result.value === "YES") {
               var formData = new FormData();
               formData.append("fmode", "clear");
-              formData.append("file", _this.file);
+              formData.append("file", _this2.file);
               formData.append("fcat", "users");
 
-              _this._uploadFile(formData);
+              _this2._uploadFile(formData);
             } else {
-              Swal.fire("You've Enter Otherwise.", "We Canceled This Process");
+              Swal.fire("That was not a YES.", "We Canceled This Process");
             }
           }
         });
       } else {
         Swal.fire({
-          title: "Confirm",
+          title: "Confirmation",
           text: "Please Confirm To Upload",
           showCancelButton: true,
           confirmButtonText: "Confirm"
@@ -3884,23 +3968,26 @@ __webpack_require__.r(__webpack_exports__);
           if (result.value) {
             var formData = new FormData();
             formData.append("fmode", "append");
-            formData.append("file", _this.file);
+            formData.append("file", _this2.file);
             formData.append("fcat", "users");
 
-            _this._uploadFile(formData);
+            _this2._uploadFile(formData);
           }
         });
       }
     },
     _uploadFile: function _uploadFile(formData) {
+      var _this3 = this;
+
+      this.inprogress.main = true;
       axios.post("api/putfile", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }).then(function () {
-        console.log("SUCCESS!!");
-      })["catch"](function () {
-        console.log("FAILURE!!");
+      }).then(function (resp) {
+        _this3.inprogress.main = false;
+      })["catch"](function (err) {
+        _this3.inprogress.main = false;
       });
     }
   }
@@ -94212,95 +94299,222 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card card-olive" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-6" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-block bg-gradient-fuchsia",
-              on: { click: _vm.getTemplate }
-            },
-            [_vm._v("Download Template")]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-block bg-gradient-green mt-3",
-              on: { click: _vm.gotoUsers }
-            },
-            [_vm._v("Manage Users")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-6" }, [
-          _c("div", { staticClass: "form-group" }, [
-            _c("div", { staticClass: "input-group input-group-sm" }, [
-              _c("div", { staticClass: "custom-file" }, [
-                _c("input", {
-                  staticClass: "custom-file-input",
-                  attrs: { type: "file", id: "userFile", accept: ".csv" },
-                  on: { change: _vm.setFile }
-                }),
+  return _c("div", [
+    _c("div", { staticClass: "card card-olive" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "overlay-wrapper" }, [
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-6" }, [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-block btn-default",
+                      on: { click: _vm.getTemplate }
+                    },
+                    [_vm._v("Download Template")]
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-block bg-gradient-green mt-3",
+                      on: { click: _vm.gotoUsers }
+                    },
+                    [_vm._v("Manage Users")]
+                  )
+                ]),
                 _vm._v(" "),
-                _c(
-                  "label",
-                  {
-                    staticClass: "custom-file-label",
-                    attrs: { id: "lblUserFile", for: "userFile" }
-                  },
-                  [_vm._v("Choose file")]
-                )
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-block bg-gradient-warning mt-3",
+                      on: { click: _vm.showLog }
+                    },
+                    [_vm._v("Log Viewer")]
+                  )
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-6" }, [
+              _c("div", { staticClass: "form-group" }, [
+                _c("div", { staticClass: "input-group input-group-sm" }, [
+                  _c("div", { staticClass: "custom-file" }, [
+                    _c("input", {
+                      staticClass: "custom-file-input",
+                      attrs: { type: "file", id: "userFile", accept: ".csv" },
+                      on: { change: _vm.setFile }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass: "custom-file-label",
+                        attrs: { id: "lblUserFile", for: "userFile" }
+                      },
+                      [_vm._v("Choose file")]
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-block bg-gradient-primary",
+                      on: {
+                        click: function($event) {
+                          return _vm.uploadFile("clear")
+                        }
+                      }
+                    },
+                    [_vm._v("Clear And Upload Users")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-block bg-gradient-navy",
+                      on: {
+                        click: function($event) {
+                          return _vm.uploadFile("append")
+                        }
+                      }
+                    },
+                    [_vm._v("Upload Users And Append")]
+                  )
+                ])
               ])
             ])
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-6" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-block bg-gradient-primary",
-                  on: {
-                    click: function($event) {
-                      return _vm.uploadFile("clear")
-                    }
-                  }
-                },
-                [_vm._v("Clear And Upload Users")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-6" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-block bg-gradient-navy",
-                  on: {
-                    click: function($event) {
-                      return _vm.uploadFile("append")
-                    }
-                  }
-                },
-                [_vm._v("Upload Users And Append")]
-              )
-            ])
-          ])
+          _vm.inprogress.main
+            ? _c("div", { staticClass: "overlay" }, [
+                _c("i", { staticClass: "fas fa-3x fa-sync-alt fa-spin" }),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-bold pl-2" }, [
+                  _vm._v("Loading...")
+                ])
+              ])
+            : _vm._e()
         ])
-      ])
-    ]),
-    _vm._v(" "),
-    _vm.inprogress
-      ? _c("div", { staticClass: "overlay" }, [
-          _c("i", { staticClass: "fas fa-3x fa-sync-alt fa-spin" }),
-          _vm._v(" "),
-          _c("div", { staticClass: "text-bold pl-2" }, [_vm._v("Loading...")])
-        ])
-      : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal",
+          attrs: { tabindex: "-1", role: "dialog", id: "logModal" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "modal-dialog modal-dialog-centered modal-lg",
+              attrs: { role: "document" }
+            },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c(
+                    "div",
+                    { staticClass: "overlay-wrapper text-center" },
+                    [
+                      _c(
+                        "overlay-scrollbars",
+                        {
+                          staticStyle: { "max-height": "350px" },
+                          attrs: {
+                            options: { scrollbars: { autoHide: "scroll" } }
+                          }
+                        },
+                        [
+                          _c(
+                            "table",
+                            { staticClass: "table text-nowrap table-hover" },
+                            [
+                              _c("thead", { staticClass: "thead-dark" }, [
+                                _c("tr", [
+                                  _c("th", [_vm._v("No")]),
+                                  _vm._v(" "),
+                                  _c("th", [_vm._v("Date")]),
+                                  _vm._v(" "),
+                                  _c("th", { staticClass: "text-left" }, [
+                                    _vm._v("Text")
+                                  ])
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "tbody",
+                                _vm._l(_vm.logs, function(log, index) {
+                                  return _c("tr", { key: index }, [
+                                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm._f("humanDate")(log.created_at)
+                                        )
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "text-left" }, [
+                                      _vm._v(_vm._s(log.text))
+                                    ])
+                                  ])
+                                }),
+                                0
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm.logs.length === 0
+                            ? _c("div", { staticClass: "w-100 text-center" }, [
+                                _vm._v("- Empty -")
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _vm.inprogress.log
+                        ? _c("div", {}, [
+                            _c("i", {
+                              staticClass: "fas fa-3x fa-sync-alt fa-spin"
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "text-bold pl-2" }, [
+                              _vm._v("Loading...")
+                            ])
+                          ])
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(2)
+              ])
+            ]
+          )
+        ]
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -94310,6 +94524,42 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [_vm._v("Import Users")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Log Viewer")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      )
     ])
   }
 ]

@@ -1,51 +1,120 @@
 <template>
-  <div class="card card-olive">
-    <div class="card-header">
-      <h3 class="card-title">Import Users</h3>
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-      <div class="row">
-        <div class="col-6">
-          <button class="btn btn-block bg-gradient-fuchsia" @click="getTemplate">Download Template</button>
-          <button class="btn btn-block bg-gradient-green mt-3" @click="gotoUsers">Manage Users</button>
-        </div>
-        <div class="col-6">
-          <div class="form-group">
-            <div class="input-group input-group-sm">
-              <div class="custom-file">
-                <input
-                  type="file"
-                  @change="setFile"
-                  class="custom-file-input"
-                  id="userFile"
-                  accept=".csv"
-                />
-                <label class="custom-file-label" id="lblUserFile" for="userFile">Choose file</label>
+  <div>
+    <div class="card card-olive">
+      <div class="card-header">
+        <h3 class="card-title">Import Users</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
+        <div class="overlay-wrapper">
+          <div class="row">
+            <div class="col-6">
+              <div class="row">
+                <div class="col-12">
+                  <button class="btn btn-block btn-default" @click="getTemplate">Download Template</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <button
+                    class="btn btn-block bg-gradient-green mt-3"
+                    @click="gotoUsers"
+                  >Manage Users</button>
+                </div>
+                <div class="col-6">
+                  <button class="btn btn-block bg-gradient-warning mt-3" @click="showLog">Log Viewer</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <div class="input-group input-group-sm">
+                  <div class="custom-file">
+                    <input
+                      type="file"
+                      @change="setFile"
+                      class="custom-file-input"
+                      id="userFile"
+                      accept=".csv"
+                    />
+                    <label class="custom-file-label" id="lblUserFile" for="userFile">Choose file</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <button
+                    class="btn btn-block bg-gradient-primary"
+                    @click="uploadFile('clear')"
+                  >Clear And Upload Users</button>
+                </div>
+                <div class="col-6">
+                  <button
+                    class="btn btn-block bg-gradient-navy"
+                    @click="uploadFile('append')"
+                  >Upload Users And Append</button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-6">
-              <button
-                class="btn btn-block bg-gradient-primary"
-                @click="uploadFile('clear')"
-              >Clear And Upload Users</button>
+          <div class="overlay" v-if="inprogress.main">
+            <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+            <div class="text-bold pl-2">Loading...</div>
+          </div>
+        </div>
+        <!-- ./overlay-wrapper -->
+      </div>
+      <!-- /.card-body -->
+      <!-- Log Modal -->
+      <div class="modal" tabindex="-1" role="dialog" id="logModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Log Viewer</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-            <div class="col-6">
-              <button
-                class="btn btn-block bg-gradient-navy"
-                @click="uploadFile('append')"
-              >Upload Users And Append</button>
+
+            <div class="modal-body">
+              <div class="overlay-wrapper text-center">
+                <overlay-scrollbars
+                  style="max-height: 350px"
+                  :options="{ scrollbars: { autoHide: 'scroll' } }"
+                >
+                  <table class="table text-nowrap table-hover">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>No</th>
+                        <th>Date</th>
+                        <th class="text-left">Text</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr v-for="(log,index) in logs" :key="index">
+                        <td>{{index + 1}}</td>
+                        <td>{{log.created_at | humanDate}}</td>
+                        <td class="text-left">{{log.text}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="w-100 text-center" v-if="logs.length === 0">- Empty -</div>
+                </overlay-scrollbars>
+                <div class v-if="inprogress.log">
+                  <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                  <div class="text-bold pl-2">Loading...</div>
+                </div>
+              </div>
+              <!-- ./overlay-wrapper -->
+            </div>
+            <!-- ./modal-body -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- /.card-body -->
-    <div class="overlay" v-if="inprogress">
-      <i class="fas fa-3x fa-sync-alt fa-spin"></i>
-      <div class="text-bold pl-2">Loading...</div>
     </div>
   </div>
 </template>
@@ -55,12 +124,25 @@ export default {
   data() {
     return {
       file: null,
-      inprogress: false
+      inprogress: {
+        main: false,
+        log: false
+      },
+      logs: []
     };
   },
   methods: {
     gotoUsers() {
       this.$router.push({ path: "/users" });
+    },
+    showLog() {
+      $("#logModal").modal("toggle");
+      this.inprogress.log = true;
+      this.logs = [];
+      axios.get("api/file?logger=users").then(resp => {
+        this.logs = resp.data;
+        this.inprogress.log = false;
+      });
     },
     getTemplate() {
       axios({
@@ -118,13 +200,13 @@ export default {
               formData.append("fcat", "users");
               this._uploadFile(formData);
             } else {
-              Swal.fire("You've Enter Otherwise.", "We Canceled This Process");
+              Swal.fire("That was not a YES.", "We Canceled This Process");
             }
           }
         });
       } else {
         Swal.fire({
-          title: "Confirm",
+          title: "Confirmation",
           text: "Please Confirm To Upload",
           showCancelButton: true,
           confirmButtonText: "Confirm"
@@ -140,17 +222,18 @@ export default {
       }
     },
     _uploadFile(formData) {
+      this.inprogress.main = true;
       axios
         .post("api/putfile", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(function() {
-          console.log("SUCCESS!!");
+        .then(resp => {
+          this.inprogress.main = false;
         })
-        .catch(function() {
-          console.log("FAILURE!!");
+        .catch(err => {
+          this.inprogress.main = false;
         });
     }
   }

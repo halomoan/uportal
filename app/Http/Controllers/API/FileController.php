@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Collection\Excel;
+use Illuminate\Support\Facades\Hash;
+use App\User;
+use App\Group;
+use App\Logger;
 
 class FileController extends Controller
 {
@@ -28,6 +31,13 @@ class FileController extends Controller
     public function index()
     {
         $this->authorize('isAdmin');
+        $logger = \Request::get('logger');
+
+        if ($logger) {
+            $user = auth('api')->user();
+            return Logger::where('user_id', '=', $user->id)
+                ->where('category', '=', $logger)->get();
+        }
     }
 
     /**
@@ -39,6 +49,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $this->authorize('isAdmin');
+        $filemode = $request->input('fmode');
         $filecat = $request->input('fcat');
         $file = $request->file('file');
         // File Details 
@@ -70,7 +81,7 @@ class FileController extends Controller
 
                 if ($filecat == 'users') {
 
-                    $status = $this->uploadUsers(storage_path("admfolder\\uploadfiles\\$filename"));
+                    $status = $this->uploadUsers(storage_path("admfolder\\uploadfiles\\$filename"), $filemode);
                     return $status;
                 } else {
 
@@ -130,37 +141,174 @@ class FileController extends Controller
             ->select('a.*', 'b.id as groupid', 'b.name as group')
             ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
             ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
+            ->where('urole', '<>', 'admin')
             ->orderBy('a.id', 'asc')->get();
 
         $filename = "users.csv";
         $handle = fopen($filename, 'w+');
-        fputcsv($handle, array('id', 'name', 'email', 'company', 'groupid', 'group', 'created at', 'todelete'));
+        fputcsv($handle, array('name', 'email', 'company', 'groupid', 'group', 'created at', 'password', 'todelete(Y)', 'tomodify(Y)', 'id'), chr(9));
 
         foreach ($table as $row) {
-            fputcsv($handle, array($row->id, $row->name, $row->email, $row->company, $row->groupid, $row->group, $row->created_at, ''));
+            fputcsv($handle, array($row->name, $row->email, $row->company, $row->groupid, $row->group, $row->created_at, '', '', '', $row->id), chr(9));
         }
         fclose($handle);
 
         return $filename;
     }
 
-    private function uploadUsers($filename)
+    private function uploadUsers($filename, $mode)
     {
-        $col = ['id' => 0, 'name' => 1, 'email' => 2, 'company' => 3, 'groupid' => 4, 'group' => 5, 'created_at' => 6, 'todelete' => 7];
+        $col = ['name' => 0, 'email' => 1, 'company' => 2, 'groupid' => 3, 'group' => 4, 'created_at' => 5, 'password' => 6, 'todelete' => 7, 'tomodify' => 8, 'id' => 9];
         $handle = fopen($filename, "r");
         $header = true;
 
+        $userid = auth('api')->user()->id;
+        Logger::where('user_id', '=', $userid)->where('category', '=', 'users')->delete();
 
-        while ($csvLine = fgetcsv($handle, 1000, ",")) {
+        if ($mode === 'clear') {
+            $res =  User::where('urole', '=', 'user')->delete();
+            if (!$res) {
+                $logtext = 'Failed to clear all the users';
+                Logger::create([
+                    'user_id' => $userid,
+                    'category' => 'users',
+                    'text' => $logtext
+                ]);
+                return;
+            }
+        }
+
+        while ($csvLine = fgetcsv($handle, 1000, chr(9))) {
 
             if ($header) {
                 $header = false;
             } else {
 
-                if ($csvLine[$col['todelete']] == 'Y') {
+                if ($csvLine[$col['todelete']] == "Y") {
+                    if ($mode == 'append') {
+                        if ($csvLine[$col['id']]) {
+                            $user = User::find($csvLine[$col['id']]);
+                            if ($user) {
+                                $user->delete();
+                            } else {
+                                $logtext = 'ID : ' . $csvLine[$col['id']] . ' not found, cannot delete user ' . $csvLine[$col['name']];
+                                Logger::create([
+                                    'user_id' => $userid,
+                                    'category' => 'users',
+                                    'text' => $logtext
+                                ]);
+                            }
+                        } else {
+                            //Logger
+                            $logtext = 'ID not found, cannot delete user ' . $csvLine[$col['name']];
+                            Logger::create([
+                                'user_id' => $userid,
+                                'category' => 'users',
+                                'text' => $logtext
+                            ]);
+                        }
+                    }
+                } elseif ($csvLine[$col['tomodify']] == "Y") {
+                    if ($mode == 'append') {
+                        if ($csvLine[$col['id']]) {
+                            $user = User::find($csvLine[$col['id']]);
+                            if ($user) {
+                                if (strlen($csvLine[$col['name']]) > 0) {
+                                    $user->name = $csvLine[$col['name']];
+                                }
+                                if (strlen($csvLine[$col['email']]) > 0) {
+                                    $user->email = $csvLine[$col['email']];
+                                }
+                                if (strlen($csvLine[$col['company']]) > 0) {
+                                    $user->company = $csvLine[$col['company']];
+                                }
+                                if (strlen($csvLine[$col['password']]) > 0) {
+                                    $user->password = Hash::make($csvLine[$col['password']]);
+                                }
+                                try {
+                                    $user->save();
+                                } catch (\Exception $e) {
+                                    $logtext = $e->getMessage();
+                                    Logger::create([
+                                        'user_id' => $userid,
+                                        'category' => 'users',
+                                        'text' => $logtext
+                                    ]);
+                                }
+                            } else {
+                                $logtext = 'ID : ' . $csvLine[$col['id']] . ' not found, cannot modify user ' . $csvLine[$col['name']];
+                                Logger::create([
+                                    'user_id' => $userid,
+                                    'category' => 'users',
+                                    'text' => $logtext
+                                ]);
+                            }
+                        } else {
+                            //Logger
+                            $logtext = 'ID not found, cannot modify user ' . $csvLine[$col['name']];
+                            Logger::create([
+                                'user_id' => $userid,
+                                'category' => 'users',
+                                'text' => $logtext
+                            ]);
+                        }
+                    }
                 } else {
-                };
+
+                    try {
+                        $user = User::create([
+                            "name" => $csvLine[$col['name']],
+                            "email" => $csvLine[$col['email']],
+                            "type" => 'person',
+                            "urole" => 'user',
+                            "company" => $csvLine[$col['company']],
+                            "password" => Hash::make($csvLine[$col['password']]),
+
+                        ]);
+                        $groups = Group::find($csvLine[$col['groupid']]);
+                        if ($groups) {
+                            $user->groups()->sync($groups);
+                        } else {
+                            //Logger
+                            $logtext = 'Group ID not found, assign group for user ' . $csvLine[$col['name']];
+                            Logger::create([
+                                'user_id' => $userid,
+                                'category' => 'users',
+                                'text' => $logtext
+                            ]);
+                        }
+                    } catch (\Illuminate\Database\QueryException $e) {
+
+                        $logtext = $e->getMessage();
+                        $pos1 = strpos($logtext, 'violation:');
+                        $pos2 = strpos($logtext, '(SQL:');
+                        $logtext = substr($logtext, $pos1 + 11, $pos2 - ($pos1 + 11));
+                        $logtext = $this->truncate($logtext, 188);
+                        Logger::create([
+                            'user_id' => $userid,
+                            'category' => 'users',
+                            'text' => $logtext
+                        ]);
+                    } catch (\Exception $e) {
+                        $logtext = $e->getMessage();
+                        Logger::create([
+                            'user_id' => $userid,
+                            'category' => 'users',
+                            'text' => $logtext
+                        ]);
+                    }
+                }
             }
         }
+        fclose($handle);
+    }
+
+    function truncate($string, $length)
+    {
+        if (strlen($string) > $length) {
+            $string = substr($string, 0, $length) . '...';
+        }
+
+        return $string;
     }
 }
