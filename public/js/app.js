@@ -4364,39 +4364,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     year: String
@@ -95092,31 +95059,37 @@ var render = function() {
                                 _c("div", { staticClass: "row" }, [
                                   _c("div", { staticClass: "col-12" }, [
                                     _c(
-                                      "table",
-                                      {
-                                        staticClass:
-                                          "table table-hover text-wrap"
-                                      },
-                                      [
-                                        _vm._m(1, true),
-                                        _vm._v(" "),
-                                        _c(
-                                          "tbody",
-                                          _vm._l(
-                                            _vm.pgTable[index].invoices,
-                                            function(invoice) {
-                                              return _c(
-                                                "tr",
-                                                { key: invoice.id },
+                                      "div",
+                                      { staticClass: "d-flex flex-wrap" },
+                                      _vm._l(
+                                        _vm.pgTable[index].invoices,
+                                        function(invoice) {
+                                          return _c(
+                                            "div",
+                                            {
+                                              key: invoice.id,
+                                              staticClass:
+                                                "card card-primary m-3",
+                                              staticStyle: { width: "20rem" }
+                                            },
+                                            [
+                                              _c(
+                                                "div",
+                                                { staticClass: "card-body" },
                                                 [
+                                                  _c("h5", {}, [
+                                                    _vm._v(
+                                                      "\n                                " +
+                                                        _vm._s(invoice.desc) +
+                                                        "\n                              "
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
                                                   _c(
-                                                    "td",
+                                                    "h6",
                                                     {
-                                                      class: {
-                                                        "text-bold":
-                                                          invoice.unread,
-                                                        "text-black-50": !invoice.unread
-                                                      }
+                                                      staticClass:
+                                                        "card-subtitle text-muted"
                                                     },
                                                     [
                                                       _vm._v(
@@ -95129,148 +95102,55 @@ var render = function() {
                                                     ]
                                                   ),
                                                   _vm._v(" "),
-                                                  _c(
-                                                    "td",
-                                                    {
-                                                      class: {
-                                                        "text-bold":
-                                                          invoice.unread,
-                                                        "text-black-50": !invoice.unread
-                                                      }
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "router-link",
-                                                        {
-                                                          attrs: {
-                                                            to: "/invoiced"
-                                                          }
-                                                        },
-                                                        [
-                                                          _vm._v(
-                                                            _vm._s(
-                                                              invoice.invno
-                                                            )
-                                                          )
-                                                        ]
-                                                      )
-                                                    ],
-                                                    1
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "td",
-                                                    {
-                                                      class: {
-                                                        "text-bold":
-                                                          invoice.unread,
-                                                        "text-black-50": !invoice.unread
-                                                      }
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "span",
-                                                        {
-                                                          staticClass:
-                                                            "d-inline-block text-truncate",
-                                                          staticStyle: {
-                                                            "max-width": "400px"
-                                                          }
-                                                        },
-                                                        [
-                                                          _vm._v(
-                                                            "\n                                  " +
-                                                              _vm._s(
-                                                                invoice.desc
-                                                              ) +
-                                                              "\n                                "
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "td",
-                                                    {
-                                                      staticClass:
-                                                        "text-green text-right",
-                                                      class: {
-                                                        "text-bold":
-                                                          invoice.unread,
-                                                        "text-black-50": !invoice.unread
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                                " +
+                                                  _c("div", [
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass:
+                                                          "text-green text-bold"
+                                                      },
+                                                      [_vm._v("SGD")]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticStyle: {
+                                                          "font-size": "2rem"
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
                                                           _vm._s(
                                                             _vm._f("currency")(
                                                               invoice.amount,
-                                                              "SGD",
+                                                              "",
                                                               2
                                                             )
-                                                          ) +
-                                                          "\n                              "
-                                                      )
-                                                    ]
-                                                  ),
+                                                          )
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]),
                                                   _vm._v(" "),
-                                                  _c(
-                                                    "td",
-                                                    {
-                                                      staticClass: "text-right",
-                                                      class: {
-                                                        "text-bold":
-                                                          invoice.unread,
-                                                        "text-black-50": !invoice.unread
-                                                      }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                                " +
-                                                          _vm._s(
-                                                            _vm._f("upText")(
-                                                              invoice.filename
-                                                            )
-                                                          ) +
-                                                          "\n                              "
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "td",
-                                                    [
-                                                      _c(
-                                                        "router-link",
-                                                        {
-                                                          attrs: {
-                                                            to: {
-                                                              name: "viewPDF",
-                                                              params: {
-                                                                id: invoice.id
-                                                              }
-                                                            }
-                                                          }
-                                                        },
-                                                        [
-                                                          _c("i", {
-                                                            staticClass:
-                                                              "far fa-file-pdf text-red"
-                                                          })
-                                                        ]
-                                                      )
-                                                    ],
-                                                    1
+                                                  _vm._m(1, true)
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                { staticClass: "card-footer" },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(invoice.created_at)
                                                   )
                                                 ]
                                               )
-                                            }
-                                          ),
-                                          0
-                                        )
-                                      ]
+                                            ]
+                                          )
+                                        }
+                                      ),
+                                      0
                                     ),
                                     _vm._v(" "),
                                     _c(
@@ -95378,20 +95258,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Date")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Invoice No")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Description")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [_vm._v("Amount")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-right" }, [_vm._v("Filename")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "text-right" })
-      ])
+    return _c("a", { staticClass: "btn", attrs: { href: "#" } }, [
+      _c("i", { staticClass: "far fa-file-pdf text-red" }),
+      _vm._v(
+        "\n                                Download\n                              "
+      )
     ])
   }
 ]

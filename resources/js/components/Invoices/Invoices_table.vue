@@ -77,38 +77,71 @@
                     >
                       <div class="row">
                         <div class="col-12">
-                          <div class="d-flex flex-wrap">
-                            <!-- Insert Card Here -->
-                            <div
-                              class="card card-primary m-3"
-                              style="width: 20rem;"
-                              v-for="invoice in pgTable[index].invoices"
-                              :key="invoice.id"
-                            >
-                              <div class="card-body">
-                                <h5 class>
+                          <table class="table table-hover text-wrap">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Invoice No</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-right">Filename</th>
+                                <th class="text-right"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="invoice in pgTable[index].invoices" :key="invoice.id">
+                                <td
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
+                                >{{ invoice.invdate | humanDate}}</td>
+                                <td
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
+                                >
+                                  <router-link to="/invoiced">{{ invoice.invno }}</router-link>
+                                </td>
+                                <td
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
+                                >
+                                  <span
+                                    class="d-inline-block text-truncate"
+                                    style="max-width: 400px;"
+                                  >
+                                    {{
+                                    invoice.desc
+                                    }}
+                                  </span>
+                                </td>
+                                <td
+                                  class="text-green text-right"
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
+                                >
                                   {{
-                                  invoice.desc
+                                  invoice.amount
+                                  | currency(
+                                  "SGD",
+                                  2
+                                  )
                                   }}
-                                </h5>
+                                </td>
 
-                                <h6
-                                  class="card-subtitle text-muted"
-                                >{{ invoice.invdate | humanDate}}</h6>
-
-                                <div>
-                                  <span class="text-green text-bold">SGD</span>
-                                  <span style="font-size: 2rem">{{invoice.amount| currency("",2) }}</span>
-                                </div>
-                                <a href="#" class="btn">
-                                  <i class="far fa-file-pdf text-red"></i>
-                                  Download
-                                </a>
-                              </div>
-                              <div class="card-footer">{{ invoice.created_at }}</div>
-                            </div>
-                          </div>
-                          <!-- ./d-flex -->
+                                <td
+                                  class="text-right"
+                                  v-bind:class="{'text-bold':invoice.unread,'text-black-50': !invoice.unread}"
+                                >
+                                  {{
+                                  invoice.filename
+                                  | upText
+                                  }}
+                                </td>
+                                <td>
+                                  <router-link
+                                    :to="{ name: 'viewPDF', params: { id:  invoice.id }}"
+                                  >
+                                    <i class="far fa-file-pdf text-red"></i>
+                                  </router-link>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                           <div
                             class="text-center"
                             v-show="pgTable[index].invoices.length < 1"
