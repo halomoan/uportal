@@ -93270,7 +93270,7 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "table",
-                      { staticClass: "table table-hover text-nowrap" },
+                      { staticClass: "table table-hover text-wrap" },
                       [
                         _vm._m(1),
                         _vm._v(" "),
@@ -95095,7 +95095,7 @@ var render = function() {
                                       "table",
                                       {
                                         staticClass:
-                                          "table table-hover text-nowrap"
+                                          "table table-hover text-wrap"
                                       },
                                       [
                                         _vm._m(1, true),

@@ -77,7 +77,7 @@
                     >
                       <div class="row">
                         <div class="col-12">
-                          <table class="table table-hover text-nowrap">
+                          <table class="table table-hover text-wrap">
                             <thead>
                               <tr>
                                 <th>Date</th>

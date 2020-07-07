@@ -76,7 +76,7 @@
                         :per-page="pgTable.perpage"
                       ></pagination>
                     </div>
-                    <table class="table table-hover text-nowrap">
+                    <table class="table table-hover text-wrap">
                       <thead>
                         <tr>
                           <th>Invoice Date</th>
