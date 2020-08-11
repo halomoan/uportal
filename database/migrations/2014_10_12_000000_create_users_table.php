@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('type')->default('person');
             $table->string('urole')->default('user');
-            $table->string('photo')->default('profile.png');
+            $table->string('photo')->nullable()->default('profile.png');
             $table->string('company')->nullable();
             $table->string('password');
             $table->dateTime('latest_login')->nullable();

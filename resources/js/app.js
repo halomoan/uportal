@@ -59,6 +59,14 @@ let routes = [
     //     component: require("./components/GenToken.vue").default
     // },
     {
+        path: "/faphones",
+        component: require("./components/FAPhones/FAPhones.vue").default
+    },
+    {
+        path: "/faphoneform",
+        component: require("./components/FAPhones/FAPhoneForm.vue").default
+    },
+    {
         path: "/users",
         component: require("./components/Users/Users.vue").default
     },

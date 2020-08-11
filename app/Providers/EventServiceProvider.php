@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Logout' => [
             'App\Listeners\Users\PreviousLogin',
         ],
+        'Laravel\Passport\Events\AccessTokenCreated' => [
+            'App\Listeners\Tokens\RevokeOldTokens',
+        ],
     ];
 
     /**

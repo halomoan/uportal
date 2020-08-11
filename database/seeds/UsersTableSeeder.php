@@ -29,13 +29,13 @@ class UsersTableSeeder extends Seeder
             'urole' => 'admin'
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            User::create([
-                'name' => $faker->name,
-                'email' => $faker->email,
-                'urole' => 'user',
-                'password' => $password,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     User::create([
+        //         'name' => $faker->name,
+        //         'email' => $faker->email,
+        //         'urole' => 'user',
+        //         'password' => $password,
+        //     ]);
+        // }
     }
 }

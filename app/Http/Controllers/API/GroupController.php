@@ -33,12 +33,14 @@ class GroupController extends Controller
                 //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
                 $query->whereLike(['name'], $search);
             })->paginate(10);
+        } else if ($type = \Request::get('t')) {
+            return Group::where('type', '=', $type)->get();
         } else {
 
             if (\Request::get('page')) {
-                return Group::latest()->paginate(10);
+                return Group::where('type', '=', 'group')->latest()->paginate(10);
             } else {
-                return Group::orderBy('name')->get();
+                return Group::where('type', '=', 'group')->orderBy('name')->get();
                 //return Group::select('*', DB::Raw("'group' AS member"))->orderBy('name')->get();
             }
         }

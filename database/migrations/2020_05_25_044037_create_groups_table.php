@@ -19,7 +19,7 @@ class CreateGroupsTable extends Migration
             $table->string('name', 50)->unique();
             $table->boolean('is_default')->default(false);
             $table->boolean('is_enabled')->default(true);
-            $table->string('type')->default('group');
+            $table->string('type', 5)->default('group');
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\TLType;
 use App\Company;
+use App\Group;
 
 class ConfigurationTableSeeder extends Seeder
 {
@@ -34,5 +35,10 @@ class ConfigurationTableSeeder extends Seeder
         Company::create(['CoCode' => '1001', 'Name' => 'UOL Group Limited']);
         Company::create(['CoCode' => '1002', 'Name' => 'UOL Property Investments Pte. Ltd.']);
         Company::create(['CoCode' => '1003', 'Name' => 'Novena Square Development Pte. Ltd.']);
+
+        //Pre-defined Groups
+
+        Group::create(['name' => 'QAS Barcode Server', 'is_enabled' => 1, 'type' => 'barcd']);
+        Group::create(['name' => 'PRD Barcode Server', 'is_enabled' => 1, 'type' => 'barcd']);
     }
 }

@@ -243,20 +243,20 @@ export default {
   data() {
     return {
       inprogress: {
-        filter: false
+        filter: false,
       },
       users: {},
       pgUsers: {
-        uri: "api/user?",
+        uri: "api/user?qtype=person",
         page: 1,
         perpage: 10,
         records: 0,
         options: {
           chunksNavigation: scroll,
           texts: {
-            count: "|||"
-          }
-        }
+            count: "|||",
+          },
+        },
       },
       searchText: "",
       filter: {
@@ -264,9 +264,9 @@ export default {
         name: null,
         company: null,
         email: null,
-        group: []
+        group: [],
       },
-      groups: []
+      groups: [],
     };
   },
   methods: {
@@ -281,7 +281,7 @@ export default {
         if (this.filter.group.length > 0) {
           let ids = "";
           for (var i = 0; i < this.filter.group.length; i++) {
-            let group = _.find(this.groups, item => {
+            let group = _.find(this.groups, (item) => {
               if (item.name === this.filter.group[i]) {
                 return item;
               }
@@ -318,13 +318,13 @@ export default {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
-        }).then(result => {
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
           //Send request to the server
           if (result.value) {
             axios
               .delete("api/user/" + id)
-              .then(result => {
+              .then((result) => {
                 if (result.status === 200) {
                   Swal.fire(
                     "Deleted!",
@@ -334,7 +334,7 @@ export default {
                   this.getTableData(this.pgUsers.page);
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 let message = error.response.data.message;
                 if (message) {
                   Swal.fire("Failed!", message, "warning");
@@ -367,7 +367,7 @@ export default {
           .catch(() => {
             Toast.fire({
               icon: "error",
-              title: "Something is wrong. Failed to search."
+              title: "Something is wrong. Failed to search.",
             });
             this.$Progress.fail();
           });
@@ -376,12 +376,12 @@ export default {
     doFilter() {
       axios
         .get("api/group")
-        .then(resp => {
+        .then((resp) => {
           if (resp.data) {
             this.groups = resp.data;
           }
         })
-        .catch(err => {});
+        .catch((err) => {});
 
       $("#filterModal").modal("toggle");
       this.filter.show = true;
@@ -398,7 +398,7 @@ export default {
           this.filter[key] = null;
         }
       }
-    }
+    },
   },
 
   mounted() {
@@ -406,6 +406,6 @@ export default {
       this.searchText = this.$parent.searchText;
     });
     this.getTableData(1);
-  }
+  },
 };
 </script>

@@ -114,6 +114,31 @@
                 </p>
               </a>
               <ul class="nav nav-treeview">
+
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-barcode text-grey"></i>
+                    <p>
+                      FA Barcode Scanner
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <router-link to="/faphones" class="nav-link">
+                        <i class="fas fa-mobile-alt nav-icon"></i>
+                        <p>View Phones</p>
+                      </router-link>
+                    </li>
+                    <li class="nav-item">
+                      <router-link to="/faphoneform" class="nav-link">
+                        <i class="fas fa-mobile nav-icon"></i>
+                        <p>Register Phone</p>
+                      </router-link>
+                    </li>
+                  </ul>
+                </li>
+
                 <li class="nav-item">
                   <router-link to="/users" class="nav-link">
                     <i class="fas fa-user nav-icon"></i>
@@ -138,12 +163,12 @@
                     <p>Import</p>
                   </router-link>
                 </li>
-                {{-- <li class="nav-item">
+                <li class="nav-item">
                   <router-link to="/gentoken" class="nav-link">
                     <i class="fas fa-key nav-icon"></i>
                     <p>Generate Token</p>
                   </router-link>
-                </li> --}}
+                </li>
               </ul>
             </li>
             @endcan

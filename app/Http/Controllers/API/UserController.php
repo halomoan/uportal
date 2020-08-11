@@ -10,6 +10,7 @@ use App\User;
 use App\Group;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserController extends Controller
 {
 
@@ -34,6 +35,7 @@ class UserController extends Controller
         $this->authorize('isAdmin');
 
 
+        $qtype = \Request::get('qtype');
         $qname = \Request::get('qname');
         $qcompany = \Request::get('qcompany');
         $qemail = \Request::get('qemail');
@@ -45,6 +47,14 @@ class UserController extends Controller
         $and = "";
         $where = "";
         $filter = "";
+
+        if (isset($qtype)) {
+            $filter .=  " $and a.type = '$qtype'";
+            $and = "AND";
+        } else {
+            $filter .=  " $and a.type = 'person'";
+            $and = "AND";
+        }
 
         if (isset($qname)) {
             $filter .=  " $and a.name like '%$qname%'";
@@ -66,6 +76,8 @@ class UserController extends Controller
         if ($and) {
             $where = $filter;
         }
+
+
 
         if ($search = \Request::get('q')) {
 
@@ -138,12 +150,22 @@ class UserController extends Controller
             'groups' => 'required|array',
         ]);
 
+
+
         $user =  User::create([
             'name' => $request['name'],
             'email' => $request['email'],
+            'company' => $request['company'],
+            'type' => $request['type'],
             'urole' => $request['urole'],
             'password' => Hash::make($request['password'])
         ]);
+
+        //if ($request['type'] == 'phone') {
+        if ($user->type == 'phone') {
+
+            DB::update('update users set email_verified_at  = now() where id = ?', [$user->id]);
+        }
 
         if ($request['groups']) {
             $groups = Group::find($request['groups']);

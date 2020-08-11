@@ -29,5 +29,13 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'passport' => [
+        'login_endpoint' => 'http://uportal.test/oauth/token',
+        'client_id' => '913672f2-39e4-4965-8aa7-dc0c6778e21d',
+        'client_secret' => '0UgqrndoFSQgryJ742JaUbiOZ3GYiSWHaqCGWpZ1',
+    ],
+    'fabarcode' => [
+        'phone_password' => 'Faconf!gN3w',
+    ],
 
 ];

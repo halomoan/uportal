@@ -22,10 +22,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResources(['user' => 'API\UserController']);
 Route::apiResources(['group' => 'API\GroupController']);
 
+
+
 Route::apiResources(['news' => 'API\NewsController']);
 Route::apiResources(['impinvoice' => 'API\ImpInvoiceController']);
 Route::apiResources(['invoice' => 'API\InvoiceController']);
+Route::apiResources(['facode' => 'API\FACodeController']);
+Route::apiResources(['faphone' => 'API\FAPhoneController']);
 
+Route::post('falogin', 'API\AuthController@falogin');
 
 Route::get('profile', 'API\ProfileController@index')->name('profile.index');
 Route::post('profile', 'API\ProfileController@store')->name('profile.store');

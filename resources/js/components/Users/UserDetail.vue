@@ -296,22 +296,23 @@ export default {
         id: "",
         name: "",
         email: "",
+        type: "person",
         password: "",
         repassword: "",
         groups: [],
-        type: "",
+        urole: "",
         photo: "",
-        billaddr: ""
+        billaddr: "",
       }),
       groups: {
         allGroups: [],
         availGroup: [],
         userGroup: [],
         checkAvailGroup: [],
-        checkUserGroup: []
+        checkUserGroup: [],
       },
       inprogress: false,
-      editMode: false
+      editMode: false,
     };
   },
   methods: {
@@ -327,11 +328,11 @@ export default {
           this.inprogress = false;
           Toast.fire({
             icon: "success",
-            title: "User modified successfully"
+            title: "User modified successfully",
           });
           this.goBack();
         })
-        .catch(e => {
+        .catch((e) => {
           this.$Progress.fail();
           this.inprogress = false;
           let message = e.response.data.message;
@@ -365,7 +366,7 @@ export default {
           this.inprogress = false;
           Toast.fire({
             icon: "success",
-            title: "User created successfully"
+            title: "User created successfully",
           });
 
           this.goBack();
@@ -394,7 +395,7 @@ export default {
       this.groups.userGroup = [
         //...new Set([...this.groups.userGroup, ...selected])
         ...this.groups.userGroup,
-        ...selected
+        ...selected,
       ];
 
       this.groups.availGroup = _.differenceBy(
@@ -416,7 +417,7 @@ export default {
       this.groups.availGroup = [
         //...new Set([...this.groups.availGroup, ...selected])
         ...this.groups.availGroup,
-        ...selected
+        ...selected,
       ];
 
       this.groups.userGroup = _.differenceBy(
@@ -430,10 +431,12 @@ export default {
         .get("api/group")
         .then(({ data }) => {
           this.groups.allGroups = data;
-          this.groups.availGroup = this.groups.allGroups.filter(function(item) {
+          this.groups.availGroup = this.groups.allGroups.filter(function (
+            item
+          ) {
             return item.is_enabled && !item.is_default;
           });
-          this.groups.userGroup = this.groups.allGroups.filter(function(item) {
+          this.groups.userGroup = this.groups.allGroups.filter(function (item) {
             return item.is_default;
           });
 
@@ -454,7 +457,7 @@ export default {
             icon: "error",
             title: "Oops...",
             text: "Failed to retrieve Group Info!",
-            footer: "<a href='/users'>Let me redo again</a>"
+            footer: "<a href='/users'>Let me redo again</a>",
           });
         });
     },
@@ -502,15 +505,15 @@ export default {
             icon: "error",
             title: "Oops...",
             text: "Something went wrong!",
-            footer: "<a href='/users'>Let me redo again</a>"
+            footer: "<a href='/users'>Let me redo again</a>",
           });
         });
-    }
+    },
   },
   mounted() {
     this.inprogress = false;
 
     this.getGroups();
-  }
+  },
 };
 </script>
