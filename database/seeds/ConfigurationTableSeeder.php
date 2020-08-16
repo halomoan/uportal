@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\TLType;
-use App\Company;
-use App\Group;
+use App\Models\TLType;
+use App\Models\Company;
+use App\Models\Group;
 
 class ConfigurationTableSeeder extends Seeder
 {

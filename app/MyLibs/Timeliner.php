@@ -3,9 +3,8 @@
 namespace App\MyLibs;
 
 use Illuminate\Support\Facades\DB;
-use \App\Timeline;
-use \App\TLBody;
-use Facade\FlareClient\Time\Time;
+use App\Models\Timeline;
+use App\Models\TLBody;
 
 class Timeliner
 {
@@ -23,11 +22,11 @@ class Timeliner
         return self::$_instance;
     }
 
-    public function Invoice(\App\Invoice $invoice)
+    public function Invoice(\App\Models\Invoice $invoice)
     {
     }
 
-    public function News(\App\News $news)
+    public function News(\App\Models\News $news)
     {
 
         $timeline = Timeline::where('news_id', '=', $news->id)->first();

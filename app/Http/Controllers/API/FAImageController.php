@@ -4,10 +4,15 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
+use Intervetion\Image\Facades\Image;
 
-class FAPhoneController extends Controller
+class FAImageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,15 +41,7 @@ class FAPhoneController extends Controller
      */
     public function show($id)
     {
-        $domain = config('app.domain');
-
-        $user = User::where('email', 'like', $id . '@' . $domain)->first();
-
-        if ($user) {
-            return response(['status' => true]);
-        } else {
-            return response(['status' => false]);
-        }
+        //
     }
 
     /**

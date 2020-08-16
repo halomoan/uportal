@@ -5,10 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\InvoiceH;
-use App\InvoiceL;
-use App\Invoice;
-use App\User;
+use App\Models\InvoiceH;
+use App\Models\InvoiceL;
+use App\Models\Invoice;
+use App\Models\User;
 
 class ImpInvoiceController extends Controller
 {

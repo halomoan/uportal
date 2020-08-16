@@ -29,6 +29,7 @@ Route::apiResources(['impinvoice' => 'API\ImpInvoiceController']);
 Route::apiResources(['invoice' => 'API\InvoiceController']);
 Route::apiResources(['facode' => 'API\FACodeController']);
 Route::apiResources(['faphone' => 'API\FAPhoneController']);
+Route::apiResources(['faimage' => 'API\FAImageController']);
 
 Route::post('falogin', 'API\AuthController@falogin');
 

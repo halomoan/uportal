@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\News;
+use App\Models\News;
 use Illuminate\Support\Facades\DB;
 
 class NewsTableSeeder extends Seeder

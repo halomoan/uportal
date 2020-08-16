@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Timeline;
-use App\TLBody;
+use App\Models\Timeline;
+use App\Models\TLBody;
 use Faker\Generator as Faker;
 
 $factory->define(Timeline::class, function (Faker $faker) {

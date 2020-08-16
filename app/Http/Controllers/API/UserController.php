@@ -6,8 +6,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\User;
-use App\Group;
+use App\Models\User;
+use App\Models\Group;
 use Illuminate\Support\Facades\Hash;
 
 

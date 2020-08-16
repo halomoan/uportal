@@ -4,13 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\News;
-use App\User;
-use App\Group;
+use App\Models\News;
+use App\Models\Group;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\MyLibs\Timeliner;
-use Facade\FlareClient\Time\Time;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 class NewsController extends Controller

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Timeline;
+use App\Models\Timeline;
 use Illuminate\Support\Facades\DB;
 
 class TimelinesTableSeeder extends Seeder

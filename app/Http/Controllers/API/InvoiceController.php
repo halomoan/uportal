@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\InvoiceH;
-use App\Invoice;
+use App\Models\InvoiceH;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller

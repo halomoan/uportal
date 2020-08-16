@@ -192,7 +192,7 @@ export default {
       inprogress: false,
       photo: false,
       editMode: true,
-      company: "ABC"
+      company: "ABC",
     };
   },
   methods: {
@@ -226,20 +226,18 @@ export default {
           type: "error",
           title: "Oops...",
           text:
-            "You are uploading a large file. Max photo size allowed is 2 MB."
+            "You are uploading a large file. Max photo size allowed is 2 MB.",
         });
         return false;
       }
-      reader.onloadend = file => {
+      reader.onloadend = (file) => {
         this.form.photo = reader.result;
       };
       reader.readAsDataURL(file);
     },
 
     formChanged(objOne, objTwo) {
-      return !!!_([objOne])
-        .filter(objTwo)
-        .size();
+      return !!!_([objOne]).filter(objTwo).size();
     },
 
     updateProfile() {
@@ -260,7 +258,7 @@ export default {
             this.photo = this.form.photo;
             Toast.fire({
               icon: "success",
-              title: "Profile modified successfully"
+              title: "Profile modified successfully",
             });
             this.goBack();
           })
@@ -273,16 +271,23 @@ export default {
         Swal.fire({
           type: "info",
           title: "Oops...",
-          text: "Nothing has changed. No updates is required"
+          text: "Nothing has changed. No updates is required",
         });
       }
-    }
+    },
+    goBack() {
+      window.history.length > 1
+        ? this.$router.go(-1)
+        : this.$router.push("/home");
+    },
   },
+
   created() {
     axios.get("api/profile").then(({ data }) => {
+      console.log(data);
       this.form = new Form(data);
       this.photo = this.form.photo;
     });
-  }
+  },
 };
 </script>

@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
-use App\User;
-use App\Group;
-use App\Logger;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\Logger;
 
 class FileController extends Controller
 {
