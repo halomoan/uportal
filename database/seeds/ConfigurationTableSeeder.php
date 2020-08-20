@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\TLType;
 use App\Models\Company;
 use App\Models\Group;
+use App\Models\User;
 
 class ConfigurationTableSeeder extends Seeder
 {
@@ -14,6 +15,25 @@ class ConfigurationTableSeeder extends Seeder
      */
     public function run()
     {
+
+        // Initial User
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        User::truncate();
+        Group::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
+        $faker = \Faker\Factory::create();
+        $password = Hash::make('sap12345');
+
+        User::create([
+            'name' => 'Halomoan',
+            'email' => 'halomoan@uportal.test',
+            'password' => $password,
+            'urole' => 'admin',
+            'email_verified_at' => now()
+        ]);
+
+
         //TLType configuration
 
         TLType::truncate();
