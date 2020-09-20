@@ -2,13 +2,14 @@
   <div>
     <div class="overlay-wrapper">
       <div class="form-group row">
-        <label for="recipient-type" class="col-sm-2 col-form-label">Recipient:</label>
+        <label for="select-type" v-show="type == null" class="col-sm-2 col-form-label">Type:</label>
         <div class="col-sm-10">
           <select
+            v-show="type == null"
             class="form-control"
-            id="recipient-type"
-            v-model="rcpts.type"
-            @change="getAvailRcptList()"
+            id="select-type"
+            v-model="oList.type"
+            @change="getAvailRcptList(false)"
           >
             <option value="group">Group</option>
             <option value="person">User</option>
@@ -23,13 +24,13 @@
               Member(s):
             </label>
             <select
-              v-model="rcpts.checkAvailList"
+              v-model="oList.checkAvailList"
               multiple
               class="form-control"
               id="unassigned"
               size="10"
             >
-              <option v-for="(rcpt,index) in rcpts.availList" :key="rcpt.id" :value="index">
+              <option v-for="(rcpt,index) in oList.availList" :key="rcpt.id" :value="index">
                 {{
                 rcpt.name
                 }}
@@ -48,13 +49,13 @@
               Member(s):
             </label>
             <select
-              v-model="rcpts.checkSetList"
+              v-model="oList.checkSetList"
               multiple
               class="form-control"
               id="setList"
               size="10"
             >
-              <option v-for="(rcpt,index) in rcpts.setList" :key="index" :value="index">
+              <option v-for="(rcpt,index) in oList.setList" :key="index" :value="index">
                 {{
                 rcpt.name
                 }}
@@ -75,40 +76,40 @@
 <script>
 export default {
   props: {
-    id: { type: Number, required: true },
-    url: { type: String, required: true }
+    id: { required: true },
+    url: { type: String, required: true },
+    type: { type: String },
   },
-  // watch: {
-  //   id: function(newVal, oldVal) {
-  //     this.getSelectedList();
-  //   }
-  // },
   data() {
     return {
       inprogress: false,
-      rcpts: {
-        type: "person",
+      oList: {
+        type: "group",
         allList: [],
         availList: [],
         setList: [],
         checkAvailList: [],
         checkSetList: [],
-        changed: false
-      }
+        changed: false,
+      },
     };
   },
   methods: {
-    getAvailRcptList() {
-      if (this.rcpts.type === "person") {
+    getAvailRcptList(applyDefault) {
+      if (this.type != null) {
+        this.oList.type = this.type;
+      }
+
+      if (this.oList.type === "person") {
         this.inprogress = true;
         axios
-          .get("api/user")
+          .get("api/user?qtype=person")
           .then(({ data }) => {
-            let setListByPerson = this.rcpts.setList.filter(function(data) {
+            let setListByPerson = this.oList.setList.filter(function (data) {
               return data.type === "person";
             });
 
-            this.rcpts.availList = _.differenceBy(data, setListByPerson, "id");
+            this.oList.availList = _.differenceBy(data, setListByPerson, "id");
 
             this.inprogress = false;
           })
@@ -118,7 +119,7 @@ export default {
               icon: "error",
               title: "Oops...",
               text: "Failed to retrieve Group Info!",
-              footer: "<a href='/news'>Let me redo again</a>"
+              footer: "<a href='/news'>Let me redo again</a>",
             });
           });
       } else {
@@ -126,11 +127,26 @@ export default {
         axios
           .get("api/group")
           .then(({ data }) => {
-            let setListByGroup = this.rcpts.setList.filter(function(data) {
-              return data.type === "group";
-            });
+            if (applyDefault) {
+              this.oList.setList = data.filter(function (data) {
+                if (data.is_default) {
+                  data.name = "GROUP\\" + data.name;
+                  return data;
+                }
+              });
+              this.$emit("userGroupList", this.oList.setList);
 
-            this.rcpts.availList = _.differenceBy(data, setListByGroup, "id");
+              this.oList.availList = _.differenceBy(
+                data,
+                this.oList.setList,
+                "id"
+              );
+            } else {
+              let setListByGroup = this.oList.setList.filter(function (data) {
+                return data.type === "group";
+              });
+              this.oList.availList = _.differenceBy(data, setListByGroup, "id");
+            }
 
             this.inprogress = false;
           })
@@ -140,65 +156,22 @@ export default {
               icon: "error",
               title: "Oops...",
               text: "Failed to retrieve Group Info!",
-              footer: "<a href='/news'>Let me redo again</a>"
+              footer: "<a href='/news'>Let me redo again</a>",
             });
           });
       }
     },
-
-    getSelectedList(id) {
-      this.inprogress = true;
-
-      axios
-        .get(this.url + "/" + id)
-        .then(({ data }) => {
-          let setList = [];
-          if (data.publishGroup) {
-            setList = [...data.publishGroup];
-          }
-
-          if (data.publishUser) {
-            setList = [...setList, ...data.publishUser];
-          }
-
-          this.rcpts.setList = setList.map(data => {
-            if (data.type === "group") {
-              data.name = "GROUP\\" + data.name;
-            } else {
-              data.name = "USER\\" + data.name;
-            }
-            return data;
-          });
-
-          this.rcpts.changed = false;
-
-          this.getAvailRcptList();
-          this.inprogress = false;
-        })
-        .catch(e => {
-          this.inprogress = false;
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Failed to retrieve Member Info!",
-            footer: "<a href='/news'>Let me redo again</a>"
-          });
-        });
-    },
-    addToList() {
-      if (!this.rcpts.availList.length) {
-        return;
+    setSelectedList(data) {
+      let setList = [];
+      if (data.groups) {
+        setList = [...data.groups];
       }
 
-      let selected = [];
-
-      for (var i in this.rcpts.checkAvailList) {
-        let idx = this.rcpts.checkAvailList[i];
-
-        selected.push(this.rcpts.availList[idx]);
+      if (data.users) {
+        setList = [...setList, ...data.users];
       }
 
-      selected = selected.map(data => {
+      this.oList.setList = setList.map((data) => {
         if (data.type === "group") {
           data.name = "GROUP\\" + data.name;
         } else {
@@ -207,52 +180,132 @@ export default {
         return data;
       });
 
-      this.rcpts.setList = [...this.rcpts.setList, ...selected];
+      //this.$emit("userGroupList", this.oList.setList);
 
-      this.rcpts.availList = _.differenceBy(
-        this.rcpts.availList,
+      this.oList.changed = false;
+
+      this.getAvailRcptList(false);
+    },
+    getSelectedList(id) {
+      this.inprogress = true;
+
+      axios
+        .get(this.url + "/" + id)
+        .then(({ data }) => {
+          let setList = [];
+          if (data.groups) {
+            setList = [...data.groups];
+          }
+
+          if (data.users) {
+            setList = [...setList, ...data.users];
+          }
+
+          this.oList.setList = setList.map((data) => {
+            if (data.type === "group") {
+              data.name = "GROUP\\" + data.name;
+            } else {
+              data.name = "USER\\" + data.name;
+            }
+            return data;
+          });
+
+          this.$emit("userGroupList", this.oList.setList);
+
+          this.oList.changed = false;
+
+          this.getAvailRcptList(false);
+          this.inprogress = false;
+        })
+        .catch((e) => {
+          this.inprogress = false;
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Failed to retrieve Member Info!",
+            footer: "<a href='/news'>Let me redo again</a>",
+          });
+        });
+    },
+    addToList() {
+      if (!this.oList.availList.length) {
+        return;
+      }
+
+      let selected = [];
+
+      for (var i in this.oList.checkAvailList) {
+        let idx = this.oList.checkAvailList[i];
+
+        selected.push(this.oList.availList[idx]);
+      }
+
+      selected = selected.map((data) => {
+        if (data.type === "group") {
+          data.name = "GROUP\\" + data.name;
+        } else {
+          data.name = "USER\\" + data.name;
+        }
+        return data;
+      });
+
+      this.oList.setList = [...this.oList.setList, ...selected];
+
+      this.oList.availList = _.differenceBy(
+        this.oList.availList,
         selected,
         "id"
       );
-      this.rcpts.checkAvailList = [];
+      this.oList.checkAvailList = [];
 
-      this.rcpts.changed = true;
-      this.$emit("userGroupList", this.rcpts.setList);
+      this.oList.changed = true;
+      this.$emit("userGroupList", this.oList.setList);
     },
     removeFromList() {
-      if (!this.rcpts.setList.length) {
+      if (!this.oList.setList.length) {
         return;
       }
       let selected = [];
-      for (var i in this.rcpts.checkSetList) {
-        let idx = this.rcpts.checkSetList[i];
+      for (var i in this.oList.checkSetList) {
+        let idx = this.oList.checkSetList[i];
 
-        selected.push(this.rcpts.setList[idx]);
+        selected.push(this.oList.setList[idx]);
       }
 
-      this.rcpts.setList = _.difference(this.rcpts.setList, selected);
+      this.oList.setList = _.difference(this.oList.setList, selected);
 
-      selected = selected.filter(data => {
-        return data.type === this.rcpts.type;
+      selected = selected.filter((data) => {
+        return data.type === this.oList.type;
       });
 
-      this.rcpts.availList = [...this.rcpts.availList, ...selected];
-      this.rcpts.checkSetList = [];
+      selected = selected.map((data) => {
+        if (data.type === "group") {
+          //data.name = "GROUP\\" + data.name;
+          data.name = data.name.substring(6, 100);
+        } else {
+          //data.name = "USER\\" + data.name;
+          data.name = data.name.substring(5, 100);
+        }
+        return data;
+      });
 
-      this.rcpts.changed = true;
-      this.$emit("userGroupList", this.rcpts.setList);
+      this.oList.availList = [...this.oList.availList, ...selected];
+      this.oList.checkSetList = [];
+
+      this.oList.changed = true;
+      this.$emit("userGroupList", this.oList.setList);
     },
 
     isListChanged() {
-      return this.rcpts.changed;
+      return this.oList.changed;
     },
     setListChanged(val) {
-      this.rcpts.changed = val;
+      this.oList.changed = val;
     },
     clearSetList() {
-      this.rcpts.setList = [];
-    }
-  }
+      this.oList.setList = [];
+    },
+  },
 };
 </script>
 

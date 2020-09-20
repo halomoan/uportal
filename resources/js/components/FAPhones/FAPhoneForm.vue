@@ -64,19 +64,23 @@
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label for="company" class="col-sm-2 col-form-label">Company</label>
+                          <label for="company" class="col-sm-2 col-form-label">Company Code</label>
                           <div class="col-sm-10">
-                            <input
-                              type="text"
+                            <select
+                              id="cocode"
+                              name="cocode"
                               class="form-control"
-                              autocomplete="off"
-                              :class="{'is-invalid': form.errors.has('company')}"
-                              id="company"
-                              v-model="form.company"
-                              name="company"
-                              placeholder="Company Name"
-                              required
-                            />
+                              style="width: 100%;"
+                              tabindex="-1"
+                              aria-hidden="true"
+                              v-model="company"
+                            >
+                              <option
+                                v-for="item in companies"
+                                v-bind:key="item.CoCode"
+                                :value="item.CoCode"
+                              >{{ item.CoCode}} - {{ item.Name }}</option>
+                            </select>
                             <has-error :form="form" field="company"></has-error>
                           </div>
                         </div>
@@ -166,12 +170,15 @@ export default {
         email: "",
         password: "",
         repassword: "",
+        company: "",
         groups: [],
         urole: "user",
       }),
       phoneid: "",
       group: "",
       groups: [],
+      company: null,
+      companies: [],
       inprogress: false,
       editMode: false,
     };
@@ -207,6 +214,7 @@ export default {
         this.form.password = "Faconf!gN3w";
         this.form.repassword = "Faconf!gN3w";
         this.form.type = "phone";
+        this.form.company = this.company;
         this.form.email = this.phoneid.trim() + "@uportal.test";
         this.form.groups = [this.group];
         return true;
@@ -224,6 +232,8 @@ export default {
       if (data.groups.length > 0) {
         this.group = data.groups[0].id;
       }
+
+      this.company = data.company;
     },
 
     editPhone() {
@@ -347,19 +357,27 @@ export default {
         }
       });
     },
-    getFAConfig() {
-      axios.get("api/fabarcode?q=config").then(({ data }) => {
-        this.groups = data;
-        const userId = this.$route.query.userId;
-        if (userId) {
-          this.getPhoneData(userId);
+    getCompanies() {
+      axios.get("api/company").then(({ data }) => {
+        this.companies = data;
+        if (this.companies && this.companies.length > 0) {
+          this.company = this.companies[0].CoCode;
         }
       });
     },
+    // getFAConfig() {
+    //   axios.get("api/fabarcode?q=config").then(({ data }) => {
+    //     this.groups = data;
+    //     const userId = this.$route.query.userId;
+    //     if (userId) {
+    //       this.getPhoneData(userId);
+    //     }
+    //   });
+    // },
   },
   mounted() {
     this.inprogress = false;
-
+    this.getCompanies();
     this.getGroups();
   },
 };

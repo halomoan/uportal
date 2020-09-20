@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Group;
+use App\Models\FAUser;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -33,7 +34,6 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('isAdmin');
-
 
         $qtype = \Request::get('qtype');
         $qname = \Request::get('qname');
@@ -81,34 +81,38 @@ class UserController extends Controller
 
         if ($search = \Request::get('q')) {
 
-            return User::where(function ($query) use ($search) {
+
+            return User::where(function ($query) use ($search, $qtype) {
                 //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
-                $query->whereLike(['name', 'email'], $search);
+                $query->whereLike(['name', 'email'], $search)->where('type', '=', $qtype);
             })->paginate(10);
         } else {
 
             if (\Request::get('page')) {
-
                 if ($where) {
                     // \DB::listen(function ($sql) {
                     //     var_dump($sql);
                     // });
 
                     return DB::table('users as a')
-                        ->select('a.*', 'b.name as group')
+                        //->select('a.*', 'b.name as group')
+                        ->selectRaw('DISTINCT a.*')
                         ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
                         ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
                         ->whereRaw($where)
                         ->orderBy('a.created_at', 'desc')
                         ->paginate(10);
+                    // return DB::table('users as a')->whereRaw($where)->paginate(10);
                 } else {
                     return DB::table('users as a')
-                        ->select('a.*', 'b.name as group')
+                        //->select('a.*', 'b.name as group')
+                        ->selectRaw('DISTINCT a.*')
                         ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
                         ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
                         ->orderBy('a.created_at', 'desc')
                         ->paginate(10);
                     //return User::latest()->paginate(10);
+                    //return DB::table('users as a')->paginate(10);
                 }
             } else {
                 // if ($where) {
@@ -127,8 +131,8 @@ class UserController extends Controller
                 //         ->orderBy('a.name', 'asc')
                 //         ->get();
 
-                // }
-                return User::orderBy('name')->get();
+                // }                
+                return DB::table('users as a')->whereRaw($where)->orderBy('name')->get();
             }
         }
     }
@@ -148,6 +152,8 @@ class UserController extends Controller
             'password' => 'required|string|min:8|max:191',
             'repassword' => 'required|string|min:8|max:191',
             'groups' => 'required|array',
+            'fauser' => 'required|boolean',
+            'fagroup' => 'required|integer',
         ]);
 
 
@@ -167,10 +173,28 @@ class UserController extends Controller
             DB::update('update users set email_verified_at  = now() where id = ?', [$user->id]);
         }
 
+        // if ($request['groups']) {
+        //     $groups = Group::find($request['groups']);
+        //     $user->groups()->sync($groups);
+        // }
+
         if ($request['groups']) {
-            $groups = Group::find($request['groups']);
+
+            $req_groups = $request['groups'];
+            array_push($req_groups, $request['fagroup']);
+
+
+            $groups = Group::find($req_groups);
+            $user->groups()->sync($groups);
+        } else {
+            $req_groups = [];
+            array_push($req_groups, $request['fagroup']);
+
+            $groups = Group::find($req_groups);
             $user->groups()->sync($groups);
         }
+
+        $fauser = FAUser::updateOrCreate(['user_id' => $user->id], ['active' => $request['fauser'], 'companies' => implode(',', $request['facocodes'])]);
 
         return $user;
     }
@@ -185,7 +209,34 @@ class UserController extends Controller
     {
         $this->authorize('isAdmin');
         $user = User::findOrFail($id);
-        $user['groups'] = $user->groups()->get();
+
+        $groups = $user->groups()->get()->toArray();
+        $user['groups'] = array_filter(
+            $groups,
+            function ($group) {
+                return $group['type'] == 'group';
+            }
+        );
+
+        $fagroup = array_filter(
+            $groups,
+            function ($group) {
+                return $group['type'] == 'barcd';
+            }
+        );
+
+        $user['fagroup']  = array_pop($fagroup)['id'];
+
+        $fauser = $user->fauser()->first();
+        if ($fauser) {
+            $facocodes = $fauser->companies;
+            $user['facocodes'] = explode(',', $facocodes);
+            $user['fauser'] = $fauser->active;
+        } else {
+            $user['facocodes'] = [];
+            $user['fauser'] = false;
+        }
+
         return $user;
     }
 
@@ -208,6 +259,8 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8|max:191',
             'repassword' => 'sometimes|string|min:8|max:191',
             'groups' => 'required|array',
+            'fauser' => 'required|boolean',
+            'fagroup' => 'required|integer',
 
         ]);
 
@@ -224,10 +277,27 @@ class UserController extends Controller
 
         $user->update($request->all());
 
+
         if ($request['groups']) {
-            $groups = Group::find($request['groups']);
+
+            $req_groups = $request['groups'];
+            array_push($req_groups, $request['fagroup']);
+
+
+            $groups = Group::find($req_groups);
+            $user->groups()->sync($groups);
+        } else {
+            $req_groups = [];
+            array_push($req_groups, $request['fagroup']);
+
+            $groups = Group::find($req_groups);
             $user->groups()->sync($groups);
         }
+
+
+
+        $fauser = FAUser::updateOrCreate(['user_id' => $user->id], ['active' => $request['fauser'], 'companies' => implode(',', $request['facocodes'])]);
+
 
         return ['message' => 'Success'];
     }

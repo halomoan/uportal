@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class FAConfig extends Model
 {
 
-    public $timestamps = true;
+    public $timestamps = false;
 
-    protected $fillable = ['group_id', 'sub1len', 'sub2len', 'sub3len', 'runlen'];
-
+    protected $fillable = ['desc', 'sub1len', 'sub2len', 'sub3len', 'runlen'];
     protected $table = 'faconfig';
-    protected $primaryKey = 'group_id';
 }

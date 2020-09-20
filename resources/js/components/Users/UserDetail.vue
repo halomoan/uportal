@@ -38,7 +38,7 @@
                       <a class="nav-link active" href="#general" data-toggle="tab">General</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#billing" data-toggle="tab">Billing</a>
+                      <a class="nav-link" href="#fixedasset" data-toggle="tab">Fixed Asset</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="#group" data-toggle="tab">Group</a>
@@ -80,7 +80,7 @@
                               id="company"
                               v-model="form.company"
                               name="company"
-                              placeholder="company"
+                              placeholder="Company Name"
                               required
                             />
                             <has-error :form="form" field="company"></has-error>
@@ -160,96 +160,51 @@
                         <!-- </form> -->
                       </div>
                       <!-- /.tab-pane -->
-                      <div class="tab-pane" id="billing">
-                        <form class="form-horizontal" @submit.prevent="createUser">
-                          <div class="form-group row">
-                            <label for="billaddr" class="col-sm-2 col-form-label">
-                              Billing
-                              Address
-                            </label>
-                            <div class="col-sm-10">
-                              <textarea
-                                rows="5"
-                                class="form-control"
-                                :class="{'is-invalid': form.errors.has('billaddr')}"
-                                id="billaddr"
-                                v-model="form.billaddr"
-                                name="billaddr"
-                                placeholder="billaddr"
-                              />
-                              <has-error :form="form" field="billaddr"></has-error>
-                            </div>
+                      <div class="tab-pane" id="fixedasset">
+                        <div class="form-group form-check">
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="allowfa"
+                            v-model="form.fauser"
+                          />
+                          <label class="form-check-label" for="allowfa">Fixed Asset Module</label>
+                        </div>
+                        <div class="form-group row">
+                          <label for="group" class="col-sm-2 col-form-label">SAP System</label>
+                          <div class="col-sm-10">
+                            <select
+                              name="fagroup"
+                              v-model="form.fagroup"
+                              id="fagroup"
+                              class="form-control"
+                              :class="{'is-invalid': form.errors.has('fagroup')}"
+                            >
+                              <option
+                                v-for="fagroup in fagroups"
+                                :key="fagroup.id"
+                                :value="fagroup.id"
+                              >{{ fagroup.name }}</option>
+                            </select>
+                            <has-error :form="form" field="fagroup"></has-error>
                           </div>
-                        </form>
+                        </div>
+                        <company-select
+                          ref="sel"
+                          v-on:CompanyList="setFACocode"
+                          :id="userId"
+                          url="api/facompany"
+                        ></company-select>
                       </div>
                       <!-- /.tab-pane -->
                       <div class="tab-pane" id="group">
-                        <div class="row">
-                          <div class="col-5">
-                            <div class="form-group">
-                              <label for="unassigned">
-                                Available
-                                Group:
-                              </label>
-                              <select
-                                v-model="groups.checkAvailGroup"
-                                multiple
-                                class="form-control"
-                                id="unassigned"
-                                size="10"
-                              >
-                                <option
-                                  v-for="(group,index) in groups.availGroup"
-                                  :key="group.id"
-                                  :value="index"
-                                >
-                                  {{
-                                  group.name
-                                  }}
-                                </option>
-                              </select>
-                            </div>
-                          </div>
-                          <div
-                            class="col-2 d-flex flex-column justify-content-center align-items-center"
-                          >
-                            <button
-                              type="button"
-                              class="btn btn-info mb-2"
-                              @click.prevent="addUserGroup"
-                            >&gt;</button>
-                            <button
-                              type="button"
-                              class="btn btn-default"
-                              @click.prevent="removeUserGroup"
-                            >&lt;</button>
-                          </div>
-                          <div class="col-5">
-                            <div class="form-group">
-                              <label for="usergroup">
-                                User
-                                Group:
-                              </label>
-                              <select
-                                v-model="groups.checkUserGroup"
-                                multiple
-                                class="form-control"
-                                id="usergroup"
-                                size="10"
-                              >
-                                <option
-                                  v-for="(group,index) in groups.userGroup"
-                                  :key="index"
-                                  :value="index"
-                                >
-                                  {{
-                                  group.name
-                                  }}
-                                </option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
+                        <user-group-select
+                          ref="group"
+                          v-on:userGroupList="setUserGroup"
+                          :id="userId"
+                          type="group"
+                          url="api/group"
+                        ></user-group-select>
                       </div>
                       <!-- /.tab-pane -->
                       <!-- /.form -->
@@ -289,7 +244,14 @@
 </template>
 
 <script>
+import CompanySelect from "../Common/CompanySelect.vue";
+import UserGroupSelect from "../Common/UserGroupSelect.vue";
+
 export default {
+  components: {
+    CompanySelect,
+    UserGroupSelect,
+  },
   data() {
     return {
       form: new Form({
@@ -302,25 +264,26 @@ export default {
         groups: [],
         urole: "",
         photo: "",
-        billaddr: "",
+        fauser: false,
+        facocodes: [],
+        fagroup: "",
       }),
-      groups: {
-        allGroups: [],
-        availGroup: [],
-        userGroup: [],
-        checkAvailGroup: [],
-        checkUserGroup: [],
-      },
       inprogress: false,
       editMode: false,
+      userId: 0,
+      facocodes: null,
+      userGroup: null,
+      fagroups: [],
     };
   },
   methods: {
     editUser() {
-      this.form.groups = _.map(this.groups.userGroup, "id");
+      this.form.groups = _.map(this.userGroup, "id");
+      this.form.facocodes = _.map(this.facocodes, "CoCode");
 
       this.$Progress.start();
       this.inprogress = true;
+
       this.form
         .put("api/user/" + this.form.id)
         .then(() => {
@@ -335,26 +298,12 @@ export default {
         .catch((e) => {
           this.$Progress.fail();
           this.inprogress = false;
-          let message = e.response.data.message;
-          const errors = e.response.data.errors;
-
-          for (const error in errors) {
-            if (error === "groups") {
-              for (const msg in errors[error]) {
-                message = errors[error][msg];
-              }
-            }
-          }
-
-          if (message) {
-            Swal.fire("Failed!", message, "warning");
-          } else {
-            Swal.fire("Failed!", "There is something wrong.", "warning");
-          }
+          this.catchPrompt(e);
         });
     },
     createUser() {
-      this.form.groups = _.map(this.groups.userGroup, "id");
+      this.form.groups = _.map(this.userGroup, "id");
+      this.form.facocodes = _.map(this.facocodes, "CoCode");
 
       this.$Progress.start();
       this.inprogress = true;
@@ -371,95 +320,16 @@ export default {
 
           this.goBack();
         })
-        .catch(() => {
+        .catch((e) => {
           this.$Progress.fail();
           this.inprogress = false;
+          this.catchPrompt(e);
         });
     },
     goBack() {
       window.history.length > 1
         ? this.$router.go(-1)
         : this.$router.push("/users");
-    },
-    addUserGroup() {
-      if (!this.groups.availGroup.length) {
-        return;
-      }
-      let selected = [];
-      for (var i in this.groups.checkAvailGroup) {
-        let idx = this.groups.checkAvailGroup[i];
-
-        selected.push(this.groups.availGroup[idx]);
-      }
-
-      this.groups.userGroup = [
-        //...new Set([...this.groups.userGroup, ...selected])
-        ...this.groups.userGroup,
-        ...selected,
-      ];
-
-      this.groups.availGroup = _.differenceBy(
-        this.groups.availGroup,
-        this.groups.userGroup,
-        "id"
-      );
-    },
-    removeUserGroup() {
-      if (!this.groups.userGroup.length) {
-        return;
-      }
-      let selected = [];
-      for (var i in this.groups.checkUserGroup) {
-        let idx = this.groups.checkUserGroup[i];
-
-        selected.push(this.groups.userGroup[idx]);
-      }
-      this.groups.availGroup = [
-        //...new Set([...this.groups.availGroup, ...selected])
-        ...this.groups.availGroup,
-        ...selected,
-      ];
-
-      this.groups.userGroup = _.differenceBy(
-        this.groups.userGroup,
-        this.groups.availGroup,
-        "id"
-      );
-    },
-    getGroups() {
-      axios
-        .get("api/group")
-        .then(({ data }) => {
-          this.groups.allGroups = data;
-          this.groups.availGroup = this.groups.allGroups.filter(function (
-            item
-          ) {
-            return item.is_enabled && !item.is_default;
-          });
-          this.groups.userGroup = this.groups.allGroups.filter(function (item) {
-            return item.is_default;
-          });
-
-          //New or Edit User
-          const userId = this.$route.query.userId;
-          if (typeof userId === "undefined") {
-            this.editMode = false;
-            this.form.reset();
-          } else if (userId) {
-            this.getUserData(userId);
-          } else {
-            this.editMode = false;
-            this.form.reset();
-          }
-        })
-        .catch(() => {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Failed to retrieve Group Info!",
-            footer: "<a href='/users'>Let me redo again</a>",
-          });
-        });
     },
 
     getUserData(userId) {
@@ -471,26 +341,15 @@ export default {
           this.form = new Form(data);
 
           if (data.groups && data.groups.length > 0) {
-            this.groups.userGroup = [];
-
-            Vue.set(this.groups, "userGroup", data.groups);
-
-            this.groups.availGroup = [];
-
-            Vue.set(
-              this.groups,
-              "availGroup",
-              _.differenceBy(this.groups.allGroups, this.groups.userGroup, "id")
-            );
+            this.$refs.group.setSelectedList(data);
+            this.userGroup = data.groups;
           } else {
-            this.groups.availGroup = [];
-
-            Vue.set(this.groups, "availGroup", [...this.groups.allGroups]);
-
-            this.groups.userGroup = [];
+            this.$refs.group.getAvailRcptList(true);
           }
 
-          //this.$forceUpdate();
+          //Get Selected FA
+
+          this.$refs.sel.getSelectedList(userId);
 
           this.editMode = true;
           this.inprogress = false;
@@ -509,11 +368,52 @@ export default {
           });
         });
     },
+    getfagroups(init) {
+      axios.get("api/group?t=barcd").then(({ data }) => {
+        this.fagroups = data;
+        if (init && this.fagroups.length > 0) {
+          this.form.fagroup = this.fagroups[0].id;
+        }
+      });
+    },
+    setFACocode(data) {
+      this.facocodes = data;
+    },
+    setUserGroup(data) {
+      this.userGroup = data;
+    },
+    catchPrompt(e) {
+      let message = e.response.data.message;
+      const errors = e.response.data.errors;
+
+      for (const error in errors) {
+        if (error === "groups") {
+          for (const msg in errors[error]) {
+            message = errors[error][msg];
+          }
+        }
+      }
+
+      if (message) {
+        Swal.fire("Failed!", message, "warning");
+      } else {
+        Swal.fire("Failed!", "There is something wrong.", "warning");
+      }
+    },
   },
   mounted() {
     this.inprogress = false;
+    this.userId = this.$route.query.userId;
 
-    this.getGroups();
+    if (this.userId) {
+      this.getUserData(this.userId);
+      this.getfagroups(false);
+    } else {
+      this.editMode = false;
+      this.$refs.group.getAvailRcptList(true);
+      this.getfagroups(true);
+      this.form.reset();
+    }
   },
 };
 </script>

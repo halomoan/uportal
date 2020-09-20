@@ -64,7 +64,6 @@
                         <th>Name</th>
                         <th>Company</th>
                         <th>Email</th>
-                        <th>Group</th>
                         <th>Role</th>
                         <th>Registered At</th>
                         <th>Action</th>
@@ -76,7 +75,6 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.company }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.group }}</td>
                         <td>{{ user.urole | upText }}</td>
                         <td>
                           {{
@@ -275,7 +273,7 @@ export default {
         let filter = "";
 
         filter += this.filter.name ? "&qname=" + this.filter.name : "";
-        filter += this.filter.company ? "&company=" + this.filter.company : "";
+        filter += this.filter.company ? "&qcompany=" + this.filter.company : "";
         filter += this.filter.email ? "&qemail=" + this.filter.email : "";
 
         if (this.filter.group.length > 0) {
@@ -350,7 +348,8 @@ export default {
     searchTable() {
       if (this.$Role.isAdmin()) {
         if (this.searchText) {
-          this.pgUsers.uri = "api/user?q=" + this.searchText + "&page=";
+          this.pgUsers.uri =
+            "api/user?qtype=person&q=" + this.searchText + "&page=";
         } else {
           this.pgUsers.uri = "api/user?page=1";
         }
@@ -398,6 +397,7 @@ export default {
           this.filter[key] = null;
         }
       }
+      this.getTableData(1);
     },
   },
 

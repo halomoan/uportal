@@ -104,6 +104,18 @@
               </router-link>
             </li>
 
+            @can('isFAUser')
+            <li class="nav-item">
+              <router-link to="/faimages" class="nav-link" exact-active-class="active">
+                <i class="nav-icon fas fa-images text-blue"></i>
+                <p>
+                  Fixed Asset Images
+                  <span v-if="hasNew.Invoice" class="right badge badge-danger">New</span>
+                </p>
+              </router-link>
+            </li>
+            @endcan
+
             @can('isAdmin')
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
@@ -130,6 +142,7 @@
                         <p>View Phones</p>
                       </router-link>
                     </li>
+
                     <li class="nav-item">
                       <router-link to="/faphoneform" class="nav-link">
                         <i class="fas fa-mobile nav-icon"></i>

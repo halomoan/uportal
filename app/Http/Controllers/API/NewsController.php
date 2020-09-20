@@ -178,8 +178,8 @@ class NewsController extends Controller
     {
         $this->authorize('isAuthor');
         $news = News::findOrFail($id);
-        $news['publishUser'] = $news->users()->select('id', 'name', 'type')->get();
-        $news['publishGroup'] = $news->groups()->select('id', 'name', 'type')->get();
+        $news['users'] = $news->users()->select('id', 'name', 'type')->get();
+        $news['groups'] = $news->groups()->select('id', 'name', 'type')->get();
         return $news;
     }
 

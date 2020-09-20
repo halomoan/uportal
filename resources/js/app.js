@@ -63,6 +63,10 @@ let routes = [
         component: require("./components/FAPhones/FAPhones.vue").default
     },
     {
+        path: "/faimages",
+        component: require("./components/FAPhones/FAImages.vue").default
+    },
+    {
         path: "/faphoneform",
         component: require("./components/FAPhones/FAPhoneForm.vue").default
     },

@@ -4,10 +4,19 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use SAPNWRFC\Connection as SapConnection;
+use SAPNWRFC\Exception as SapException;
+use App\Models\SAPConfig;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 class FACodeController extends Controller
 {
+
+    private $MAX_CHUNK = 100;
+    private $SAPGROUP = ['1', '2'];
+
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -20,7 +29,20 @@ class FACodeController extends Controller
      */
     public function index()
     {
-        //
+        $page = \Request::get('page');
+        $qtype = \Request::get('qtype');
+        $qcocode = \Request::get('cocode');
+
+        $qcocode = '2000';
+        $page = 1;
+        $limit = 3;
+
+        //$path = public_path('/storage/faimages/');
+        if ($qtype == 'image') {
+            $images = $this->getImages($qcocode, $page, $limit);
+            $total = count($images);
+            return  new Paginator($images, $total, $limit);
+        }
     }
 
     /**
@@ -32,33 +54,56 @@ class FACodeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'serverkey' => 'required',
+            'phoneid' => 'required',
+            'cocode' => 'required',
+            'version' => 'required',
             'codes' => 'sometimes',
             'files' => 'sometimes',
             'files.*' => 'image|mimes:png,jpeg|max:2048'
         ]);
 
+        $phoneid = $request->get('phoneid');
+        $serverkey = $request->get('serverkey');
+        $version = $request->get('version');
+        $cocode = $request->get('cocode');
+
+        //return response(['status' => true, 'msg' => $cocode]);
 
         $codes = $request->get('codes');
 
-        foreach ($codes as $code) {
-            // return response(['status' => $code]);
+        //return response(['status' => true, 'msg' => $codes[0]]);
+
+        $result = $this->updSAPCode($cocode, $phoneid, $serverkey, $version, $codes);
+
+        if (!$result['status']) {
+
+            return response(['status' => false, 'msg' => $result['msg']]);
         }
 
 
         if ($request->hasfile('files')) {
 
+            $path = public_path('/storage/faimages/' . $cocode . '/');
+
             foreach ($request->file('files') as $image) {
                 $name = $image->getClientOriginalName();
 
-                $currentPhoto = public_path('/storage/faimages/') . $name;
+                $currentPhoto = $path . $name;
                 $prefix = '';
                 if (file_exists($currentPhoto)) {
                     //@unlink($currentPhoto);
-                    $prefix = 'N';
+                    $image->move(
+                        $path . '/New/',
+                        $name
+                    );
+                } else {
+                    $image->move($path,  $name);
                 }
 
                 //\Image::make($request->photo)->save(public_path('storage/faimages/') . $name)->fit(800, 800);
-                $image->move(public_path('storage/faimages/'), $prefix . $name);
+
+
             }
         }
 
@@ -74,20 +119,18 @@ class FACodeController extends Controller
     public function show($id)
     {
         if ($id == 'test') {
-            $codeInfo = [
+            $result = [
                 'status' => true,
                 'msg' => 'Successfully Connected'
             ];
         } else {
-            $codeInfo = [
-                'desc' => 'Machine A (Type II)',
-                'loc' => 'Level 1',
-                'qty' => '10',
-                'acqdate' => '2020-08-10'
-            ];
+            $group = $this->getSAPGroup();
+            if ($group === null) {
+                return response(['msg' => 'Phone ID is not part of any group']);
+            }
+            $result = $this->getFAInfo($group->id, $id);
         }
-
-        return $codeInfo;
+        return  $result;
     }
 
     /**
@@ -111,5 +154,150 @@ class FACodeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function updSAPCode($cocode, $phoneid, $serverkey, $version, $codes)
+    {
+
+        // $user = auth('api')->user();
+        // $group = $user->groups()->first();
+        $group = $this->getSAPGroup();
+        if ($group === null) {
+            return response(['msg' => 'Phone ID is not part of any group']);
+        }
+
+        $XML_ARRAY = array();
+        $timestamp = Carbon::now()->format('Ymd');
+        $newXML = "";
+
+        if ($codes == null) {
+            $totalItems = 0;
+        } else {
+            $totalItems = count($codes);
+        }
+
+        $idx = 0;
+
+        while ($idx < $totalItems) {
+            $newXML = "<?xml version='1.0' encoding='UTF-8'?>";
+            $newXML = $newXML . "<SCAN_BARCODE>";
+            $newXML = $newXML . "<ENTITY timestamp='" . $timestamp . "' uniqueid='" . $phoneid . "' serverkey='" . $serverkey . "' version='" . $version . "'>" . $cocode . "</ENTITY>";
+            $newXML = $newXML . "<ITEM>";
+            $counter = 0;
+            while ($counter < $this->MAX_CHUNK && $idx < $totalItems) {
+                $newXML = $newXML . "<CODE>" . $codes[$idx] . "</CODE>";
+                $counter = $counter +  1;
+                $idx = $idx + 1;
+            }
+            $newXML = $newXML .  "</ITEM></SCAN_BARCODE>";
+
+            array_push($XML_ARRAY, $newXML);
+        }
+
+        //dd($newXML);
+
+        $config = SAPConfig::find($group->id)->toArray();
+
+
+        try {
+            $c = new SapConnection($config);
+            $f = $c->getFunction('ZFMB_SETBARCODE');
+
+            for ($i = 0; $i < sizeof($XML_ARRAY); $i++) {
+                $xml = $XML_ARRAY[$i];
+
+                $result = $f->invoke([
+                    'BARCODE_XML' => $xml
+                ]);
+
+                if ($result['TXTRESULT'] != 'OK') {
+                    $c->close();
+                    return (['status' => false, 'msg' => $result['TXTRESULT']]);
+                }
+            }
+
+            return (['status' => true, 'msg' => 'OK']);
+
+            $c->close();
+        } catch (SapException $ex) {
+            //echo 'Exception: ' . $ex->getMessage() . PHP_EOL;
+            //$err =  $ex->getErrorInfo();
+            //echo $err['code'];
+            //echo $err['key'];
+            //echo $err['message'];            
+            return (['status' => false, 'msg' => 'Cannot Connect SAP']);
+        }
+    }
+
+    private function getSAPGroup()
+    {
+        $user = auth('api')->user();
+        $group = $user->groups()->whereIn('id', $this->SAPGROUP)->first();
+
+
+        return $group;
+    }
+
+    private function getFAInfo($groupid, $codes)
+    {
+
+        $config = SAPConfig::find($groupid)->toArray();
+
+        try {
+            $c = new SapConnection($config);
+
+            $f = $c->getFunction('ZFMB_GET_FADESC');
+            $result = $f->invoke([
+                'BARCODEIDS' => $codes,
+            ]);
+
+            $compressed_data = '';
+            foreach ($result["CONTENT_BINARY"] as $content) {
+                $compressed_data = $compressed_data . $content["LINE"];
+            }
+            $result = json_decode(gzinflate($compressed_data));
+            return $result->result;
+
+            $c->close();
+        } catch (SapException $ex) {
+            //echo 'Exception: ' . $ex->getMessage() . PHP_EOL;
+            //$err =  $ex->getErrorInfo();
+            //echo $err['code'];
+            //echo $err['key'];
+            //echo $err['message'];            
+            //return response(['msg' => 'Cannot Connect SAP']);
+            return null;
+        }
+    }
+
+    private function getImages($cocode, $page, $limit)
+    {
+        $files = Storage::disk('public')->files('faimages/' . $cocode);
+
+        $files = array_splice($files, ($page - 1) * $limit, $limit);
+
+
+        //$output = [];
+        $codes = '';
+        foreach ($files as $file) {
+            $code = substr($file, 14, 14);
+            $codes = $codes . ';' . $code;
+
+            //array_push($output, ['code' => $code]);
+        }
+
+        $group = $this->getSAPGroup();
+
+        $infos = $this->getFAInfo($group->id, $codes);
+
+        if ($infos) {
+
+            foreach ($infos as $info) {
+                $info->url = '/storage/faimages/' . $cocode . '/' . $info->id . '.png';
+            }
+            return $infos;
+        } else {
+            return [];
+        }
     }
 }

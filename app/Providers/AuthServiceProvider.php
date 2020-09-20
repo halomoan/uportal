@@ -40,6 +40,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->urole === 'user';
         });
 
+        Gate::define('isFAUser', function ($user) {
+            return $user->fauser->active;
+        });
 
         //
     }

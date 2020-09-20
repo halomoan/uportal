@@ -62,9 +62,8 @@
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Company</th>
+                        <th>Co.Code</th>
                         <th>Phone ID</th>
-                        <th>Group</th>
                         <th>Registered At</th>
                         <th>Action</th>
                       </tr>
@@ -73,9 +72,8 @@
                       <tr v-for="user in users" :key="user.id">
                         <td>{{ user.id }}</td>
                         <td>{{ user.name }}</td>
-                        <td>{{ user.company }}</td>
+                        <td align="center">{{ user.company }}</td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.group }}</td>
                         <td>
                           {{
                           user.created_at
@@ -180,7 +178,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="email" class="col-sm-3 col-form-label">Email</label>
+                    <label for="email" class="col-sm-3 col-form-label">Phone ID</label>
 
                     <div class="col-sm-9">
                       <input
@@ -192,7 +190,7 @@
                       />
                     </div>
                   </div>
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <div class="row">
                       <div class="col-8">
                         <label for="group">Group</label>
@@ -207,7 +205,7 @@
                       <option v-for="group in groups" :key="group.id">{{ group.name }}</option>
                     </select>
                   </div>
-                  <span>Selected Group: {{this.filter.group}}</span>
+                  <span>Selected Group: {{this.filter.group}}</span>-->
                 </form>
               </div>
               <!-- ./modal-body -->
@@ -274,7 +272,7 @@ export default {
         let filter = "";
 
         filter += this.filter.name ? "&qname=" + this.filter.name : "";
-        filter += this.filter.company ? "&company=" + this.filter.company : "";
+        filter += this.filter.company ? "&qcompany=" + this.filter.company : "";
         filter += this.filter.email ? "&qemail=" + this.filter.email : "";
 
         if (this.filter.group.length > 0) {
@@ -397,6 +395,7 @@ export default {
           this.filter[key] = null;
         }
       }
+      this.getTableData(1);
     },
   },
 

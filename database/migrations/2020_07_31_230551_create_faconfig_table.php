@@ -14,16 +14,15 @@ class CreateFaconfigTable extends Migration
     public function up()
     {
         Schema::create('faconfig', function (Blueprint $table) {
-            $table->unsignedBigInteger('group_id')->unique();
-            $table->string('domain', 50);
-            $table->string('passwd', 20);
+            $table->id();
+            $table->string('desc', 50);
             $table->string('sub1len', 3);
             $table->string('sub2len', 3);
             $table->string('sub3len', 3);
             $table->string('runlen', 3);
-            $table->timestamps();
+            //$table->timestamps();
 
-            $table->foreign('group_id')->references('id')->on('groups');
+            //$table->foreign('group_id')->references('id')->on('groups');
         });
     }
 

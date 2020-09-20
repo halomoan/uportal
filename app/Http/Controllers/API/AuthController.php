@@ -83,9 +83,11 @@ class AuthController extends Controller
             return response(['msg' => 'Phone ID is not part of any group']);
         }
 
-        $faconfig = FAConfig::find($group->id);
+        // Initial Config
+        $faconfig = FAConfig::find(1);
 
         return response([
+            'cocode' => $user->company,
             'sub1len' => $faconfig->sub1len,
             'sub2len' => $faconfig->sub2len, 'sub3len' => $faconfig->sub3len, 'runlen' => $faconfig->runlen, 'access_token' => $token
         ]);
