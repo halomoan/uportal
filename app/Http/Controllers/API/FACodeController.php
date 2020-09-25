@@ -16,6 +16,8 @@ class FACodeController extends Controller
 
     private $MAX_CHUNK = 100;
     private $SAPGROUP = ['1', '2'];
+    private $FILESTORE = '/storage/faimages/';
+    private $MAX_LIMIT = 10;
 
     public function __construct()
     {
@@ -33,15 +35,22 @@ class FACodeController extends Controller
         $qtype = \Request::get('qtype');
         $qcocode = \Request::get('cocode');
 
-        $qcocode = '2000';
-        $page = 1;
-        $limit = 3;
+        if (strlen($qcocode) == 4) {
+            $limit = $this->MAX_LIMIT;
 
-        //$path = public_path('/storage/faimages/');
-        if ($qtype == 'image') {
-            $images = $this->getImages($qcocode, $page, $limit);
-            $total = count($images);
-            return  new Paginator($images, $total, $limit);
+
+            if ($qtype == 'image') {
+
+
+
+                $result = $this->getImages($qcocode, $page, $limit);
+
+                if ($result) {
+                    return  new Paginator($result['data'], $result['total'], $limit);
+                } else {
+                    return  new Paginator([], 0, $limit);
+                }
+            }
         }
     }
 
@@ -142,7 +151,30 @@ class FACodeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'keepNew' => 'required',
+            'keepCurrent' => 'required'
+        ]);
+
+        $keepNew = $request->get('keepNew');
+        $keepCurrent = $request->get('keepCurrent');
+        $cocode = substr($id, 0, 4);
+
+
+        if ($keepCurrent) {
+
+            $path = public_path($this->FILESTORE  . $cocode . '/');
+            //if (file_exists($path . 'NEW/' . $id . '.png')) {
+            unlink($path . 'NEW/' . $id . '.png');
+            //}
+        }
+        if ($keepNew) {
+            $path = public_path($this->FILESTORE  . $cocode . '/');
+            //if (file_exists($path . 'NEW/' . $id . '.png')) {
+            rename($path . 'NEW/' . $id . '.png', $path  . $id . '.png');
+            //}
+        }
+        return (['status' => true, 'msg' => 'OK']);
     }
 
     /**
@@ -274,16 +306,19 @@ class FACodeController extends Controller
     {
         $files = Storage::disk('public')->files('faimages/' . $cocode);
 
+        if (!$files) {
+            return [];
+        }
+
+        $total = count($files);
         $files = array_splice($files, ($page - 1) * $limit, $limit);
 
 
-        //$output = [];
         $codes = '';
+
         foreach ($files as $file) {
             $code = substr($file, 14, 14);
             $codes = $codes . ';' . $code;
-
-            //array_push($output, ['code' => $code]);
         }
 
         $group = $this->getSAPGroup();
@@ -292,12 +327,21 @@ class FACodeController extends Controller
 
         if ($infos) {
 
+            $path = public_path($this->FILESTORE . $cocode . '/');
+
             foreach ($infos as $info) {
-                $info->url = '/storage/faimages/' . $cocode . '/' . $info->id . '.png';
+                $info->url = $this->FILESTORE . $cocode . '/' . $info->id . '.png';
+
+                if (file_exists($path . 'NEW/' . $info->id . '.png')) {
+                    $info->hasNew = true;
+                    $info->urlNew = $this->FILESTORE . $cocode . '/NEW/' . $info->id . '.png';
+                } else {
+                    $info->hasNew = false;
+                }
             }
-            return $infos;
+            return ['total' => $total, 'data' => $infos];
         } else {
-            return [];
+            return ['total' => 0, 'data' => []];
         }
     }
 }
