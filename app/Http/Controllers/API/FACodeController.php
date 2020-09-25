@@ -67,6 +67,7 @@ class FACodeController extends Controller
             'phoneid' => 'required',
             'cocode' => 'required',
             'version' => 'required',
+            'deregister' => 'sometimes',
             'codes' => 'sometimes',
             'files' => 'sometimes',
             'files.*' => 'image|mimes:png,jpeg|max:2048'
