@@ -161,7 +161,7 @@ export default {
           });
       }
     },
-    setSelectedList(data) {
+    setSelectedList(data) {      
       let setList = [];
       if (data.groups) {
         setList = [...data.groups];

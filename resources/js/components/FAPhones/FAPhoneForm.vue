@@ -216,6 +216,7 @@ export default {
         this.form.type = "phone";
         this.form.company = this.company;
         this.form.email = this.phoneid.trim() + "@uportal.test";
+        this.form.fagroup = this.group;
         this.form.groups = [this.group];
         return true;
       }
@@ -229,8 +230,8 @@ export default {
         const emailDomain = email.slice(pos);
         this.phoneid = email.slice(0, -emailDomain.length);
       }
-      if (data.groups.length > 0) {
-        this.group = data.groups[0].id;
+      if (data.fagroup) {
+        this.group = data.fagroup;
       }
 
       this.company = data.company;

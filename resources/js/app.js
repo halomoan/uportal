@@ -75,6 +75,10 @@ let routes = [
         component: require("./components/Users/Users.vue").default
     },
     {
+        path: "/usersarch",
+        component: require("./components/Users/UsersArch.vue").default
+    },
+    {
         path: "/usergroup",
         component: require("./components/Users/UserGroup.vue").default
     },

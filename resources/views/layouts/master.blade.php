@@ -159,6 +159,12 @@
                   </router-link>
                 </li>
                 <li class="nav-item">
+                  <router-link to="/usersarch" class="nav-link">
+                    <i class="fas fa-user nav-icon"></i>
+                    <p>Archived Users</p>
+                  </router-link>
+                </li>
+                <li class="nav-item">
                   <router-link to="/usergroup" class="nav-link">
                     <i class="fas fa-users nav-icon"></i>
                     <p>User Group</p>

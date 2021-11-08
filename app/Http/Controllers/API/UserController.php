@@ -35,6 +35,7 @@ class UserController extends Controller
     {
         $this->authorize('isAdmin');
 
+        $qarch = \Request::get('qarch');
         $qtype = \Request::get('qtype');
         $qname = \Request::get('qname');
         $qcompany = \Request::get('qcompany');
@@ -54,6 +55,13 @@ class UserController extends Controller
         } else {
             $filter .=  " $and a.type = 'person'";
             $and = "AND";
+        }
+
+        if (isset($qarch)) {
+            $filter .=  " $and a.deleted_at is not null";
+            $and = "AND";
+        } else {
+            $filter .=  " $and a.deleted_at is null";
         }
 
         if (isset($qname)) {
@@ -77,32 +85,39 @@ class UserController extends Controller
             $where = $filter;
         }
 
+        $search = \Request::get('q');
 
 
-        if ($search = \Request::get('q')) {
+        if ($search) {
 
+            if (isset($qarch)) {
 
-            return User::where(function ($query) use ($search, $qtype) {
-                //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
-                $query->whereLike(['name', 'email'], $search)->where('type', '=', $qtype);
-            })->paginate(10);
+                return User::withTrashed()->where(function ($query) use ($search, $qtype) {
+                    //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
+                    $query->whereLike(['name', 'email'], '%' . $search . '%')->where('type', '=', $qtype);
+                })->whereNotNull('deleted_at')->paginate(10);
+            } else {
+                return User::where(function ($query) use ($search, $qtype) {
+                    //$query->where('name', 'LIKE', "%$search%")->orWhere('email', 'LIKE', "%$search%");
+                    $query->whereLike(['name', 'email'], $search)->where('type', '=', $qtype);
+                })->paginate(10);
+            }
         } else {
 
             if (\Request::get('page')) {
                 if ($where) {
-                    // \DB::listen(function ($sql) {
-                    //     var_dump($sql);
-                    // });
 
-                    return DB::table('users as a')
+                    $result = DB::table('users as a')
                         //->select('a.*', 'b.name as group')
                         ->selectRaw('DISTINCT a.*')
                         ->leftJoin('group_user as c', 'a.id', '=', 'c.user_id')
                         ->leftJoin('groups as b', 'c.group_id', '=', 'b.id')
                         ->whereRaw($where)
                         ->orderBy('a.created_at', 'desc')
+                        //->toSql();
                         ->paginate(10);
-                    // return DB::table('users as a')->whereRaw($where)->paginate(10);
+
+                    return $result;
                 } else {
                     return DB::table('users as a')
                         //->select('a.*', 'b.name as group')
@@ -152,8 +167,9 @@ class UserController extends Controller
             'password' => 'required|string|min:8|max:191',
             'repassword' => 'required|string|min:8|max:191',
             'groups' => 'required|array',
-            'fauser' => 'required|boolean',
-            'fagroup' => 'required|integer',
+            'fauser' => 'sometimes|boolean',
+            'fagroup' => 'sometimes|integer',
+            'urole' => 'required',
         ]);
 
 
@@ -167,34 +183,30 @@ class UserController extends Controller
             'password' => Hash::make($request['password'])
         ]);
 
-        //if ($request['type'] == 'phone') {
+
         if ($user->type == 'phone') {
 
             DB::update('update users set email_verified_at  = now() where id = ?', [$user->id]);
-        }
-
-        // if ($request['groups']) {
-        //     $groups = Group::find($request['groups']);
-        //     $user->groups()->sync($groups);
-        // }
-
-        if ($request['groups']) {
-
-            $req_groups = $request['groups'];
-            array_push($req_groups, $request['fagroup']);
-
-
-            $groups = Group::find($req_groups);
-            $user->groups()->sync($groups);
         } else {
-            $req_groups = [];
-            array_push($req_groups, $request['fagroup']);
-
-            $groups = Group::find($req_groups);
-            $user->groups()->sync($groups);
+            $fauser = FAUser::updateOrCreate(['user_id' => $user->id], ['active' => $request['fauser'], 'companies' => implode(',', $request['facocodes'])]);
         }
 
-        $fauser = FAUser::updateOrCreate(['user_id' => $user->id], ['active' => $request['fauser'], 'companies' => implode(',', $request['facocodes'])]);
+
+        $req_groups = [];
+        if ($request['groups']) {
+            $req_groups =  $request['groups'];
+        }
+
+        if ($request['fagroup']) {
+            array_push($req_groups, $request['fagroup']);
+        }
+
+        $groups = Group::find($req_groups);
+        $user->groups()->sync($groups);
+
+
+
+
 
         return $user;
     }
@@ -208,36 +220,42 @@ class UserController extends Controller
     public function show($id)
     {
         $this->authorize('isAdmin');
-        $user = User::findOrFail($id);
+        //$user = User::findOrFail($id);
+        $user = User::withTrashed()->find($id);
 
-        $groups = $user->groups()->get()->toArray();
-        $user['groups'] = array_filter(
-            $groups,
-            function ($group) {
-                return $group['type'] == 'group';
+        if ($user) {
+
+
+            $groups = $user->groups()->get()->toArray();
+
+            $usergroup = [];
+            $fagroup = [];
+
+            foreach ($groups as $group) {
+                if ($group['type'] == 'group') {
+                    array_push($usergroup, $group);
+                } elseif ($group['type'] == 'barcd') {
+                    array_push($fagroup, $group);
+                }
             }
-        );
 
-        $fagroup = array_filter(
-            $groups,
-            function ($group) {
-                return $group['type'] == 'barcd';
+
+            $user['groups'] = $usergroup;
+
+            $user['fagroup']  = array_pop($fagroup)['id'];
+
+            $fauser = $user->fauser()->first();
+            if ($fauser) {
+                $facocodes = $fauser->companies;
+                $user['facocodes'] = explode(',', $facocodes);
+                $user['fauser'] = $fauser->active;
+            } else {
+                $user['facocodes'] = [];
+                $user['fauser'] = false;
             }
-        );
 
-        $user['fagroup']  = array_pop($fagroup)['id'];
-
-        $fauser = $user->fauser()->first();
-        if ($fauser) {
-            $facocodes = $fauser->companies;
-            $user['facocodes'] = explode(',', $facocodes);
-            $user['fauser'] = $fauser->active;
-        } else {
-            $user['facocodes'] = [];
-            $user['fauser'] = false;
+            return $user;
         }
-
-        return $user;
     }
 
     /**
@@ -251,18 +269,36 @@ class UserController extends Controller
     {
 
         $this->authorize('isAdmin');
-        $user = User::findOrFail($id);
+
+
+
+
+        $user = User::withTrashed()->find($id);
 
         $this->validate($request, [
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
-            'password' => 'sometimes|string|min:8|max:191',
-            'repassword' => 'sometimes|string|min:8|max:191',
             'groups' => 'required|array',
-            'fauser' => 'required|boolean',
-            'fagroup' => 'required|integer',
-
+            'urole' => 'required',
         ]);
+
+
+        if (!$user) {
+            $errors['notfound'] = ['User Not Found'];
+            $message = ['message' => 'User Not Found', 'errors' => $errors];
+            return response()->json($message, 422);
+        }
+
+        if ($request->restore) {
+            $user->restore();
+            return ['message' => 'Success'];
+        }
+
+        if ($request->archive) {
+            $user->delete();
+            return ['message' => 'Success'];
+        }
+
 
         if ($request->repassword) {
             if ($request->repassword == $request->password) {
@@ -277,23 +313,17 @@ class UserController extends Controller
 
         $user->update($request->all());
 
-
+        $req_groups = [];
         if ($request['groups']) {
-
-            $req_groups = $request['groups'];
-            array_push($req_groups, $request['fagroup']);
-
-
-            $groups = Group::find($req_groups);
-            $user->groups()->sync($groups);
-        } else {
-            $req_groups = [];
-            array_push($req_groups, $request['fagroup']);
-
-            $groups = Group::find($req_groups);
-            $user->groups()->sync($groups);
+            $req_groups =  $request['groups'];
         }
 
+        if ($request['fagroup']) {
+            array_push($req_groups, $request['fagroup']);
+        }
+
+        $groups = Group::find($req_groups);
+        $user->groups()->sync($groups);
 
 
         $fauser = FAUser::updateOrCreate(['user_id' => $user->id], ['active' => $request['fauser'], 'companies' => implode(',', $request['facocodes'])]);
@@ -313,10 +343,13 @@ class UserController extends Controller
 
         $this->authorize('isAdmin');
 
-        $user = User::findOrFail($id);
+        $user = User::find($id);
 
-        $user->delete();
+        if ($user) {
+            $user->forceDelete();
 
-        return ['message' => 'User Deleted'];
+            return ['message' => 'User Deleted'];
+        }
+        return ['message' => 'User Not Found'];
     }
 }

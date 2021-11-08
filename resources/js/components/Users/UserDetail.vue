@@ -144,17 +144,17 @@
                           <label for="type" class="col-sm-2 col-form-label">Type</label>
                           <div class="col-sm-10">
                             <select
-                              name="type"
+                              name="urole"
                               v-model="form.urole"
-                              id="type"
+                              id="urole"
                               class="form-control"
-                              :class="{'is-invalid': form.errors.has('type')}"
+                              :class="{'is-invalid': form.errors.has('urole')}"
                             >
                               <option value>Select User Role</option>
                               <option value="admin">Admin</option>
-                              <option value="user">Standard User</option>
+                              <option value="user" >Standard User</option>
                             </select>
-                            <has-error :form="form" field="type"></has-error>
+                            <has-error :form="form" field="urole"></has-error>
                           </div>
                         </div>
                         <!-- </form> -->
@@ -262,7 +262,7 @@ export default {
         password: "",
         repassword: "",
         groups: [],
-        urole: "",
+        urole: "user",
         photo: "",
         fauser: false,
         facocodes: [],
@@ -340,7 +340,9 @@ export default {
         .then(({ data }) => {
           this.form = new Form(data);
 
-          if (data.groups && data.groups.length > 0) {
+
+          if (data.groups) {
+            
             this.$refs.group.setSelectedList(data);
             this.userGroup = data.groups;
           } else {

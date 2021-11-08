@@ -32,10 +32,13 @@
                   </a>
 
                   <div class="card-tools">
-                    <div class="input-group input-group-sm" style="width: 250px;">
+                    <div
+                      class="input-group input-group-sm"
+                      style="width: 250px"
+                    >
                       <i
                         class="fas fa-filter pt-2 pr-2"
-                        :class="filter.show ? 'text-orange': 'text-gray'"
+                        :class="filter.show ? 'text-orange' : 'text-gray'"
                         @click="doFilter"
                       ></i>
                       <input
@@ -48,7 +51,11 @@
                       />
 
                       <div class="input-group-append">
-                        <button type="button" class="btn btn-default" @click="searchTable">
+                        <button
+                          type="button"
+                          class="btn btn-default"
+                          @click="searchTable"
+                        >
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
@@ -77,17 +84,18 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.urole | upText }}</td>
                         <td>
-                          {{
-                          user.created_at
-                          | humanDate
-                          }}
+                          {{ user.created_at | humanDate }}
                         </td>
                         <td>
-                          <a href class="fa fa-edit" @click.prevent="editUser(user.id)"></a>
+                          <a
+                            href
+                            class="fa fa-edit"
+                            @click.prevent="editUser(user.id)"
+                          ></a>
                           /
                           <a
                             href
-                            class="fa fa-trash text-red"
+                            class="fas fa-archive text-red"
                             @click.prevent="deleteUser(user.id)"
                           ></a>
                         </td>
@@ -127,13 +135,24 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="addNewLabel">Add New</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
               <button type="button" class="btn btn-primary">Create</button>
             </div>
           </div>
@@ -147,7 +166,12 @@
             <div class="overlay-wrapper">
               <div class="modal-header">
                 <h5 class="modal-title">Advanced Filter</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -155,7 +179,9 @@
               <div class="modal-body">
                 <form>
                   <div class="form-group row">
-                    <label for="name" class="col-sm-3 col-form-label">Name</label>
+                    <label for="name" class="col-sm-3 col-form-label"
+                      >Name</label
+                    >
 
                     <div class="col-sm-9">
                       <input
@@ -168,7 +194,9 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="company" class="col-sm-3 col-form-label">Company</label>
+                    <label for="company" class="col-sm-3 col-form-label"
+                      >Company</label
+                    >
                     <div class="col-sm-9">
                       <input
                         type="text"
@@ -180,7 +208,9 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="email" class="col-sm-3 col-form-label">Email</label>
+                    <label for="email" class="col-sm-3 col-form-label"
+                      >Email</label
+                    >
 
                     <div class="col-sm-9">
                       <input
@@ -196,18 +226,32 @@
                     <div class="row">
                       <div class="col-8">
                         <label for="group">Group</label>
-                        <span class="text-sm font-italic">Shift+Click for multi selection</span>
+                        <span class="text-sm font-italic"
+                          >Shift+Click for multi selection</span
+                        >
                       </div>
                       <div class="col-4 d-flex justify-content-end">
-                        <a href class="text-sm text-blue" @click.prevent="clearGroup">Clear</a>
+                        <a
+                          href
+                          class="text-sm text-blue"
+                          @click.prevent="clearGroup"
+                          >Clear</a
+                        >
                       </div>
                     </div>
 
-                    <select multiple class="form-control" id="group" v-model="filter.group">
-                      <option v-for="group in groups" :key="group.id">{{ group.name }}</option>
+                    <select
+                      multiple
+                      class="form-control"
+                      id="group"
+                      v-model="filter.group"
+                    >
+                      <option v-for="group in groups" :key="group.id">
+                        {{ group.name }}
+                      </option>
                     </select>
                   </div>
-                  <span>Selected Group: {{this.filter.group}}</span>
+                  <span>Selected Group: {{ this.filter.group }}</span>
                 </form>
               </div>
               <!-- ./modal-body -->
@@ -217,8 +261,16 @@
                   class="btn btn-primary"
                   data-dismiss="modal"
                   @click="getTableData(1)"
-                >Submit</button>
-                <button type="button" class="btn btn-secondary" @click="clearFilter">Clear Filter</button>
+                >
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="clearFilter"
+                >
+                  Clear Filter
+                </button>
               </div>
             </div>
             <div class v-if="inprogress.filter">
@@ -311,22 +363,22 @@ export default {
       if (this.$Role.isAdmin()) {
         Swal.fire({
           title: "Are you sure?",
-          text: "You won't be able to revert this!",
+          text: "The user will be marked deleted and moved to archive.",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
+          confirmButtonText: "Yes, disable and archive it!",
         }).then((result) => {
           //Send request to the server
           if (result.value) {
             axios
-              .delete("api/user/" + id)
+              .put("api/user/" + id, {archive: true})
               .then((result) => {
                 if (result.status === 200) {
                   Swal.fire(
-                    "Deleted!",
-                    "Your user has been deleted.",
+                    "Archived!",
+                    "Your user has been disabled and moved to archive.",
                     "success"
                   );
                   this.getTableData(this.pgUsers.page);
@@ -347,15 +399,15 @@ export default {
 
     searchTable() {
       if (this.$Role.isAdmin()) {
+        let uri = "";
         if (this.searchText) {
-          this.pgUsers.uri =
-            "api/user?qtype=person&q=" + this.searchText + "&page=";
+          uri = this.pgUsers.uri + "&q=" + this.searchText + "&page=";
         } else {
-          this.pgUsers.uri = "api/user?page=1";
+          uri = this.pgUsers.uri + "&page=1";
         }
         this.$Progress.start();
         axios
-          .get(this.pgUsers.uri)
+          .get(uri)
           .then(({ data }) => {
             this.users = data.data;
             this.pgUsers.records = data.total;

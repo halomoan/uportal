@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\DB;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +37,10 @@ class AppServiceProvider extends ServiceProvider
 
             return $this;
         });
+
+
+        // DB::listen(function ($sql) {
+        //     var_dump($sql);
+        // });
     }
 }

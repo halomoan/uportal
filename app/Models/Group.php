@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
+
     protected $table = 'groups';
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,7 @@ class Group extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at', 'updated_at'
+        'created_at', 'updated_at', 'pivot'
     ];
 
     public function news()

@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
 
-    return $request->user();
-});
+//     return $request->user();
+// });
 
 Route::apiResources(['user' => 'API\UserController']);
 Route::apiResources(['group' => 'API\GroupController']);
@@ -29,6 +29,7 @@ Route::apiResources(['impinvoice' => 'API\ImpInvoiceController']);
 Route::apiResources(['invoice' => 'API\InvoiceController']);
 Route::apiResources(['facode' => 'API\FACodeController']);
 Route::apiResources(['facompany' => 'API\FACompanyController']);
+Route::apiResources(['faphone' => 'API\FAPhoneController']);
 
 
 Route::post('falogin', 'API\AuthController@falogin');
